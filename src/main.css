@@ -1,0 +1,17 @@
+:root {
+  --highlight-color: #FFF;
+  --shadow-color: #000;
+  --bg-color: #2A2c33;
+  --line-color-1: #666;
+  --line-color-2: #333;
+  --line-color-3: #222;
+  --accent-color-1: #B2C99E;
+  --accent-color-2: #628090;
+  
+  --elements-border: 2px;
+  --elements-radius: 3px;
+}
+
+body {
+  background: var(--bg-color);
+}

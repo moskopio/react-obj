@@ -1,0 +1,16 @@
+.application {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+}
+
+.panels {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}

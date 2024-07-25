@@ -1,0 +1,56 @@
+.file-input {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.file-input-icon {
+  font-size: 10px;
+  font-family: monospace;
+  border-radius: var(--elements-radius);
+  border: var(--elements-border) var(--highlight-color) solid;
+  box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
+  height: 15px;
+  outline: var(--elements-border) var(--shadow-color) solid;
+  width: 15px;
+
+background-image: 
+linear-gradient(
+  var(--accent-color-1)  3px, 
+  var(--highlight-color) 4px, 
+  var(--line-color-2)    5px, 
+  var(--accent-color-2) 10px
+);
+}
+
+.file-input-icon:after {
+  content: "\2B06";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--highlight-color);
+  text-shadow:
+  1px 1px 0 var(--shadow-color),
+  -1px 1px 0 var(--shadow-color),
+  -1px -1px 0 var(--shadow-color),
+  1px -1px 0 var(--shadow-color);
+}
+
+.file-input-icon input[type="file"] {
+  display: none;
+}
+
+.file-input-label {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  color: var(--highlight-color);
+  font-family: monospace;
+  user-select: none;
+  text-shadow:
+  1px 1px 0 #000,
+  -1px 1px 0 #000,
+  -1px -1px 0 #000,
+  1px -1px 0 #000;
+}
