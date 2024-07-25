@@ -2,32 +2,14 @@ import { ChangeEvent, ReactElement, useCallback, useRef } from "react"
 import './FileInput.css'
 
 interface Props {
-  label:      string
-  onFileLoad: (file: string) => void
+  label:  string
+  onFile: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
 export function FileInput(props: Props): ReactElement {
-  const { label, onFileLoad } = props
+  const { label, onFile } = props
   
   const inputRef = useRef<HTMLInputElement>(null)
-  
-  const onFile = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event?.target?.files?.[0]
-
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = function(event: ProgressEvent<FileReader>) {
-        const result = event?.target?.result
-        
-        if (typeof result === 'string') {
-          onFileLoad(result)
-        }
-        
-      }
-      reader.readAsText(file)
-    }
-  }
-  
   const onClick = useCallback(() => {
     inputRef.current?.click()
   }, [])

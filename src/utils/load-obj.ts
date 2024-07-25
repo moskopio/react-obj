@@ -1,38 +1,7 @@
-interface Object {
-  vertex:       number[]
-  normal:       number[]
-  texture:      number[]
-  vertexIndex:  number[]
-  normalIndex:  number[]
-  textureIndex: number[]
-}
+import { Obj } from "../types"
+import { cross, normalize, sub, vec2, vec3 } from "./vectors"
 
-type vec3 = [number, number, number]
-type vec2 = [number, number] 
-
-
-function sub(a: vec3, b: vec3): vec3 {
-  return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]
-}
-
-function cross(a: vec3, b: vec3): vec3 {
-  const x = a[1] * b[2] - a[2] * b[1]
-  const y = a[2] * b[0] - a[0] * b[2]
-  const z = a[0] * b[1] - a[1] * b[0]
-  return [x, y, z]
-}
-
-function magnitude(a: vec3): number {
-  return Math.hypot(...a) 
-}
-
-function normalize(a: vec3): vec3 {
-  const mag = magnitude(a)
-  return mag ? [a[0] / mag, a[1] /mag, a[2] / mag] : [0, 0, 0]
-}
-
-
-export function loadObj(obj: string): Object {  
+export function loadObj(data: string): Obj {  
   const v: vec3[] = []
   const n: vec3[] = []
   const t: vec2[] = []
@@ -40,7 +9,7 @@ export function loadObj(obj: string): Object {
   const ni: number[] = []
   const ti: number[] = []
 
-  parseObj(obj)  
+  parseData(data)
   if (n.length === 0) {
     calculateNormals()
   }
@@ -49,13 +18,13 @@ export function loadObj(obj: string): Object {
     vertex: v.flatMap(v => v), 
     normal: n.flatMap(n => n), 
     texture: t.flatMap(t => t),
-    vertexIndex: vi, 
-    normalIndex: ni, 
-    textureIndex: ti 
+    vertexIndex: vi,
+    normalIndex: ni,
+    textureIndex: ti
   }
   
-  function parseObj(obj: string): void {
-    const lines = obj.split('\n')
+  function parseData(data: string): void {
+    const lines = data.split('\n')
     lines.map(line => line.trim()).filter(filterCommentsAndEmpty).forEach(parseLine)
   }
   
@@ -66,7 +35,7 @@ export function loadObj(obj: string): Object {
   // v  - vertex (vec3)
   // vn - vertex normal (vec3)
   // vt - texture coordinates (vec2)
-  // f - face (indices vi/ni/ti)
+  // f - face (indices vi/ti/ni)
   // g - group (text description?)
   function parseLine(line: string): void {
     const parts = line.split((/\s+/))
@@ -93,8 +62,8 @@ export function loadObj(obj: string): Object {
       const indices = p.split('/')
 
       vi.push(parseInt(indices[0]) - 1)
-      ni.push(parseInt((indices[1] ? indices[1] : indices[0])) - 1)
-      ti.push(parseInt((indices[2] ? indices[2] : indices[0])) - 1)
+      ti.push(parseInt((indices[1] ? indices[1] : indices[0])) - 1)
+      ni.push(parseInt((indices[2] ? indices[2] : indices[0])) - 1)
     })
   }
   
