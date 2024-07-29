@@ -1,7 +1,11 @@
-attribute vec3 pos;
+attribute vec3 aPos;
+
+uniform mat4 uProjection;
+uniform mat4 uView;
+uniform mat4 uWorld;
 
 uniform mat4 mvp;
 
 void main() {
-  gl_Position = mvp * vec4(pos, 1);
+  gl_Position = uProjection * uView * uWorld * vec4(aPos, 1);
 }

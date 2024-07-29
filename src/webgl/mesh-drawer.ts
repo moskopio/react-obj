@@ -2,17 +2,18 @@ import vertexShaderSource from './mesh.vert'
 import fragmentShaderSource from './mesh.frag'
 import { createShaderProgram } from './program'
 import { Obj } from '../types'
+import { degToRad } from '../utils/util'
+import { identityM4, inverse, lookAt, perspective } from '../utils/m4'
+import { V3 } from '../utils/v3'
 
 export interface MeshDrawer {
-  setObj:      (obj: Obj) => void
-  setViewPort: (w: number, h: number) => void
-  draw:        () => void
+  setObj:  (obj: Obj) => void
+  setView: () => void
+  draw:    () => void
 }
 
 
 export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefined {
-  
-  console.log(vertexShaderSource, fragmentShaderSource)
   const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
 
   if (!program) {
@@ -22,51 +23,54 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
   
   let triangleCount = 0
   
-  const uMVP = gl.getUniformLocation(program, 'mvp')
-  const aPos = gl.getAttribLocation(program, 'pos')
-
+  const uProjection = gl.getUniformLocation(program, 'uProjection')
+  const uView = gl.getUniformLocation(program, 'uView')
+  const uWorld = gl.getUniformLocation(program, 'uWorld')
+  const aPos = gl.getAttribLocation(program, 'aPos')
+  
   const aPosBuffer = gl.createBuffer()
   
-  return { setObj, setViewPort, draw }
+  return { setObj, setView, draw }
   
   function setObj(obj: Obj): void {
-    const { vertex, vertexIndex } = obj
-  
+    const { vertex } = obj
+    
     triangleCount = vertex.length / 3
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, aPosBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertex), gl.STATIC_DRAW);  
+    gl.bindBuffer(gl.ARRAY_BUFFER, aPosBuffer)
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertex), gl.STATIC_DRAW)
   }
   
-  function setViewPort(w: number, h: number): void {
+  function setView(): void {
+    gl.viewport(0, 0, 600, 400)
+    gl.enable(gl.DEPTH_TEST)
+    gl.enable(gl.CULL_FACE)
     
-  const mvp = [
-      1.4960692270999916,
-      0,
-      -0.015421421656734475,
-      -0.008944424560905996,
-      -0.00008426905041067963,
-      1.7297471779917424,
-      -0.010857004728123754,
-      -0.006297062742311778,
-      0.013381748317572788,
-      0.010892758455821563,
-      1.7240695610833348,
-      0.9999603454283343,
-      0,
-      0,
-      1.7400000000000002,
-      3
-  ]
-  
-    // const transformationMatrix = [ 
-    //    2/w,    0, 0, 0, 
-    //      0, -2/h, 0, 0, 
-    //      0,    0, 1, 0, 
-    //     -1,    1, 0, 1 
-    // ]
+    const fov = degToRad(60)
+    const aspect = 600 / 400
+    const zNear = 0.1
+    const zFar = 50
+    const projection = perspective(fov, aspect, zNear, zFar)
+    
+    const up = [0, 1, 0] as V3
+    const cameraPosition = [0, 0, 10] as V3
+    const cameraTarget = [0, 0, 0] as V3
+    const camera = lookAt(cameraPosition, cameraTarget, up)
+    // const view = inverse(camera)
+    
+    const view = [
+      1, 0, 0, 0,
+      0, 1, 0, 0,
+      0, 0, 1, 0,
+      0,0,-4, 1,
+    ]
+    
+    console.log(camera, view, projection)
+    
     gl.useProgram(program!)
-    gl.uniformMatrix4fv(uMVP, false, mvp)
+    gl.uniformMatrix4fv(uProjection, false, projection)
+    gl.uniformMatrix4fv(uView, false, view)
+    gl.uniformMatrix4fv(uWorld, false, identityM4())
   }
   
   function draw(): void { 

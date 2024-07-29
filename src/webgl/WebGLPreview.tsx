@@ -16,8 +16,9 @@ export function WebGLPreview(): ReactElement {
       const gl = canvas.getContext("webgl", {antialias: false, depth: false})
       if (gl) {
         setGL(gl)
+        gl?.viewport( 0, 0, 600, 400)
         const meshDrawer = createMeshDrawer(gl)
-        meshDrawer?.setViewPort(600, 400)
+        meshDrawer?.setView()
         setMeshDrawer(meshDrawer)
       }
     }
