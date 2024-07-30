@@ -1,3 +1,4 @@
+export type Vec2 = [number, number]
 export type Vec3 = [number, number, number]
 
 function add(a: Vec3, b: Vec3): Vec3 {

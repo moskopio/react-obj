@@ -30,16 +30,20 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
   const aPos = gl.getAttribLocation(program, 'aPos')
   
   const aPosBuffer = gl.createBuffer()
+  const indexBuffer = gl.createBuffer()
   
   return { setObj, setView, draw }
   
   function setObj(obj: Obj): void {
-    const { vertex } = obj
+    const { vertex, vertexIndex } = obj
     
-    triangleCount = vertex.length / 3
-
+    triangleCount = vertexIndex.length
+    
     gl.bindBuffer(gl.ARRAY_BUFFER, aPosBuffer)
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertex), gl.STATIC_DRAW)
+    
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndex), gl.STATIC_DRAW)
   }
   
   function setView(): void {
@@ -54,7 +58,7 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     const projection = perspective(fov, aspect, zNear, zFar)
     
     const up = [0, 1, 0] as Vec3
-    const cameraPosition = [0, 0, 4] as Vec3
+    const cameraPosition = [0, 0, 20] as Vec3
     const cameraTarget = [0, 0, 0] as Vec3
     const camera = lookAt(cameraPosition, cameraTarget, up)
     const view = M4.inverse(camera)
@@ -67,9 +71,11 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
   
   function draw(): void { 
     gl.useProgram(program!)
+
 		gl.bindBuffer(gl.ARRAY_BUFFER, aPosBuffer)
     gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0)
     gl.enableVertexAttribArray(aPos)
-		gl.drawArrays(gl.TRIANGLES, 0, triangleCount)
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
+    gl.drawElements(gl.TRIANGLES, triangleCount, gl.UNSIGNED_SHORT, 0)
   }
 }

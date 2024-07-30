@@ -1,10 +1,10 @@
 import { Obj } from "../types"
-import { cross, normalize, sub, vec2, vec3 } from "./vectors"
+import { V3, Vec2, Vec3 } from "./v3"
 
 export function loadObj(data: string): Obj {  
-  const v: vec3[] = []
-  const n: vec3[] = []
-  const t: vec2[] = []
+  const v: Vec3[] = []
+  const n: Vec3[] = []
+  const t: Vec2[] = []
   const vi: number[] = []
   const ni: number[] = []
   const ti: number[] = []
@@ -73,9 +73,9 @@ export function loadObj(data: string): Obj {
       const v1 = v[ni[i + 1]]
       const v2 = v[ni[i + 2]]
       
-      const a = sub(v1, v0)
-      const b = sub(v2, v1)
-      n.push(normalize(cross(a, b)))
+      const a = V3.subtract(v1, v0)
+      const b = V3.subtract(v2, v1)
+      n.push(V3.normalize(V3.cross(a, b)))
     }
   
   }
