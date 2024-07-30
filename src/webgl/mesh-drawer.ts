@@ -3,8 +3,9 @@ import fragmentShaderSource from './mesh.frag'
 import { createShaderProgram } from './program'
 import { Obj } from '../types'
 import { degToRad } from '../utils/util'
-import { identityM4, inverse, lookAt, perspective } from '../utils/m4'
-import { V3 } from '../utils/v3'
+import { Vec3 } from '../utils/v3'
+import { lookAt, perspective } from '../utils/camera'
+import { M4 } from '../utils/m4'
 
 export interface MeshDrawer {
   setObj:  (obj: Obj) => void
@@ -52,25 +53,16 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     const zFar = 50
     const projection = perspective(fov, aspect, zNear, zFar)
     
-    const up = [0, 1, 0] as V3
-    const cameraPosition = [0, 0, 10] as V3
-    const cameraTarget = [0, 0, 0] as V3
+    const up = [0, 1, 0] as Vec3
+    const cameraPosition = [0, 0, 4] as Vec3
+    const cameraTarget = [0, 0, 0] as Vec3
     const camera = lookAt(cameraPosition, cameraTarget, up)
-    // const view = inverse(camera)
-    
-    const view = [
-      1, 0, 0, 0,
-      0, 1, 0, 0,
-      0, 0, 1, 0,
-      0,0,-4, 1,
-    ]
-    
-    console.log(camera, view, projection)
+    const view = M4.inverse(camera)
     
     gl.useProgram(program!)
     gl.uniformMatrix4fv(uProjection, false, projection)
     gl.uniformMatrix4fv(uView, false, view)
-    gl.uniformMatrix4fv(uWorld, false, identityM4())
+    gl.uniformMatrix4fv(uWorld, false, M4.identity())
   }
   
   function draw(): void { 

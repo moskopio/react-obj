@@ -1,17 +1,47 @@
-import { crossV3, dotV4, lengthV3, normalizeV3, subtractV3, V3, V4 } from "./v3"
+import { M3, Matrix3 } from "./m3"
+import { Vec3, V3 } from "./v3"
+import { Vec4, V4 } from "./v4"
 
-type M4 = number[]
+export type Matrix4 = number[]
 
+export const M4 = {
+  multiply,
+  multiplyBy,
+  identity,
+  empty,
+  transpose,
+  translation,
+  translate,
+  xRotation,
+  xRotate,
+  yRotation,
+  yRotate,
+  zRotation,
+  zRotate,
+  axisRotation,
+  axisRotate,
+  scaling,
+  scale,
+  compose,
+  decompose,
+  getSubMatrix,
+  determinate,
+  inverse,
+  transformVector,
+  transformPoint,
+  transformDirection,
+  transformNormal
+}
 
-function getColumn(m: M4, c: number): V4 {
+function getColumn(m: Matrix4, c: number): Vec4 {
   return [ m[c * 4], m[c * 4 + 1], m[c * 4 + 2], m[c * 4 + 3]]
 }
 
-function getRow(m: M4, r: number): V4 {
+function getRow(m: Matrix4, r: number): Vec4 {
 	return [ m[r], m[r + 4], m[r + 8], m[r + 12]]
 }
 
-export function multiplyM4(a: M4, b: M4): M4 {
+function multiply(a: Matrix4, b: Matrix4): Matrix4 {
   const r0 = getRow(b, 0)
 	const r1 = getRow(b, 1)
 	const r2 = getRow(b, 2)
@@ -23,14 +53,23 @@ export function multiplyM4(a: M4, b: M4): M4 {
   const c3 = getColumn(a, 2)
   
   return [
-    dotV4(r0, c0), dotV4(r1, c0), dotV4(r2, c0), dotV4(r3, c0),
-		dotV4(r0, c1), dotV4(r1, c1), dotV4(r2, c1), dotV4(r3, c1),
-		dotV4(r0, c2), dotV4(r1, c2), dotV4(r2, c2), dotV4(r3, c2),
-    dotV4(r0, c2), dotV4(r1, c2), dotV4(r2, c2), dotV4(r3, c3),
+    V4.dot(r0, c0), V4.dot(r1, c0), V4.dot(r2, c0), V4.dot(r3, c0),
+		V4.dot(r0, c1), V4.dot(r1, c1), V4.dot(r2, c1), V4.dot(r3, c1),
+		V4.dot(r0, c2), V4.dot(r1, c2), V4.dot(r2, c2), V4.dot(r3, c2),
+    V4.dot(r0, c2), V4.dot(r1, c2), V4.dot(r2, c2), V4.dot(r3, c3),
   ]
 }
 
-export function identityM4(): M4 {
+function multiplyBy(m: Matrix4, n: number): Matrix4 {
+  return [
+     m[0] * n,  m[1] * n,  m[2] * n,  m[3] * n, 
+     m[4] * n,  m[5] * n,  m[6] * n,  m[7] * n, 
+     m[8] * n,  m[9] * n, m[10] * n, m[11] * n, 
+    m[12] * n, m[13] * n, m[14] * n, m[15] * n, 
+  ]
+}
+
+function identity(): Matrix4 {
   return [
     1, 0, 0, 0,
     0, 1, 0, 0,
@@ -39,8 +78,16 @@ export function identityM4(): M4 {
   ]
 }
 
-export function transposeM4(m: M4): M4 {
-  
+function empty(): Matrix4 {
+  return [
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
+  ]
+}
+
+function transpose(m: Matrix4): Matrix4 {
   return [
     m[0], m[4],  m[8], m[12],
     m[1], m[5],  m[9], m[13],
@@ -49,91 +96,21 @@ export function transposeM4(m: M4): M4 {
   ]
 }
 
-export function copy(src: M4): M4 {
-  return [...src]
-}
-
-
-export function lookAt(cameraPosition: V3, target: V3, up: V3): M4 {
-  const zAxis = normalizeV3(subtractV3(cameraPosition, target))
-  const xAxis = normalizeV3(crossV3(up, zAxis))
-  const yAxis = normalizeV3(crossV3(zAxis, xAxis))
-  
+function translation(tx: number, ty: number, tz: number): Matrix4 {
   return [
-    xAxis[0], xAxis[1], xAxis[2], 0,
-    yAxis[0], yAxis[1], yAxis[2], 0,
-    zAxis[0], zAxis[1], zAxis[2], 0,
-    cameraPosition[0], cameraPosition[1], cameraPosition[2], 1
+      1,  0,  0, 0,
+      0,  1,  0, 0,
+      0,  0,  1, 0,
+     tx, ty, tz, 1
   ]
 }
 
-export function perspective(fov: number, aspect: number, near: number, far: number): M4 {
-  const f = Math.tan(Math.PI * 0.5 - 0.5 * fov)
-  const rangeInv = 1.0 / (near - far)
-  
-  const d = (near + far) * rangeInv
-  
-  return [
-    f / aspect, 0, 0, 0,
-    0, f, 0, 0,
-    0, 0, d, -1,
-    0, 0, d * 2, 0,
-  ]
-}
-
-export function orthographic(left: number, right: number, bottom: number, top: number, near: number, far: number): M4 {
-  const x = 2 / (right - left)
-  const y = 2 / (top - bottom)
-  const z = 2 / (near - far)
-  
-  const t0 = (near + far) / (near - far)
-  const t1 = (bottom + top) / (bottom - top)
-  const t2 = (near + far) / (near - far)
-  
-  return [
-    x,  0,  0, 0,
-    0,  y,  0, 0,
-    0,  0,  z, 0,
-    t0, t1, t2, 0,
-  ]
-}
-
-export function frustum(left: number, right: number, bottom: number, top: number, near: number, far: number): M4 {
-
-    const dx = right - left
-    const dy = top - bottom
-    const dz = far - near
-    
-    const x = 2 * near / dx
-    const y = 2 * near / dy
-    const z0 = (left + right) / dx
-    const z1 = (top + bottom) / dy
-    const z2 = -(far + near) / dz
-    const tz = -2 * near * far / dz
-    
-    return [
-       x,  0,  0,  0,
-       0,  y,  0,  0,
-      z0, z1, z2, -1,
-       0,  0, tz,  0,
-    ]
-  }
-
-  export function translation(tx: number, ty: number, tz: number): M4 {
-    return [
-       1,  0,  0, 0,
-       0,  1,  0, 0,
-       0,  0,  1, 0,
-      tx, ty, tz, 1
-    ]
-  }
-
-export function translate(m: M4, tx: number, ty: number, tz: number): M4 {
+function translate(m: Matrix4, tx: number, ty: number, tz: number): Matrix4 {
   const translationM4 = translation(tx, ty, tz)
-  return multiplyM4(m, translationM4)
+  return multiply(m, translationM4)
 }
 
-export function xRotation(angle: number): M4 {
+function xRotation(angle: number): Matrix4 {
   const c = Math.cos(angle)
   const s = Math.sin(angle)
   
@@ -145,12 +122,12 @@ export function xRotation(angle: number): M4 {
  ]
 }
 
-export function xRotate(m: M4, angle: number) {
+function xRotate(m: Matrix4, angle: number) {
   const xRotationM4 = xRotation(angle)
-  return multiplyM4(m, xRotationM4)
+  return multiply(m, xRotationM4)
 }
 
-export function yRotation(angle: number): M4 {
+function yRotation(angle: number): Matrix4 {
   const c = Math.cos(angle)
   const s = Math.sin(angle)
   
@@ -162,12 +139,12 @@ export function yRotation(angle: number): M4 {
   ]
 }
 
-export function yRotate(m: M4, angle: number): M4 {
+function yRotate(m: Matrix4, angle: number): Matrix4 {
   const yRotationM4 = yRotation(angle)
-  return multiplyM4(m, yRotationM4)
+  return multiply(m, yRotationM4)
 }
 
-export function zRotation(angle: number): M4 {
+function zRotation(angle: number): Matrix4 {
   const c = Math.cos(angle)
   const s = Math.sin(angle)
   
@@ -179,13 +156,13 @@ export function zRotation(angle: number): M4 {
   ]
 }
 
-export function zRotate(m: M4, angle: number): M4 {
+function zRotate(m: Matrix4, angle: number): Matrix4 {
   const zRotationM4 = zRotation(angle)
-  return multiplyM4(m, zRotationM4)
+  return multiply(m, zRotationM4)
 }
 
-export function axisRotation(axis: V3, angle: number): M4 {
-  const n = lengthV3(axis)
+function axisRotation(axis: Vec3, angle: number): Matrix4 {
+  const n = V3.length(axis)
   const x = axis[0] / n
   const y = axis[1] / n
   const z = axis[2] / n
@@ -204,29 +181,27 @@ export function axisRotation(axis: V3, angle: number): M4 {
   ]
 }
 
-export function axisRotate(m: M4, axis: V3, angle: number): M4 {
+function axisRotate(m: Matrix4, axis: Vec3, angle: number): Matrix4 {
   const axisRotationM4 = axisRotation(axis, angle)
-  return multiplyM4(m, axisRotationM4)
+  return multiply(m, axisRotationM4)
 }
 
-
-function scaling(sx: number, sy: number, sz: number): M4 {
+function scaling(sx: number, sy: number, sz: number): Matrix4 {
   return [
-    sx, 0, 0, 0,
-    0, sy, 0, 0,
-    0, 0, sz, 0,
-    0, 0, 0, 1
+    sx,  0,  0, 0,
+     0, sy,  0, 0,
+     0,  0, sz, 0,
+     0,  0,  0, 1
   ]
 }
 
-export function scale(m: M4, sx: number, sy: number, sz: number): M4 {
+function scale(m: Matrix4, sx: number, sy: number, sz: number): Matrix4 {
   const scalingM4 = scaling(sx, sy, sz)
-  return multiplyM4(m, scalingM4)
+  return multiply(m, scalingM4)
 }
 
-  
-  // TODO: refactor - could be composed from multiple M4!
-export function compose(translation: V3, quaternion: V4, scale: V3): M4 {
+// TODO: refactor - could be composed from multiple M4!
+function compose(translation: Vec3, quaternion: Vec4, scale: Vec3): Matrix4 {
   const x = quaternion[0]
   const y = quaternion[1]
   const z = quaternion[2]
@@ -260,68 +235,20 @@ export function compose(translation: V3, quaternion: V4, scale: V3): M4 {
   ]
 }
 
-function quatFromRotationMatrix(m: M4): V4 {
-  // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
-  
-  const dst: V4 = [0, 0, 0, 0]
-
-  // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
-  const m11 = m[0]
-  const m12 = m[4]
-  const m13 = m[8]
-  const m21 = m[1]
-  const m22 = m[5]
-  const m23 = m[9]
-  const m31 = m[2]
-  const m32 = m[6]
-  const m33 = m[10]
-
-  const trace = m11 + m22 + m33
-
-  if (trace > 0) {
-    const s = 0.5 / Math.sqrt(trace + 1)
-    dst[3] = 0.25 / s
-    dst[0] = (m32 - m23) * s
-    dst[1] = (m13 - m31) * s
-    dst[2] = (m21 - m12) * s
-  } else if (m11 > m22 && m11 > m33) {
-    const s = 2 * Math.sqrt(1 + m11 - m22 - m33)
-    dst[3] = (m32 - m23) / s
-    dst[0] = 0.25 * s
-    dst[1] = (m12 + m21) / s
-    dst[2] = (m13 + m31) / s
-  } else if (m22 > m33) {
-    const s = 2 * Math.sqrt(1 + m22 - m11 - m33)
-    dst[3] = (m13 - m31) / s
-    dst[0] = (m12 + m21) / s
-    dst[1] = 0.25 * s
-    dst[2] = (m23 + m32) / s
-  } else {
-    const s = 2 * Math.sqrt(1 + m33 - m11 - m22)
-    dst[3] = (m21 - m12) / s
-    dst[0] = (m13 + m31) / s
-    dst[1] = (m23 + m32) / s
-    dst[2] = 0.25 * s
-  }
-  
-  return dst
-}
-
-// TODO: refactor
 
 interface Decomposition {
-  quaternion:  V4
-  scale:       V3
-  translation: V3
+  quaternion:  Vec4
+  scale:       Vec3
+  translation: Vec3
 }
 
-export function decompose(m: M4 ): Decomposition {
-  let sx = lengthV3(m.slice(0, 3) as V3)
-  const sy = lengthV3(m.slice(4, 7) as V3)
-  const sz = lengthV3(m.slice(8, 11) as V3)
+function decompose(m: Matrix4): Decomposition {
+  let sx = V3.length(m.slice(0, 3) as Vec3)
+  const sy = V3.length(m.slice(4, 7) as Vec3)
+  const sz = V3.length(m.slice(8, 11) as Vec3)
 
   // if determinate is negative, we need to invert one scale
-  const det = determinate(m)
+  const det = determinateM4(m)
   if (det < 0) {
     sx = -sx
   }
@@ -346,143 +273,59 @@ export function decompose(m: M4 ): Decomposition {
   matrix[10] *= invSZ
 
   const quaternion = quatFromRotationMatrix(matrix)
-  const scale = [sx, sy, sz] as V3
-  const translation = [m[12], m[13], m[14]] as V3
+  const scale = [sx, sy, sz] as Vec3
+  const translation = [m[12], m[13], m[14]] as Vec3
   
   return { quaternion, scale, translation }
 }
 
-// TODO: refactor
-function determinate(m: M4): number {
-  const m00 = m[0 * 4 + 0]
-  const m01 = m[0 * 4 + 1]
-  const m02 = m[0 * 4 + 2]
-  const m03 = m[0 * 4 + 3]
-  const m10 = m[1 * 4 + 0]
-  const m11 = m[1 * 4 + 1]
-  const m12 = m[1 * 4 + 2]
-  const m13 = m[1 * 4 + 3]
-  const m20 = m[2 * 4 + 0]
-  const m21 = m[2 * 4 + 1]
-  const m22 = m[2 * 4 + 2]
-  const m23 = m[2 * 4 + 3]
-  const m30 = m[3 * 4 + 0]
-  const m31 = m[3 * 4 + 1]
-  const m32 = m[3 * 4 + 2]
-  const m33 = m[3 * 4 + 3]
-  const tmp_0  = m22 * m33
-  const tmp_1  = m32 * m23
-  const tmp_2  = m12 * m33
-  const tmp_3  = m32 * m13
-  const tmp_4  = m12 * m23
-  const tmp_5  = m22 * m13
-  const tmp_6  = m02 * m33
-  const tmp_7  = m32 * m03
-  const tmp_8  = m02 * m23
-  const tmp_9  = m22 * m03
-  const tmp_10 = m02 * m13
-  const tmp_11 = m12 * m03
-
-  const t0 = (tmp_0 * m11 + tmp_3 * m21 + tmp_4 * m31) -
-      (tmp_1 * m11 + tmp_2 * m21 + tmp_5 * m31)
-  const t1 = (tmp_1 * m01 + tmp_6 * m21 + tmp_9 * m31) -
-      (tmp_0 * m01 + tmp_7 * m21 + tmp_8 * m31)
-  const t2 = (tmp_2 * m01 + tmp_7 * m11 + tmp_10 * m31) -
-      (tmp_3 * m01 + tmp_6 * m11 + tmp_11 * m31)
-  const t3 = (tmp_5 * m01 + tmp_8 * m11 + tmp_11 * m21) -
-      (tmp_4 * m01 + tmp_9 * m11 + tmp_10 * m21)
-
-  return 1.0 / (m00 * t0 + m10 * t1 + m20 * t2 + m30 * t3)
+function getSubMatrix(m: Matrix4, i: number, j: number): Matrix3 {
+  const skipList = [j * 4, j * 4 + 1, j *4 + 2, j * 4 + 3, i, i + 4, i + 8, i + 12]
+  return m.filter((_, i) => !skipList.includes(i))
 }
 
-// TODO: broken!
-export function inverse(m: M4): M4 {
-  const m00 = m[0 * 4 + 0]
-  const m01 = m[0 * 4 + 1]
-  const m02 = m[0 * 4 + 2]
-  const m03 = m[0 * 4 + 3]
-  const m10 = m[1 * 4 + 0]
-  const m11 = m[1 * 4 + 1]
-  const m12 = m[1 * 4 + 2]
-  const m13 = m[1 * 4 + 3]
-  const m20 = m[2 * 4 + 0]
-  const m21 = m[2 * 4 + 1]
-  const m22 = m[2 * 4 + 2]
-  const m23 = m[2 * 4 + 3]
-  const m30 = m[3 * 4 + 0]
-  const m31 = m[3 * 4 + 1]
-  const m32 = m[3 * 4 + 2]
-  const m33 = m[3 * 4 + 3]
-  const tmp_0  = m22 * m33
-  const tmp_1  = m32 * m23
-  const tmp_2  = m12 * m33
-  const tmp_3  = m32 * m13
-  const tmp_4  = m12 * m23
-  const tmp_5  = m22 * m13
-  const tmp_6  = m02 * m33
-  const tmp_7  = m32 * m03
-  const tmp_8  = m02 * m23
-  const tmp_9  = m22 * m03
-  const tmp_10 = m02 * m13
-  const tmp_11 = m12 * m03
-  const tmp_12 = m20 * m31
-  const tmp_13 = m30 * m21
-  const tmp_14 = m10 * m31
-  const tmp_15 = m30 * m11
-  const tmp_16 = m10 * m21
-  const tmp_17 = m20 * m11
-  const tmp_18 = m00 * m31
-  const tmp_19 = m30 * m01
-  const tmp_20 = m00 * m21
-  const tmp_21 = m20 * m01
-  const tmp_22 = m00 * m11
-  const tmp_23 = m10 * m01
-  
-  const t0 = (tmp_0 * m11 + tmp_3 * m21 + tmp_4 * m31) -
-      (tmp_1 * m11 + tmp_2 * m21 + tmp_5 * m31)
-  const t1 = (tmp_1 * m01 + tmp_6 * m21 + tmp_9 * m31) -
-      (tmp_0 * m01 + tmp_7 * m21 + tmp_8 * m31)
-  const t2 = (tmp_2 * m01 + tmp_7 * m11 + tmp_10 * m31) -
-      (tmp_3 * m01 + tmp_6 * m11 + tmp_11 * m31)
-  const t3 = (tmp_5 * m01 + tmp_8 * m11 + tmp_11 * m21) -
-      (tmp_4 * m01 + tmp_9 * m11 + tmp_10 * m21)
+function determinate(m: Matrix4): number {
+  const part0 = m[0] * M3.determinate(getSubMatrix(m, 0, 0))
+  const part1 = m[1] * M3.determinate(getSubMatrix(m, 1, 0))
+  const part2 = m[2] * M3.determinate(getSubMatrix(m, 2, 0))
+  const part3 = m[3] * M3.determinate(getSubMatrix(m, 3, 0))
 
-  const d = 1.0 / (m00 * t0 + m10 * t1 + m20 * t2 + m30 * t3)
-  
+  return part0 - part1 + part2 - part3;
+}
+
+function inverse(m: Matrix4): Matrix4 {
   const dst = []
-  dst[0] = d * t0
-  dst[1] = d * t1
-  dst[2] = d * t2
-  dst[3] = d * t3
-  dst[4] = d * ((tmp_1 * m10 + tmp_2 * m20 + tmp_5 * m30) -
-        (tmp_0 * m10 + tmp_3 * m20 + tmp_4 * m30))
-  dst[5] = d * ((tmp_0 * m00 + tmp_7 * m20 + tmp_8 * m30) -
-        (tmp_1 * m00 + tmp_6 * m20 + tmp_9 * m30))
-  dst[6] = d * ((tmp_3 * m00 + tmp_6 * m10 + tmp_11 * m30) -
-        (tmp_2 * m00 + tmp_7 * m10 + tmp_10 * m30))
-  dst[7] = d * ((tmp_4 * m00 + tmp_9 * m10 + tmp_10 * m20) -
-        (tmp_5 * m00 + tmp_8 * m10 + tmp_11 * m20))
-  dst[8] = d * ((tmp_12 * m13 + tmp_15 * m23 + tmp_16 * m33) -
-        (tmp_13 * m13 + tmp_14 * m23 + tmp_17 * m33))
-  dst[9] = d * ((tmp_13 * m03 + tmp_18 * m23 + tmp_21 * m33) -
-        (tmp_12 * m03 + tmp_19 * m23 + tmp_20 * m33))
-  dst[10] = d * ((tmp_14 * m03 + tmp_19 * m13 + tmp_22 * m33) -
-        (tmp_15 * m03 + tmp_18 * m13 + tmp_23 * m33))
-  dst[11] = d * ((tmp_17 * m03 + tmp_20 * m13 + tmp_23 * m23) -
-        (tmp_16 * m03 + tmp_21 * m13 + tmp_22 * m23))
-  dst[12] = d * ((tmp_14 * m22 + tmp_17 * m32 + tmp_13 * m12) -
-        (tmp_16 * m32 + tmp_12 * m12 + tmp_15 * m22))
-  dst[13] = d * ((tmp_20 * m32 + tmp_12 * m02 + tmp_19 * m22) -
-        (tmp_18 * m22 + tmp_21 * m32 + tmp_13 * m02))
-  dst[14] = d * ((tmp_18 * m12 + tmp_23 * m32 + tmp_15 * m02) -
-        (tmp_22 * m32 + tmp_14 * m02 + tmp_19 * m12))
-  dst[15] = d * ((tmp_22 * m22 + tmp_16 * m02 + tmp_21 * m12) -
-        (tmp_20 * m12 + tmp_23 * m22 + tmp_17 * m02))
+  const det = determinate(m)
 
-  return dst
+  if (det > 0.00001) {
+    const d = 1 / det
+    dst[0] = d * M3.inverseSum(getSubMatrix(m, 0, 0))
+    dst[1] = -d * M3.inverseSum(getSubMatrix(m, 1, 0))
+    dst[2] = d * M3.inverseSum(getSubMatrix(m, 2, 0))
+    dst[3] = -d * M3.inverseSum(getSubMatrix(m, 3, 0))
+    
+    dst[4] = -d * M3.inverseSum(getSubMatrix(m, 0, 1))
+    dst[5] = d * M3.inverseSum(getSubMatrix(m, 1, 1))
+    dst[6] = -d * M3.inverseSum(getSubMatrix(m, 2, 1))
+    dst[7] = d * M3.inverseSum(getSubMatrix(m, 3, 1))
+    
+    dst[8] = d * M3.inverseSum(getSubMatrix(m, 0, 2))
+    dst[9] = -d * M3.inverseSum(getSubMatrix(m, 1, 2))
+    dst[10] = d * M3.inverseSum(getSubMatrix(m, 2, 2))
+    dst[11] = -d * M3.inverseSum(getSubMatrix(m, 3, 2))
+    
+    dst[12] = -d * M3.inverseSum(getSubMatrix(m, 0, 3))
+    dst[13] = d * M3.inverseSum(getSubMatrix(m, 1, 3))
+    dst[14] = -d * M3.inverseSum(getSubMatrix(m, 2, 3))
+    dst[15] = d * M3.inverseSum(getSubMatrix(m, 3, 3))
+  
+    return transpose(dst)
+  } else {
+    return empty()
+  }
 }
 
-export function transformVector(m: M4, v: V4): V4 {
+function transformVector(m: Matrix4, v: Vec4): Vec4 {
   const dst = []
   for (let i = 0; i < 4; ++i) {
     dst[i] = 0.0
@@ -490,11 +333,11 @@ export function transformVector(m: M4, v: V4): V4 {
       dst[i] += v[j] * m[j * 4 + i]
     }
   }
-  return dst as V4
+  return dst as Vec4
 }
 
 // TODO: refactor
-export function transformPoint(m: M4, v: V3): V4 {
+function transformPoint(m: Matrix4, v: Vec3): Vec4 {
   const dst = []
   const v0 = v[0]
   const v1 = v[1]
@@ -505,12 +348,12 @@ export function transformPoint(m: M4, v: V3): V4 {
   dst[1] = (v0 * m[0 * 4 + 1] + v1 * m[1 * 4 + 1] + v2 * m[2 * 4 + 1] + m[3 * 4 + 1]) / d
   dst[2] = (v0 * m[0 * 4 + 2] + v1 * m[1 * 4 + 2] + v2 * m[2 * 4 + 2] + m[3 * 4 + 2]) / d
 
-  return dst as V4
+  return dst as Vec4
 }
 
 
 // TODO: refactor
-export function transformDirection(m: M4, v: V3): V4 {
+function transformDirection(m: Matrix4, v: Vec3): Vec4 {
   const dst = []
 
   const v0 = v[0]
@@ -521,11 +364,11 @@ export function transformDirection(m: M4, v: V3): V4 {
   dst[1] = v0 * m[0 * 4 + 1] + v1 * m[1 * 4 + 1] + v2 * m[2 * 4 + 1]
   dst[2] = v0 * m[0 * 4 + 2] + v1 * m[1 * 4 + 2] + v2 * m[2 * 4 + 2]
 
-  return dst as V4
+  return dst as Vec4
 }
 
 // TODO: refactor
-export function transformNormal(m: M4, v: V3): V3 {
+function transformNormal(m: Matrix4, v: Vec3): Vec3 {
   const dst = [] 
   const mi = inverse(m)
   const v0 = v[0]
@@ -536,5 +379,5 @@ export function transformNormal(m: M4, v: V3): V3 {
   dst[1] = v0 * mi[1 * 4 + 0] + v1 * mi[1 * 4 + 1] + v2 * mi[1 * 4 + 2]
   dst[2] = v0 * mi[2 * 4 + 0] + v1 * mi[2 * 4 + 1] + v2 * mi[2 * 4 + 2]
 
-  return dst as V3
+  return dst as Vec3
 }

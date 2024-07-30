@@ -2860,11 +2860,6 @@ vitest@^1.6.0:
     vite-node "1.6.0"
     why-is-node-running "^2.2.2"
 
-wgpu-matrix@^3.0.1:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/wgpu-matrix/-/wgpu-matrix-3.0.2.tgz#a9059b533081f35cedf492c808b83f932bb9b51f"
-  integrity sha512-iFqGdUwZLjaPiy1hn+sZo9MRyJbVQm7MW7uk1tHU3zYuBIi/qoE/azVkq8jjvJUTIJRn0ugnyGpZM5Lj3Fh8qQ==
-
 which-boxed-primitive@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/which-boxed-primitive/-/which-boxed-primitive-1.0.2.tgz#13757bc89b209b049fe5d86430e21cf40a89a8e6"

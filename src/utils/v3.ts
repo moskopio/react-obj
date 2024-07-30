@@ -1,47 +1,46 @@
-export type V3 = [number, number, number]
-export type V4 = [number, number, number, number]
+export type Vec3 = [number, number, number]
 
-export function addV3(a: V3, b: V3): V3 {
+function add(a: Vec3, b: Vec3): Vec3 {
   return [
     a[0] + b[0],
     a[1] + b[2],
-    a[1] + b[2],
+    a[2] + b[2],
   ]
 }
 
-export function subtractV3(a: V3, b: V3): V3 {
+function subtract(a: Vec3, b: Vec3): Vec3 {
   return [
     a[0] - b[0],
     a[1] - b[2],
-    a[1] - b[2],
+    a[2] - b[2],
   ]
 }
 
-export function scaleV3(v: V3, s: number): V3 {
+function scale(v: Vec3, s: number): Vec3 {
   return [
     v[0] * s,
     v[1] * s,
-    v[1] * s,
+    v[2] * s,
   ]
 }
 
-export function normalizeV3(v: V3): V3 {
+function normalize(v: Vec3): Vec3 {
   const length = Math.hypot(v[0], v[1], v[2])
   
   return length > 0.00001 
-    ? scaleV3(v, 1 / length)
+    ? scale(v, 1 / length)
     : [0, 0, 0]
 }
 
-export function lengthV3(v: V3): number {
+function length(v: Vec3): number {
   return Math.hypot(v[0], v[1], v[2])
 }
 
-export function lengthSqV3(v: V3): number {
+function lengthSq(v: Vec3): number {
   return v[0] * v[0] + v[1] * v[1] + v[2] * v[2]
 }
 
-export function crossV3(a: V3, b: V3): V3 {
+function cross(a: Vec3, b: Vec3): Vec3 {
   return [
     a[1] * b[2] - a[2] * b[1],
     a[2] * b[0] - a[0] * b[2],
@@ -49,19 +48,29 @@ export function crossV3(a: V3, b: V3): V3 {
   ]
 }
 
-export function dotV3(a: V3, b: V3): number {
+function dot(a: Vec3, b: Vec3): number {
   return (a[0] * b[0]) + (a[1] * b[1]) + (a[2] * b[2])
 }
 
-export function distanceSqV3(a: V3, b: V3): number {
+function distanceSq(a: Vec3, b: Vec3): number {
   const dx = a[0] - b[0]
   const dy = a[1] - b[1]
   const dz = a[2] - b[2]
   return dx * dx + dy * dy + dz * dz
 }
 
-export function distanceV3(a: V3, b: V3): number {
-  return Math.sqrt(distanceSqV3(a, b))
+function distance(a: Vec3, b: Vec3): number {
+  return Math.sqrt(distanceSq(a, b))
 }
 
-
+export const V3 = { 
+  add, 
+  cross, 
+  distance,
+  dot, 
+  length, 
+  lengthSq, 
+  normalize, 
+  scale, 
+  subtract, 
+}
