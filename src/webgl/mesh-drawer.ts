@@ -1,18 +1,21 @@
-import vertexShaderSource from './mesh.vert'
-import fragmentShaderSource from './mesh.frag'
-import { createShaderProgram } from './program'
 import { Obj } from '../types'
-import { degToRad } from '../utils/util'
-import { Vec3 } from '../utils/v3'
 import { lookAt, perspective } from '../utils/camera'
 import { M4 } from '../utils/m4'
+import { degToRad } from '../utils/util'
+import { Vec3 } from '../utils/v3'
+import fragmentShaderSource from './mesh.frag'
+import vertexShaderSource from './mesh.vert'
+import { createShaderProgram } from './program'
 
 export interface MeshDrawer {
-  setObj:  (obj: Obj) => void
-  setView: () => void
-  draw:    () => void
+  setObj:       (obj: Obj) => void
+  setViewPort:  (width: number, height: number) => void
+  updateCamera: (rotation: Vec3, distance: number) => void
+  draw:         () => void
 }
 
+
+const UP = [0, 1, 0] as Vec3
 
 export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefined {
   const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
@@ -32,7 +35,17 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
   const aPosBuffer = gl.createBuffer()
   const indexBuffer = gl.createBuffer()
   
-  return { setObj, setView, draw }
+  gl.useProgram(program!)
+  gl.enable(gl.DEPTH_TEST)
+  gl.enable(gl.CULL_FACE)
+  
+  let aspectRatio = 3 / 2
+  const fov = degToRad(60)
+  const zNear = 0.1
+  const zFar = 50
+  const cameraTarget = [0, 0, 0] as Vec3
+  
+  return { setObj, setViewPort, updateCamera, draw }
   
   function setObj(obj: Obj): void {
     const { vertex, vertexIndex } = obj
@@ -46,21 +59,21 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndex), gl.STATIC_DRAW)
   }
   
-  function setView(): void {
-    gl.viewport(0, 0, 600, 400)
+  function setViewPort(width: number, height: number): void {
+    gl.viewport(0, 0, width, height)
     gl.enable(gl.DEPTH_TEST)
-    gl.enable(gl.CULL_FACE)
+    // gl.enable(gl.CULL_FACE)
+    aspectRatio = width / height
+  }
+  
+  function updateCamera(rotation: Vec3, distance: number): void {
+    const projection = perspective(fov, aspectRatio, zNear, zFar)
+    const yRotatedCameraMatrix = M4.yRotation(degToRad(rotation[1]))
+    const xyRotatedCameraMatrix = M4.xRotate2(yRotatedCameraMatrix, degToRad(rotation[0]))
+    const cameraMatrix = M4.translate(xyRotatedCameraMatrix, 0, 0, distance)
+    const cameraPosition2 = [ cameraMatrix[12], cameraMatrix[13], cameraMatrix[14] ] as Vec3
     
-    const fov = degToRad(60)
-    const aspect = 600 / 400
-    const zNear = 0.1
-    const zFar = 50
-    const projection = perspective(fov, aspect, zNear, zFar)
-    
-    const up = [0, 1, 0] as Vec3
-    const cameraPosition = [0, 0, 20] as Vec3
-    const cameraTarget = [0, 0, 0] as Vec3
-    const camera = lookAt(cameraPosition, cameraTarget, up)
+    const camera = lookAt(cameraPosition2, cameraTarget, UP)
     const view = M4.inverse(camera)
     
     gl.useProgram(program!)

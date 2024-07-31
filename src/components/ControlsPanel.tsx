@@ -8,7 +8,7 @@ import { StateContext } from "../state"
 
 export function ControlsPanel(): ReactElement {  
   
-  const { setObj } = useContext(StateContext)
+  const { setObj, rotation, setRotation, distance, setDistance } = useContext(StateContext)
   
   const onFile = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const file = event?.target?.files?.[0]
@@ -28,10 +28,16 @@ export function ControlsPanel(): ReactElement {
   
   const onObjLoad = useCallback((data: string) => setObj(loadObj(data)), [setObj])
   
+  const updateXRotation = useCallback((angle: number) => { setRotation([angle, rotation[1], rotation[2]])}, [rotation, setRotation])
+  const updateYRotation = useCallback((angle: number) => { setRotation([rotation[0], angle, rotation[2]])}, [rotation, setRotation])
+  
   return (
     <div className="controls-panel" > 
       <Checkbox label="Test" value={true} onChange={() => null} />
-      <Slider label="Test 2" max={50} min={0} onChange={() => null} value={25} width={145} />
+      <Slider label={`X: ${Math.floor(rotation[0])}`} max={89} min={-89} onChange={updateXRotation} value={rotation[0]} width={145} />
+      <Slider label={`Y: ${Math.floor(rotation[1])}`}  max={360} min={0} onChange={updateYRotation} value={rotation[1]} width={145} />
+      <Slider label={`Distance ${Math.floor(distance)}`} max={50} min={0} onChange={setDistance} value={distance} width={145} />
+      
       <FileInput label="Load obj file..." onFile={onFile} />
     </div>
   )

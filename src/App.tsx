@@ -4,14 +4,19 @@ import { ControlsPanel } from "./components/ControlsPanel"
 import { WebGLPreview } from "./webgl/WebGLPreview"
 import { EMPTY_OBJ, StateContext } from "./state"
 import { Obj } from "./types"
+import { Vec3 } from "./utils/v3"
 
 
 export function App(): ReactNode {  
   const [obj, setObj] = useState<Obj>(EMPTY_OBJ)
+  const [rotation, setRotation] = useState<Vec3>([0, 0, 0])
+  const [distance, setDistance] = useState(5)
   
   const state = useMemo(() => ({
-    obj, setObj
-  }),[obj, setObj])
+    obj, setObj,
+    rotation, setRotation,
+    distance, setDistance
+  }),[obj, setObj, rotation, setRotation, distance, setDistance])
   
   
   return (
