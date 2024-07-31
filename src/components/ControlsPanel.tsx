@@ -33,12 +33,11 @@ export function ControlsPanel(): ReactElement {
   
   return (
     <div className="controls-panel" > 
-      <Checkbox label="Test" value={true} onChange={() => null} />
-      <Slider label={`X: ${Math.floor(rotation[0])}`} max={89} min={-89} onChange={updateXRotation} value={rotation[0]} width={145} />
-      <Slider label={`Y: ${Math.floor(rotation[1])}`}  max={360} min={0} onChange={updateYRotation} value={rotation[1]} width={145} />
-      <Slider label={`Distance ${Math.floor(distance)}`} max={50} min={0} onChange={setDistance} value={distance} width={145} />
-      
       <FileInput label="Load obj file..." onFile={onFile} />
+      <Checkbox label="Test" value={true} onChange={() => null} />
+      <Slider label={`X: ${Math.floor(rotation[0])}`} max={360} min={0} onChange={updateXRotation} value={rotation[0]} width={145} />
+      <Slider label={`Y: ${Math.floor(rotation[1])}`}  max={360} min={0} onChange={updateYRotation} value={rotation[1]} width={145} />
+      <Slider label={`Distance ${Math.floor(distance)}`} max={100} min={0} onChange={setDistance} value={distance} width={145} />
     </div>
   )
 }

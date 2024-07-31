@@ -14,7 +14,6 @@ export const M4 = {
   translate,
   xRotation,
   xRotate,
-  xRotate2,
   yRotation,
   yRotate,
   zRotation,
@@ -127,47 +126,6 @@ function xRotate(m: Matrix4, angle: number) {
   const xRotationM4 = xRotation(angle)
   return multiply(xRotationM4, m)
 }
-
-
-function xRotate2(m, angleInRadians) {
-  // this is the optimized version of
-  // return multiply(m, xRotation(angleInRadians), dst);
-  const dst = []
-
-  var m10 = m[4];
-  var m11 = m[5];
-  var m12 = m[6];
-  var m13 = m[7];
-  var m20 = m[8];
-  var m21 = m[9];
-  var m22 = m[10];
-  var m23 = m[11];
-  var c = Math.cos(angleInRadians);
-  var s = Math.sin(angleInRadians);
-
-  dst[4]  = c * m10 + s * m20;
-  dst[5]  = c * m11 + s * m21;
-  dst[6]  = c * m12 + s * m22;
-  dst[7]  = c * m13 + s * m23;
-  dst[8]  = c * m20 - s * m10;
-  dst[9]  = c * m21 - s * m11;
-  dst[10] = c * m22 - s * m12;
-  dst[11] = c * m23 - s * m13;
-
-  if (m !== dst) {
-    dst[ 0] = m[ 0];
-    dst[ 1] = m[ 1];
-    dst[ 2] = m[ 2];
-    dst[ 3] = m[ 3];
-    dst[12] = m[12];
-    dst[13] = m[13];
-    dst[14] = m[14];
-    dst[15] = m[15];
-  }
-
-  return dst;
-}
-
 
 function yRotation(angle: number): Matrix4 {
   const c = Math.cos(angle)

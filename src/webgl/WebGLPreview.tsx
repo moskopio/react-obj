@@ -1,4 +1,4 @@
-import { ReactElement, useContext, useEffect, useRef, useState } from "react"
+import { MouseEvent, ReactElement, useCallback, useContext, useEffect, useRef, useState, WheelEvent } from "react"
 import './WebGLPreview.css'
 import { createMeshDrawer, MeshDrawer } from "./mesh-drawer"
 import { StateContext } from "../state"
@@ -12,7 +12,10 @@ export function WebGLPreview(): ReactElement {
   const [gl, setGL] = useState<WebGLRenderingContext | undefined>(undefined)
   const [meshDrawer, setMeshDrawer] = useState<MeshDrawer | undefined>(undefined)
   
-  const {obj, rotation, distance} = useContext(StateContext)
+  const [isDragged, setIsDragged] = useState(false)
+  const [position, setPosition] = useState([0, 0])
+  
+  const {obj, rotation, distance, setDistance, setRotation } = useContext(StateContext)
   
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -39,7 +42,47 @@ export function WebGLPreview(): ReactElement {
     meshDrawer?.draw()
   }, [gl, meshDrawer, rotation, distance])
   
+  const handleDragStart = useCallback((event: MouseEvent<HTMLCanvasElement>) => {
+    setPosition([Math.round(event.clientX), Math.round(event.clientY)])
+    setIsDragged(true)
+  
+  }, [setIsDragged])
+  const handleDragEnd = useCallback(() => setIsDragged(false), [setIsDragged])
+  const handleDrag = useCallback((event: MouseEvent<HTMLCanvasElement>) => {
+    if (isDragged) {
+      const mouseX = Math.round(event.clientX)
+      const mouseY = Math.round(event.clientY)
+      const xRotation = rotation[0] - (mouseY - position[1]) / 2
+      const yRotation = rotation[1] - (mouseX - position[0]) / 2
+          
+      setPosition([mouseX, mouseY])
+      setRotation([limit(xRotation), limit(yRotation), rotation[2]])
+    }
+  }, [isDragged, position, rotation])
+  
+  const handleWheel = useCallback((event: WheelEvent<HTMLCanvasElement>) => {
+    const newDistance = distance + (event.deltaY > 0 ? 1 : -1)
+    setDistance(newDistance < 0 ? 0: newDistance > 100 ? 100: newDistance)
+  }, [setDistance, distance])
+  
   return (
-    <canvas ref={canvasRef} className="webgl-canvas" width={600} height={400} />
+    <canvas 
+      onMouseDown={handleDragStart}
+      onMouseUp={handleDragEnd}
+      onMouseMove={handleDrag}
+      onWheel={handleWheel}
+      ref={canvasRef} 
+      className="webgl-canvas" 
+      width={PREVIEW_WIDTH} 
+      height={PREVIEW_HEIGHT} 
+    />
   )
+  
+  function limit(rotation: number): number {
+    return rotation < 0 
+      ? 360 - rotation
+      : rotation > 360 
+        ? rotation - 360 
+        : rotation
+  }
 }

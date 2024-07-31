@@ -3,14 +3,17 @@ import { V3, Vec2, Vec3 } from "./v3"
 
 export function loadObj(data: string): Obj {  
   const v: Vec3[] = []
-  const n: Vec3[] = []
+  let n: Vec3[] = []
   const t: Vec2[] = []
   const vi: number[] = []
   const ni: number[] = []
   const ti: number[] = []
 
   parseData(data)
-  if (n.length === 0) {
+  
+  // this is wrong!
+  console.log(v, n)
+  if (n.length !== v.length) {
     calculateNormals()
   }
   
@@ -68,6 +71,7 @@ export function loadObj(data: string): Obj {
   }
   
   function calculateNormals(): void {
+    n = []
     for (let i=0; i < ni.length; i = i + 3) {
       const v0 = v[ni[i]]
       const v1 = v[ni[i + 1]]
