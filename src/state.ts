@@ -1,14 +1,9 @@
 import { createContext } from "react"
-import { Obj } from "./types"
 import { Vec3 } from "./utils/v3"
+import { Obj } from "./utils/obj/types"
 
 export const EMPTY_OBJ: Obj = {
-  vertex:       [],
-  normal:       [],
-  texture:      [],
-  vertexIndex:  [],
-  normalIndex:  [],
-  textureIndex: []
+  groups: []
 }
 
 export const StateContext = createContext({

@@ -1,6 +1,7 @@
-import { Obj } from '../types'
 import { lookAt, perspective } from '../utils/camera'
 import { M4 } from '../utils/m4'
+import { getVertices, getAllVerticesFromFaces, getAllNormalsFromFaces } from '../utils/obj/parts'
+import { Obj } from '../utils/obj/types'
 import { degToQuaternion } from '../utils/quaternion'
 import { degToRad } from '../utils/util'
 import { Vec3 } from '../utils/v3'
@@ -37,11 +38,11 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
   
   const aPosBuffer = gl.createBuffer()
   const aNormalBuffer = gl.createBuffer()
-  const indexBuffer = gl.createBuffer()
+  // const indexBuffer = gl.createBuffer()
   
   gl.useProgram(program!)
   gl.enable(gl.DEPTH_TEST)
-  gl.enable(gl.CULL_FACE)
+  // gl.enable(gl.CULL_FACE)
   
   let aspectRatio = 3 / 2
   const fov = degToRad(60)
@@ -52,24 +53,31 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
   return { setObj, setViewPort, updateCamera, draw }
   
   function setObj(obj: Obj): void {
-    const { vertex, vertexIndex, normal } = obj
+    // const { vertex, index, normal } = obj
+    const vertices = getAllVerticesFromFaces(obj)
+    const normals = getAllNormalsFromFaces(obj)
     
-    triangleCount = vertexIndex.length
+    triangleCount = vertices.length
+    const aPosNum = vertices.flatMap(v => v)
+    const aNormalNum = normals.length !== triangleCount 
+      ? vertices.flatMap(v => v) 
+      : normals.flatMap(n => n)
+    
     
     gl.bindBuffer(gl.ARRAY_BUFFER, aPosBuffer)
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertex), gl.STATIC_DRAW)
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(aPosNum), gl.STATIC_DRAW)
     
     gl.bindBuffer(gl.ARRAY_BUFFER, aNormalBuffer)
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normal), gl.STATIC_DRAW)
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(aNormalNum), gl.STATIC_DRAW)
     
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertexIndex), gl.STATIC_DRAW)
+    // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
+    // gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(index), gl.STATIC_DRAW)
   }
   
   function setViewPort(width: number, height: number): void {
     gl.viewport(0, 0, width, height)
     gl.enable(gl.DEPTH_TEST)
-    gl.enable(gl.CULL_FACE)
+    // gl.enable(gl.CULL_FACE)
     aspectRatio = width / height
   }
   
@@ -101,7 +109,9 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     gl.vertexAttribPointer(aNormal, 3, gl.FLOAT, false, 0, 0)
     gl.enableVertexAttribArray(aNormal)
     
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
-    gl.drawElements(gl.TRIANGLES, triangleCount, gl.UNSIGNED_SHORT, 0)
+    // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
+    // gl.drawElements(gl.TRIANGLES, triangleCount, gl.UNSIGNED_SHORT, 0)
+    gl.drawArrays(gl.TRIANGLES, 0, triangleCount)
+    
   }
 }

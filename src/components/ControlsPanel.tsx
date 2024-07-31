@@ -1,10 +1,10 @@
 import { ChangeEvent, ReactElement, useCallback, useContext } from "react"
+import { StateContext } from "../state"
+import { parseObj } from "../utils/obj/parse"
 import { Checkbox } from "./Checkbox"
 import "./ControlsPanel.css"
-import { Slider } from "./Slider"
 import { FileInput } from "./FileInput"
-import { loadObj } from "../utils/load-obj"
-import { StateContext } from "../state"
+import { Slider } from "./Slider"
 
 export function ControlsPanel(): ReactElement {  
   
@@ -26,7 +26,9 @@ export function ControlsPanel(): ReactElement {
     }
   }, [])
   
-  const onObjLoad = useCallback((data: string) => setObj(loadObj(data)), [setObj])
+  const onObjLoad = useCallback((data: string) => {
+    setObj(parseObj(data))
+  }, [setObj])
   
   const updateXRotation = useCallback((angle: number) => { setRotation([angle, rotation[1], rotation[2]])}, [rotation, setRotation])
   const updateYRotation = useCallback((angle: number) => { setRotation([rotation[0], angle, rotation[2]])}, [rotation, setRotation])
