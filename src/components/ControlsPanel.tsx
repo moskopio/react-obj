@@ -7,7 +7,6 @@ import { FileInput } from "./FileInput"
 import { Slider } from "./Slider"
 
 export function ControlsPanel(): ReactElement {  
-  
   const { setObj, rotation, setRotation, distance, setDistance } = useContext(StateContext)
   
   const onFile = useCallback((event: ChangeEvent<HTMLInputElement>) => {
@@ -30,16 +29,37 @@ export function ControlsPanel(): ReactElement {
     setObj(parseObj(data))
   }, [setObj])
   
-  const updateXRotation = useCallback((angle: number) => { setRotation([angle, rotation[1], rotation[2]])}, [rotation, setRotation])
-  const updateYRotation = useCallback((angle: number) => { setRotation([rotation[0], angle, rotation[2]])}, [rotation, setRotation])
+  const updateXRotation = useCallback((a: number) => setRotation(r => [a, r[1], r[2]]), [setRotation])
+  const updateYRotation = useCallback((a: number) => setRotation(r => [r[0], a, r[2]]), [setRotation])
   
   return (
     <div className="controls-panel" > 
       <FileInput label="Load obj file..." onFile={onFile} />
       <Checkbox label="Test" value={true} onChange={() => null} />
-      <Slider label={`X: ${Math.floor(rotation[0])}`} max={360} min={0} onChange={updateXRotation} value={rotation[0]} width={145} />
-      <Slider label={`Y: ${Math.floor(rotation[1])}`}  max={360} min={0} onChange={updateYRotation} value={rotation[1]} width={145} />
-      <Slider label={`Distance ${Math.floor(distance)}`} max={10} min={0}onChange={setDistance} value={distance} width={145} />
+      <Slider 
+        label={`X: ${Math.floor(rotation[0])}`}
+        min={0} 
+        max={360} 
+        onChange={updateXRotation} 
+        value={rotation[0]}
+        defaultValue={0}
+         />
+      <Slider 
+        label={`Y: ${Math.floor(rotation[1])}`}
+        min={0} 
+        max={360} 
+        onChange={updateYRotation} 
+        value={rotation[1]} 
+        defaultValue={0}
+        />
+      <Slider 
+        label={`Distance ${distance.toFixed(2)}`} 
+          min={0}
+          max={10}
+          onChange={setDistance} 
+          defaultValue={2.5}
+          value={distance} 
+        />
     </div>
   )
 }

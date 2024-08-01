@@ -20,6 +20,8 @@
 }
 
 .slider-label {
+  left: 50%;
+  transform: translate(-50%, 0);
   font-size: 12px;
   text-align: center;
   pointer-events: none;
