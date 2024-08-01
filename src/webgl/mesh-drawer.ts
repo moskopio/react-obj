@@ -1,6 +1,6 @@
 import { lookAt, perspective } from '../utils/camera'
 import { M4 } from '../utils/m4'
-import { getVertices, getAllVerticesFromFaces, getAllNormalsFromFaces } from '../utils/obj/parts'
+import { prepareObj } from '../utils/obj/prepare'
 import { Obj } from '../utils/obj/types'
 import { degToQuaternion } from '../utils/quaternion'
 import { degToRad } from '../utils/util'
@@ -16,7 +16,6 @@ export interface MeshDrawer {
   draw:         () => void
 }
 
-
 const UP = [0, 1, 0] as Vec3
 
 export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefined {
@@ -27,42 +26,40 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     return undefined
   }
   
-  let triangleCount = 0
+  
+  let verticesCount = 0
   
   const uProjection = gl.getUniformLocation(program, 'uProjection')
   const uView = gl.getUniformLocation(program, 'uView')
   const uWorld = gl.getUniformLocation(program, 'uWorld')
+  const uLightDirection = gl.getUniformLocation(program, 'uLightDirection')
   
   const aPos = gl.getAttribLocation(program, 'aPos')
   const aNormal = gl.getAttribLocation(program, 'aNormal')
   
   const aPosBuffer = gl.createBuffer()
   const aNormalBuffer = gl.createBuffer()
-  // const indexBuffer = gl.createBuffer()
+  const indexBuffer = gl.createBuffer()
   
   gl.useProgram(program!)
   gl.enable(gl.DEPTH_TEST)
-  // gl.enable(gl.CULL_FACE)
+  gl.enable(gl.CULL_FACE)
   
   let aspectRatio = 3 / 2
   const fov = degToRad(60)
-  const zNear = 0.1
+  const zNear = -10
   const zFar = 50
   const cameraTarget = [0, 0, 0] as Vec3
   
   return { setObj, setViewPort, updateCamera, draw }
   
   function setObj(obj: Obj): void {
-    // const { vertex, index, normal } = obj
-    const vertices = getAllVerticesFromFaces(obj)
-    const normals = getAllNormalsFromFaces(obj)
     
-    triangleCount = vertices.length
+    const { vertices, indices, normals }  = prepareObj(obj)
+
+    verticesCount = indices.length
     const aPosNum = vertices.flatMap(v => v)
-    const aNormalNum = normals.length !== triangleCount 
-      ? vertices.flatMap(v => v) 
-      : normals.flatMap(n => n)
-    
+    const aNormalNum = normals.flatMap(n => n)
     
     gl.bindBuffer(gl.ARRAY_BUFFER, aPosBuffer)
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(aPosNum), gl.STATIC_DRAW)
@@ -70,14 +67,14 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     gl.bindBuffer(gl.ARRAY_BUFFER, aNormalBuffer)
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(aNormalNum), gl.STATIC_DRAW)
     
-    // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
-    // gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(index), gl.STATIC_DRAW)
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW)
   }
   
   function setViewPort(width: number, height: number): void {
     gl.viewport(0, 0, width, height)
     gl.enable(gl.DEPTH_TEST)
-    // gl.enable(gl.CULL_FACE)
+    gl.enable(gl.CULL_FACE)
     aspectRatio = width / height
   }
   
@@ -92,15 +89,17 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     const camera = lookAt(cameraPosition, cameraTarget, UP)
     const view = M4.inverse(camera)
     
+    const lightPosition = [ cameraMatrix[12], cameraMatrix[13], cameraMatrix[14] ] as Vec3
+    
     gl.useProgram(program!)
     gl.uniformMatrix4fv(uProjection, false, projection)
     gl.uniformMatrix4fv(uView, false, view)
     gl.uniformMatrix4fv(uWorld, false, M4.identity())
+    gl.uniform3fv(uLightDirection, lightPosition)
   }
   
   function draw(): void { 
     gl.useProgram(program!)
-
 		gl.bindBuffer(gl.ARRAY_BUFFER, aPosBuffer)
     gl.vertexAttribPointer(aPos, 3, gl.FLOAT, false, 0, 0)
     gl.enableVertexAttribArray(aPos)
@@ -109,9 +108,10 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     gl.vertexAttribPointer(aNormal, 3, gl.FLOAT, false, 0, 0)
     gl.enableVertexAttribArray(aNormal)
     
-    // gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
-    // gl.drawElements(gl.TRIANGLES, triangleCount, gl.UNSIGNED_SHORT, 0)
-    gl.drawArrays(gl.TRIANGLES, 0, triangleCount)
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer)
+    gl.drawElements(gl.TRIANGLES, verticesCount, gl.UNSIGNED_SHORT, 0)
+    // gl.drawArrays(gl.TRIANGLES, 0, triangleCount)
     
   }
 }
+

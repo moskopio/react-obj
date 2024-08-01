@@ -8,6 +8,6 @@ uniform mat4 uWorld;
 varying vec3 vNormal;
 
 void main() {
-  vNormal = aNormal;
+  vNormal = mat3(uWorld) * aNormal;
   gl_Position = uProjection * uView * uWorld * vec4(aPos, 1);
 }

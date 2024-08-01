@@ -27,10 +27,6 @@ export const M4 = {
   getSubMatrix,
   determinate,
   inverse,
-  transformVector,
-  transformPoint,
-  transformDirection,
-  transformNormal
 }
 
 function getColumn(m: Matrix4, c: number): Vec4 {
@@ -248,7 +244,7 @@ function decompose(m: Matrix4): Decomposition {
   const sz = V3.length(m.slice(8, 11) as Vec3)
 
   // if determinate is negative, we need to invert one scale
-  const det = determinateM4(m)
+  const det = determinate(m)
   if (det < 0) {
     sx = -sx
   }
@@ -293,6 +289,51 @@ function determinate(m: Matrix4): number {
   return part0 - part1 + part2 - part3;
 }
 
+// TODO: refactor
+function quatFromRotationMatrix(m: Matrix4): Vec4 {
+  // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
+  
+  const dst: Vec4 = [0, 0, 0, 0]
+
+  // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
+  const rm = [
+    m[0], m[4], m[8],
+    m[1], m[5], m[9],
+    m[2], m[6], m[10]
+  ]
+  
+  const trace = rm[0] + rm[5] + rm[10]
+
+  if (trace > 0) {
+    const s = 0.5 / Math.sqrt(trace + 1)
+    dst[3] = 0.25 / s
+    dst[0] = (rm[6] - rm[9]) * s
+    dst[1] = (rm[8] - rm[2]) * s
+    dst[2] = (rm[1] - rm[4]) * s
+  } else if (rm[0] > rm[5] && rm[0] > rm[10]) {
+    const s = 2 * Math.sqrt(1 + rm[0] - rm[5] - rm[10])
+    dst[3] = (rm[6] - rm[9]) / s
+    dst[0] = 0.25 * s
+    dst[1] = (rm[4] + rm[1]) / s
+    dst[2] = (rm[8] + rm[2]) / s
+  } else if (rm[5] > rm[10]) {
+    const s = 2 * Math.sqrt(1 + rm[5] - rm[0] - rm[10])
+    dst[3] = (rm[8] - rm[2]) / s
+    dst[0] = (rm[4] + rm[1]) / s
+    dst[1] = 0.25 * s
+    dst[2] = (rm[9] + rm[6]) / s
+  } else {
+    const s = 2 * Math.sqrt(1 + rm[10] - rm[0] - rm[5])
+    dst[3] = (rm[1] - rm[4]) / s
+    dst[0] = (rm[8] + rm[2]) / s
+    dst[1] = (rm[9] + rm[6]) / s
+    dst[2] = 0.25 * s;
+  }
+  
+  return dst
+}
+
+
 function inverse(m: Matrix4): Matrix4 {
   const dst = []
   const det = determinate(m)
@@ -323,61 +364,4 @@ function inverse(m: Matrix4): Matrix4 {
   } else {
     return empty()
   }
-}
-
-function transformVector(m: Matrix4, v: Vec4): Vec4 {
-  const dst = []
-  for (let i = 0; i < 4; ++i) {
-    dst[i] = 0.0
-    for (let j = 0; j < 4; ++j) {
-      dst[i] += v[j] * m[j * 4 + i]
-    }
-  }
-  return dst as Vec4
-}
-
-// TODO: refactor
-function transformPoint(m: Matrix4, v: Vec3): Vec4 {
-  const dst = []
-  const v0 = v[0]
-  const v1 = v[1]
-  const v2 = v[2]
-  const d = v0 * m[0 * 4 + 3] + v1 * m[1 * 4 + 3] + v2 * m[2 * 4 + 3] + m[3 * 4 + 3]
-
-  dst[0] = (v0 * m[0 * 4 + 0] + v1 * m[1 * 4 + 0] + v2 * m[2 * 4 + 0] + m[3 * 4 + 0]) / d
-  dst[1] = (v0 * m[0 * 4 + 1] + v1 * m[1 * 4 + 1] + v2 * m[2 * 4 + 1] + m[3 * 4 + 1]) / d
-  dst[2] = (v0 * m[0 * 4 + 2] + v1 * m[1 * 4 + 2] + v2 * m[2 * 4 + 2] + m[3 * 4 + 2]) / d
-
-  return dst as Vec4
-}
-
-
-// TODO: refactor
-function transformDirection(m: Matrix4, v: Vec3): Vec4 {
-  const dst = []
-
-  const v0 = v[0]
-  const v1 = v[1]
-  const v2 = v[2]
-
-  dst[0] = v0 * m[0 * 4 + 0] + v1 * m[1 * 4 + 0] + v2 * m[2 * 4 + 0]
-  dst[1] = v0 * m[0 * 4 + 1] + v1 * m[1 * 4 + 1] + v2 * m[2 * 4 + 1]
-  dst[2] = v0 * m[0 * 4 + 2] + v1 * m[1 * 4 + 2] + v2 * m[2 * 4 + 2]
-
-  return dst as Vec4
-}
-
-// TODO: refactor
-function transformNormal(m: Matrix4, v: Vec3): Vec3 {
-  const dst = [] 
-  const mi = inverse(m)
-  const v0 = v[0]
-  const v1 = v[1]
-  const v2 = v[2]
-
-  dst[0] = v0 * mi[0 * 4 + 0] + v1 * mi[0 * 4 + 1] + v2 * mi[0 * 4 + 2]
-  dst[1] = v0 * mi[1 * 4 + 0] + v1 * mi[1 * 4 + 1] + v2 * mi[1 * 4 + 2]
-  dst[2] = v0 * mi[2 * 4 + 0] + v1 * mi[2 * 4 + 1] + v2 * mi[2 * 4 + 2]
-
-  return dst as Vec3
 }

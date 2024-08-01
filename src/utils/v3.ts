@@ -4,7 +4,7 @@ export type Vec3 = [number, number, number]
 function add(a: Vec3, b: Vec3): Vec3 {
   return [
     a[0] + b[0],
-    a[1] + b[2],
+    a[1] + b[1],
     a[2] + b[2],
   ]
 }
@@ -12,7 +12,7 @@ function add(a: Vec3, b: Vec3): Vec3 {
 function subtract(a: Vec3, b: Vec3): Vec3 {
   return [
     a[0] - b[0],
-    a[1] - b[2],
+    a[1] - b[1],
     a[2] - b[2],
   ]
 }
@@ -28,7 +28,7 @@ function scale(v: Vec3, s: number): Vec3 {
 function normalize(v: Vec3): Vec3 {
   const length = Math.hypot(v[0], v[1], v[2])
   
-  return length > 0.00001 
+  return length > 0.00001
     ? scale(v, 1 / length)
     : [0, 0, 0]
 }

@@ -16,16 +16,17 @@ export function parseObj(data: string): Obj {
     const parts = line.split((/\s+/))
     
     switch (parts[0]) {
-      case 'g':
-        const name = parts.slice(1).join(' ')
-        if (noGroups) {
-          g.name = name
-          noGroups = false
-        } else {
-          g = createGroup(name)
-          groups.push(g)
+      case 'g': {
+          const name = parts.slice(1).join(' ')
+          if (noGroups) {
+            g.name = name
+            noGroups = false
+          } else {
+            g = createGroup(name)
+            groups.push(g)
+          }
+          break
         }
-        break
       case 'v': 
         g.vertices.push([parts[1], parts[2], parts[3]].map(parseFloat) as Vec3)
         break
@@ -70,5 +71,3 @@ function parseFace(g: Group, parts: string[]): void {
   
   g.faces.push( { vIndices, nIndices, uvIndices} )
 }
-
-

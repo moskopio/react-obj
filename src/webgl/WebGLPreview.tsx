@@ -20,7 +20,7 @@ export function WebGLPreview(): ReactElement {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
-      const gl = canvas.getContext("webgl", {antialias: false, depth: false})
+      const gl = canvas.getContext("webgl", {antialias: false, depth: true })
       if (gl) {
         setGL(gl)
         const meshDrawer = createMeshDrawer(gl)
@@ -61,7 +61,7 @@ export function WebGLPreview(): ReactElement {
   }, [isDragged, position, rotation])
   
   const handleWheel = useCallback((event: WheelEvent<HTMLCanvasElement>) => {
-    const newDistance = distance + (event.deltaY > 0 ? 1 : -1)
+    const newDistance = distance + (event.deltaY > 0 ? 0.5 : -0.5)
     setDistance(newDistance < 0 ? 0: newDistance > 100 ? 100: newDistance)
   }, [setDistance, distance])
   
@@ -71,6 +71,7 @@ export function WebGLPreview(): ReactElement {
       onMouseUp={handleDragEnd}
       onMouseMove={handleDrag}
       onWheel={handleWheel}
+      onMouseLeave={handleDragEnd} 
       ref={canvasRef} 
       className="webgl-canvas" 
       width={PREVIEW_WIDTH} 
