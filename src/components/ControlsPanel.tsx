@@ -1,5 +1,5 @@
 import { ChangeEvent, ReactElement, useCallback, useContext } from "react"
-import { StateContext } from "../state"
+import { AppContext } from "../state"
 import { parseObj } from "../utils/obj/parse"
 import { Checkbox } from "./Checkbox"
 import "./ControlsPanel.css"
@@ -7,7 +7,7 @@ import { FileInput } from "./FileInput"
 import { Slider } from "./Slider"
 
 export function ControlsPanel(): ReactElement {  
-  const { setObj, rotation, setRotation, distance, setDistance } = useContext(StateContext)
+  const { setObj, rotation, setRotation, distance, setDistance } = useContext(AppContext)
   
   const onFile = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const file = event?.target?.files?.[0]

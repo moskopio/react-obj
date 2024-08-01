@@ -2,19 +2,19 @@ import { ReactElement, ReactNode } from "react"
 import './App.css'
 import { ControlsPanel } from "./components/ControlsPanel"
 import { WebGLPreview } from "./preview/WebGLPreview"
-import { StateContext, useAppState } from "./state"
+import { AppContext, useAppState } from "./state"
 
 
 export function App(): ReactNode {  
   const state = useAppState()
 
   return (
-    <StateContext.Provider value={state}>
+    <AppContext.Provider value={state}>
       <div className="application">
         <Preview />
         <Panels />
       </div>
-    </StateContext.Provider>
+    </AppContext.Provider>
   )
 }
 

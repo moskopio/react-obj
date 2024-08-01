@@ -1,14 +1,12 @@
-import { createContext, Dispatch, useMemo, useState } from "react"
-import { Vec3 } from "./utils/v3"
+import { createContext, Dispatch, SetStateAction, useMemo, useState } from "react"
 import { Obj } from "./utils/obj/types"
+import { Vec3 } from "./utils/v3"
 
 export const EMPTY_OBJ: Obj = {
   groups: []
 }
 
-type SetStateAction<S> = S | ((prevState: S) => S)
-
-interface StateContextType {
+interface AppState {
   obj:         Obj
   setObj:      Dispatch<SetStateAction<Obj>>
   rotation:    Vec3
@@ -17,7 +15,7 @@ interface StateContextType {
   setDistance: Dispatch<SetStateAction<number>>
 }
 
-export const StateContext = createContext<StateContextType>({
+export const AppContext = createContext<AppState>({
   obj:         EMPTY_OBJ,
   setObj:      () => {},
   rotation:    [0,0,0] as Vec3,
@@ -26,7 +24,7 @@ export const StateContext = createContext<StateContextType>({
   setDistance: () => {}
 })
 
-export function useAppState(): StateContextType {
+export function useAppState(): AppState {
   const [obj, setObj] = useState<Obj>(EMPTY_OBJ)
   const [rotation, setRotation] = useState<Vec3>([0, 0, 0])
   const [distance, setDistance] = useState(2)
