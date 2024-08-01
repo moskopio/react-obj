@@ -37,7 +37,7 @@ export function ControlsPanel(): ReactElement {
       <FileInput label="Load obj file..." onFile={onFile} />
       <Checkbox label="Test" value={true} onChange={() => null} />
       <Slider 
-        label={`X: ${Math.floor(rotation[0])}`}
+        label={`X: ${Math.floor(rotation[0])}°`}
         min={0} 
         max={360} 
         onChange={updateXRotation} 
@@ -45,7 +45,7 @@ export function ControlsPanel(): ReactElement {
         defaultValue={0}
          />
       <Slider 
-        label={`Y: ${Math.floor(rotation[1])}`}
+        label={`Y: ${Math.floor(rotation[1])}°`}
         min={0} 
         max={360} 
         onChange={updateYRotation} 

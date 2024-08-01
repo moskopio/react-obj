@@ -43,7 +43,7 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
   
   gl.useProgram(program!)
   gl.enable(gl.DEPTH_TEST)
-  gl.enable(gl.CULL_FACE)
+  //gl.enable(gl.CULL_FACE)
   
   let aspectRatio = 3 / 2
   const fov = degToRad(60)

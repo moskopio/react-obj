@@ -71,9 +71,11 @@ function useControls(props: ControlProps): void {
     function onMouseDown(event: MouseEvent): void {
       event.preventDefault()
       event.stopImmediatePropagation()
-      updateValue(event)
-      document?.addEventListener('mouseup', onMouseUp)
-      document?.addEventListener('mousemove', onMouseMove)
+      if (event.type !== 'contextmenu') {
+        updateValue(event)
+        document?.addEventListener('mouseup', onMouseUp)
+        document?.addEventListener('mousemove', onMouseMove)
+      }
     }
     
     function onMouseUp(event: MouseEvent): void {
