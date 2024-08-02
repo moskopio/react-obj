@@ -12,28 +12,32 @@ export function useMeshDrawer(props: Props): void {
   const { gl, width, height } = props
   
   const [meshDrawer, setMeshDrawer] = useState<MeshDrawer | undefined>(undefined)
-  const {obj, rotation, distance } = useContext(AppContext)
+  const {obj, rotation, distance, settings } = useContext(AppContext)
     
   useEffect(() => {
     if (gl) {
       const meshDrawer = createMeshDrawer(gl)
-      meshDrawer?.setViewPort(width, height)
       setMeshDrawer(meshDrawer)
+      meshDrawer?.draw()
     }
   }, [gl])
   
   useEffect(() => { 
-    gl?.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+    
     meshDrawer?.setObj(obj)
-    meshDrawer?.draw()
+    // meshDrawer?.draw()
   }, [gl, meshDrawer, obj])
   
   
   useEffect(() => { 
-    gl?.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     meshDrawer?.updateCamera(rotation, distance)
-    meshDrawer?.draw()
   }, [gl, meshDrawer, rotation, distance])
+  
+  useEffect(() => { 
+    meshDrawer?.updateSettings(settings)
+    // meshDrawer?.draw()
+  }, [gl, meshDrawer, settings])
+  
 }
 
 

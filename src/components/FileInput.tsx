@@ -17,7 +17,7 @@ export function FileInput(props: Props): ReactElement {
   return (
     <div className="file-input" onClick={onClick}>
       <div className="file-input-icon">
-        <input ref={inputRef} type="file" onChange={onFile} />
+        <input ref={inputRef} type="file" onChange={onFile} accept=".obj" />
       </div>
       <div className="file-input-label">{label}</div>
     </div>

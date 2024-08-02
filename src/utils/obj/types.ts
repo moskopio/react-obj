@@ -1,6 +1,6 @@
 import { Vec2, Vec3 } from "../v3"
 
-export interface Obj {
+export interface RawObj {
   groups: Group[]
 }
 

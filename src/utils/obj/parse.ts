@@ -1,73 +1,63 @@
-import { Vec2, Vec3 } from "../v3"
-import { Group, Obj } from "./types"
+import { V3, Vec3 } from "../v3"
+import { getVerticesIndices } from "./indices"
+import { getNormals } from "./normals"
+import { RawObj } from "./types"
 
-
-export function parseObj(data: string): Obj {
-  const groups: Group[] = [createGroup('obj')]
-  let noGroups = true
-
-  const lines = data.split('\n').filter(onlyMeaningfulLines)
-  lines.forEach(parseLine)
-  
-  return { groups }
-  
-  function parseLine(line: string): void {
-    let g = groups[groups.length -1]
-    const parts = line.split((/\s+/))
-    
-    switch (parts[0]) {
-      case 'g': {
-          const name = parts.slice(1).join(' ')
-          if (noGroups) {
-            g.name = name
-            noGroups = false
-          } else {
-            g = createGroup(name)
-            groups.push(g)
-          }
-          break
-        }
-      case 'v': 
-        g.vertices.push([parts[1], parts[2], parts[3]].map(parseFloat) as Vec3)
-        break
-      case 'vn': 
-        g.normals.push([parts[1], parts[2], parts[3]].map(parseFloat) as Vec3)
-        break
-      case 'vt':
-        g.uvs.push([parts[1], parts[2]].map(parseFloat) as Vec2)
-        break
-      case 'f':
-        parseFace(g, parts)
-        break
-    }
-  }
+export interface ParsedObj {
+  vertices:       Vec3[]
+  indices:        number[]
+  definedNormals: Vec3[]
+  smoothNormals:  Vec3[]
 }
 
-function onlyMeaningfulLines(line: string): boolean {
-  return line[0] === 'v' || line[0] === 'f' || line[0] === 'g'
-} 
+export function parseObj(obj: RawObj): ParsedObj {
+  const vertices: Vec3[] = prepareVertices(obj)
+  const indices: number[] = getVerticesIndices(obj)
+  const { definedNormals, smoothNormals } = getNormals(obj)
+  
+  return { vertices, indices, definedNormals, smoothNormals }
+}
 
-function createGroup(name: string): Group {
-  const faces:    Face[] = []
+function prepareVertices(obj: RawObj): Vec3[] {
+  const vertices: Vec3[] = getAllVertices(obj)
+  return vertices.length > 0 ? scaleVertices(vertices): vertices
+}
+
+function scaleVertices(vertices: Vec3[]): Vec3[] {
+  const { min, max } = getExtents(vertices)
+  const range = V3.subtract(max, min)
+  const offset = V3.scale(V3.add(min, V3.scale(range, 0.5)), -1)
+  const scaling = Math.max(...range)
+  const scale = 2 / scaling
+  
+  return vertices.map(v => V3.scale(V3.add(v, offset), scale))
+}
+
+function getAllVertices(obj: RawObj): Vec3[] {
   const vertices: Vec3[] = []
-  const normals:  Vec3[] = []
-  const uvs:      Vec2[] = []
-  
-  return { name, faces, vertices, normals, uvs }
+  const { groups } = obj
+  groups.forEach(g => g.vertices.forEach(v => vertices.push(v)))
+  return vertices
 }
 
-function parseFace(g: Group, parts: string[]): void {
-  const vIndices:  number[] = []
-  const nIndices:  number[] = []
-  const uvIndices: number[] = []
+interface Size {
+  min: Vec3
+  max: Vec3
+}
+
+function getExtents(vertices: Vec3[]): Size {
+  const min: Vec3 = [0, 0, 0]
+  const max: Vec3 = [0, 0, 0]
   
-  const face = parts.filter(p => p !== 'f')
-  face.forEach(p => {
-    const indices = p.split('/')
-    vIndices.push(parseInt(indices[0]) - 1)
-    indices[1] && uvIndices.push(parseInt(indices[1]) - 1)
-    indices[2] && nIndices.push(parseInt(indices[2]) - 1)
+  vertices.forEach(v => {
+    min[0] = Math.min(min[0], v[0])
+    min[1] = Math.min(min[1], v[1])
+    min[2] = Math.min(min[2], v[2])
+
+    max[0] = Math.max(max[0], v[0])
+    max[1] = Math.max(max[1], v[1])
+    max[2] = Math.max(max[2], v[2])
   })
   
-  g.faces.push( { vIndices, nIndices, uvIndices} )
+  return { min, max }
 }

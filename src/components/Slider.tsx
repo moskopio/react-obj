@@ -19,8 +19,8 @@ export function Slider(props: Props): ReactElement {
   
   return (
     <div ref={sliderRef} className="slider-track">
-      <div className="slider-label">{label}</div>
       <div className="slider-handle" style={{ width: `${getPercentage(value)}%` }} />
+      <div className="slider-label">{label}</div>
   </div>
   )
 }

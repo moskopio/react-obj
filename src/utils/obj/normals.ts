@@ -1,19 +1,27 @@
 import { V3, Vec3 } from "../v3"
 import { getNormalIndices, getVerticesIndices } from "./indices"
-import { Obj } from "./types"
+import { RawObj } from "./types"
 
 
-export function getNormals(obj: Obj): Vec3[] {
-  const normalIndices = getNormalIndices(obj)
-  
-  return getGeneratedNormals(obj)
-  
-  return normalIndices.length > 0 
-    ? getIndexedNormals(obj, normalIndices)
-    : getGeneratedNormals(obj)
+interface Normals {
+  definedNormals: Vec3[]
+  smoothNormals:  Vec3[]
 }
 
-function getIndexedNormals(obj: Obj, normalIndices: number[]): Vec3[] {
+export function getNormals(obj: RawObj): Normals {
+  const normalIndices = getNormalIndices(obj)
+  const verticesIndices = getVerticesIndices(obj)
+  const vertices = getVertices(obj)
+
+  const definedNormals = normalIndices.length > 0 
+    ? getIndexedNormals(obj, normalIndices)
+    : []
+  const smoothNormals = generateSmoothNormals(vertices, verticesIndices)
+  
+  return { definedNormals, smoothNormals } 
+}
+
+function getIndexedNormals(obj: RawObj, normalIndices: number[]): Vec3[] {
   const allNormals: Vec3[] = []
   const indexedNormals: Vec3[] = []
   const { groups } = obj
@@ -24,23 +32,14 @@ function getIndexedNormals(obj: Obj, normalIndices: number[]): Vec3[] {
   return indexedNormals
 }
 
-function getGeneratedNormals(obj: Obj): Vec3[] {
-  const vertices: Vec3[] = []
-  const verticeIndices: number[] = getVerticesIndices(obj)
 
-  const { groups } = obj
-  groups.forEach(g => g.vertices.forEach(v => vertices.push(v)))
-  
-  return generateSmoothNormals(vertices, verticeIndices)
-}
-
-export function generateFlatNormals(vertices: Vec3[], indices: number[]): Vec3[] {
+export function generateFlatNormals(vertices: Vec3[]): Vec3[] {
   const normals: Vec3[] = []
   
-  for (let i = 0; i < indices.length; i = i + 3) {
-    const i0 = indices[i]
-    const i1 = indices[(i + 1) >= indices.length ? i : i + 1]
-    const i2 = indices[(i + 2) >= indices.length ? i : i + 2]
+  for (let i = 0; i < vertices.length; i = i + 3) {
+    const i0 = i
+    const i1 = (i + 1) >= vertices.length ? i : i + 1
+    const i2 = (i + 2) >= vertices.length ? i : i + 2
     const v0 = vertices[i0] || V3.normalize([0, 0, 0])
     const v1 = vertices[i1] || V3.normalize([0, 0, 0])
     const v2 = vertices[i2] || V3.normalize([0, 0, 0])
@@ -57,7 +56,7 @@ export function generateFlatNormals(vertices: Vec3[], indices: number[]): Vec3[]
   return normals.map(V3.normalize)
 }
 
-export function generateSmoothNormals(vertices: Vec3[], indices: number[]): Vec3[] {
+function generateSmoothNormals(vertices: Vec3[], indices: number[]): Vec3[] {
   const normals: Vec3[] = []
   
   for (let i = 0; i < indices.length; i = i + 3) {
@@ -81,4 +80,13 @@ export function generateSmoothNormals(vertices: Vec3[], indices: number[]): Vec3
   }
   
   return normals.map(V3.normalize)
+}
+
+function getVertices(obj: RawObj): Vec3[] {
+  const vertices: Vec3[] = []
+  
+  const { groups } = obj
+  groups.forEach(g => g.vertices.forEach(v => vertices.push(v)))
+  
+  return vertices
 }

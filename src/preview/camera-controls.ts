@@ -14,11 +14,11 @@ export function useCameraControls(props: ControlProps): void {
   const { setDistance, setRotation } = useContext(AppContext)
   
   const limit = useCallback((rotation: number): number => {
-    return rotation > 0
+    return rotation > -360
       ? rotation < 360
         ? rotation
-        : rotation - 360
-      : 360 - rotation
+        : rotation - 720
+      : 720 - rotation
   }, [])
     
   useEffect(() => {

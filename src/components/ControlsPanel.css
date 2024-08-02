@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 5px;
   padding: 5px;
-  width: 150px;
+  width: 250px;
   align-self: baseline;
   border: var(--elements-border) var(--highlight-color) solid;
   outline: var(--elements-border) var(--shadow-color) solid;

@@ -1,6 +1,6 @@
-import { Obj } from "./types"
+import { RawObj } from "./types"
 
-export function getVerticesIndices(obj: Obj): number[] {
+export function getVerticesIndices(obj: RawObj): number[] {
   const verticesIndices: number[] = []
   const { groups } = obj
   groups.forEach(g => g.faces.forEach(f => {
@@ -15,7 +15,7 @@ export function getVerticesIndices(obj: Obj): number[] {
   return verticesIndices
 }
 
-export function getNormalIndices(obj: Obj): number[] {
+export function getNormalIndices(obj: RawObj): number[] {
   const nIndices: number[] = []
   const { groups } = obj
   groups.forEach(g => g.faces.forEach(f => {
