@@ -1,19 +1,14 @@
-import { degToRad } from '../math/angles'
-import { Vec3 } from '../math/v3'
-import { flattenParsedObj } from '../obj/flatten'
-import { parseObj } from '../obj/parse'
-import { RawObj } from '../obj/read'
-import { setupAttributes, updateAttributes } from '../webgl/attributes'
-import { getLookAtMatrices } from '../webgl/camera'
-import { createShaderProgram } from '../webgl/program'
-import fragmentShaderSource from './mesh.frag'
-import vertexShaderSource from './mesh.vert'
-
-export interface MeshDrawer {
-  setObj:         (obj: RawObj) => void
-  updateCamera:   (rotation: Vec3, position: Vec3) => void
-  draw:           (timme: number) => void
-}
+import { degToRad } from '../../math/angles'
+import { Vec3 } from '../../math/v3'
+import { flattenParsedObj } from '../../obj/flatten'
+import { parseObj } from '../../obj/parse'
+import { RawObj } from '../../obj/read'
+import { Program } from '../../types'
+import { setupAttributes, updateAttributes } from '../attributes'
+import { getLookAtMatrices } from '../camera'
+import { createShaderProgram } from '../program'
+import fragmentShaderSource from './outline.frag'
+import vertexShaderSource from './outline.vert'
 
 enum TYPE { 
   M4 = 1,
@@ -23,7 +18,7 @@ enum TYPE {
   F = 5,
 }
 
-export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefined {
+export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefined {
   const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
   if (!program) {
     console.error('Failed to create a WebGL Program')
@@ -42,12 +37,11 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
   
   // uniforms
   const uniforms = {
-    projection:     { p: gl.getUniformLocation(program, 'uProjection'),    t: TYPE.M4 },
-    view:           { p: gl.getUniformLocation(program, 'uView'),          t: TYPE.M4 },
-    world:          { p: gl.getUniformLocation(program, 'uWorld'),         t: TYPE.M4 },
-    lightDirection: { p: gl.getUniformLocation(program, 'uLightDirection'),t: TYPE.V3 },
-    time:           { p: gl.getUniformLocation(program, 'uTime'),          t: TYPE.F },
-    outline:        { p: gl.getUniformLocation(program, 'uOutline'),       t: TYPE.Bool },
+    projection: { p: gl.getUniformLocation(program, 'uProjection'), t: TYPE.M4 },
+    view:       { p: gl.getUniformLocation(program, 'uView'),       t: TYPE.M4 },
+    world:      { p: gl.getUniformLocation(program, 'uWorld'),      t: TYPE.M4 },
+    time:       { p: gl.getUniformLocation(program, 'uTime'),       t: TYPE.F },
+    distance:   { p: gl.getUniformLocation(program, 'uDistance'),   t: TYPE.F },
   }
   
   // attributes
@@ -57,13 +51,10 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
   }
 
   const geometry = {
-    vertices:      [] as Vec3[],
-    definedNormals:[] as Vec3[],
-    smoothNormals: [] as Vec3[],
-    flatNormals:   [] as Vec3[],
+    vertices: [] as Vec3[],
+    normals:  [] as Vec3[],
   }
   
-
   setViewPort(600, 400)
   
   return { setObj, updateCamera, draw }
@@ -73,9 +64,7 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     const flatObj = flattenParsedObj(readyObj)
 
     geometry.vertices = flatObj.vertices
-    geometry.definedNormals = flatObj.definedNormals
-    geometry.flatNormals = flatObj.flatNormals
-    geometry.smoothNormals = flatObj.smoothNormals
+    geometry.normals = flatObj.smoothNormals
     
     updateGeometry()
   }
@@ -84,7 +73,7 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     
     const values = {
       position: geometry.vertices.flatMap(v => v),
-      normal:   geometry.smoothNormals.flatMap(n => n)
+      normal:   geometry.normals.flatMap(n => n)
     }
     updateAttributes({ gl, attributes, values })
   }
@@ -107,25 +96,15 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     gl.uniformMatrix4fv(uniforms.projection.p, false, projection)
     gl.uniformMatrix4fv(uniforms.view.p, false, view)
     gl.uniformMatrix4fv(uniforms.world.p, false, world)
-    gl.uniform3fv(uniforms.lightDirection.p, [0, 0, 5])
+    gl.uniform1f(uniforms.distance.p, camera.position[2])
   }
   
   function draw(time: number): void {
     gl.useProgram(program!)
-    gl?.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     setupAttributes({ gl, attributes })
     
     gl.uniform1f(uniforms.time.p, time)
-    
-
-    gl.uniform1i(uniforms.outline.p, 1)
     gl.drawArrays(gl.TRIANGLES, 0, geometry.vertices.length)
-    
     gl?.clear(gl.DEPTH_BUFFER_BIT)
-    gl.uniform1i(uniforms.outline.p, 0)
-    gl.drawArrays(gl.TRIANGLES, 0, geometry.vertices.length)
-    
-
-    requestAnimationFrame(draw)
   }
 }
