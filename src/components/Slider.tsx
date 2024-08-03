@@ -10,6 +10,8 @@ interface Props {
   defaultValue?: number
 }
 
+
+// TODO: get procentage sometimes goes wrong! should be constrained to min 0 and max 100!
 export function Slider(props: Props): ReactElement {
   const { label, min, max, onChange, value, defaultValue = 0 } = props
   const sliderRef = useRef<HTMLDivElement | null>(null)
@@ -46,6 +48,7 @@ function useControls(props: ControlProps): void {
       const constrainedX = constrain(mouseX, boundingLeft, boundingRight)
       
       const percentage = (constrainedX - boundingLeft) / (boundingRight -boundingLeft)
+      
       onChange(min + percentage * (max - min))
     }
   }, [onChange, min, max, sliderRef])

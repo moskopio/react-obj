@@ -1,4 +1,4 @@
-import { Vec3 } from "../v3"
+import { Vec3 } from "../math/v3"
 import { generateFlatNormals } from "./normals"
 import { ParsedObj } from "./parse"
 

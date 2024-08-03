@@ -1,4 +1,4 @@
-import { Vec2 } from "./utils/v3"
+import { Vec2 } from "./math/v3"
 
 export type FileContent = string | ArrayBuffer | null | undefined
 
@@ -8,3 +8,6 @@ export interface Settings {
   viewPort:               Vec2
 }
 
+export interface Dict<T> {
+  [key: string]: T | undefined;
+}

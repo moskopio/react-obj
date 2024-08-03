@@ -2,7 +2,7 @@ import { ReactElement, useRef } from "react"
 import './WebGLPreview.css'
 import { useCameraControls } from "./camera-controls"
 import { useMeshDrawer } from "./use-mesh-drawer"
-import { useWebGLContext } from "../webgl/webgl-context"
+import { useWebGLContext } from "../webgl/use-context"
 
 const PREVIEW_WIDTH = 600
 const PREVIEW_HEIGHT = 400

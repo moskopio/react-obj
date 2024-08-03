@@ -9,10 +9,10 @@ interface Props {
 }
 
 export function useMeshDrawer(props: Props): void {
-  const { gl, width, height } = props
+  const { gl } = props
   
   const [meshDrawer, setMeshDrawer] = useState<MeshDrawer | undefined>(undefined)
-  const {obj, rotation, distance, settings } = useContext(AppContext)
+  const {obj, rotation, position, settings } = useContext(AppContext)
     
   useEffect(() => {
     if (gl) {
@@ -30,8 +30,8 @@ export function useMeshDrawer(props: Props): void {
   
   
   useEffect(() => { 
-    meshDrawer?.updateCamera(rotation, distance)
-  }, [gl, meshDrawer, rotation, distance])
+    meshDrawer?.updateCamera(rotation, position)
+  }, [gl, meshDrawer, rotation, position])
   
   useEffect(() => { 
     meshDrawer?.updateSettings(settings)

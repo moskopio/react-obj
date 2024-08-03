@@ -1,44 +1,29 @@
-import { lookAt, perspective } from '../utils/camera'
-import { M4 } from '../utils/m4'
-import { flattenParsedObj } from '../utils/obj/flatten'
-import { parseObj } from '../utils/obj/parse'
-import { RawObj } from '../utils/obj/types'
-import { degToQuaternion, quaternionToRotationMatrix } from '../utils/quaternion'
-import { degToRad } from '../utils/util'
-import { Vec3 } from '../utils/v3'
+import { flattenParsedObj } from '../obj/flatten'
+import { parseObj } from '../obj/parse'
+import { RawObj } from '../obj/read'
+import { degToRad } from '../math/angles'
+import { Vec2, Vec3 } from '../math/v3'
 import { setupAttributes, updateAttributes } from '../webgl/attributes'
+import { getLookAtMatrices } from '../webgl/camera'
 import { createShaderProgram } from '../webgl/program'
 import fragmentShaderSource from './mesh.frag'
 import vertexShaderSource from './mesh.vert'
-import { Dict } from './utils'
+import { Dict } from '../types'
 
 export interface MeshDrawer {
   setObj:         (obj: RawObj) => void
-  updateCamera:   (rotation: Vec3, distance: number) => void
+  updateCamera:   (rotation: Vec3, position: Vec3) => void
   updateSettings: (settings: Partial<Settings>) => void
   draw:           () => void
 }
 
-type Settings = Dict<number | string | boolean>
+type Settings = Dict<number | string | boolean | Vec2>
 
 enum TYPE { 
   M4 = 1,
   V3 = 2,
   V4 = 3,
   Bool = 4,
-}
-
-const UP = [0, 1, 0] as Vec3
-
-
-interface Camera {
-  aspectRatio: number
-  fov:         number
-  zNear:       number
-  zFar:        number
-  target:      Vec3
-  rotation:    Vec3
-  distance:    number
 }
 
 export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefined {
@@ -48,14 +33,14 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     return undefined
   }
 
-  const camera: Camera = { 
+  const camera = { 
     aspectRatio: 3 / 2,
     fov:         degToRad(60),
     zNear:       -10,
     zFar:        50,
     target:      [0, 0, 0] as Vec3,
     rotation:    [0, 0, 0] as Vec3,
-    distance:     2.5
+    position:    [0, 0, 2.5] as Vec3,
   }
   
   // uniforms
@@ -120,28 +105,17 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     camera.aspectRatio = width / height
   }
   
-  function updateCamera(rotation: Vec3, distance: number): void {
+  function updateCamera(rotation: Vec3, position: Vec3): void {
     camera.rotation = rotation
-    camera.distance = distance
+    camera.position = position
     
-    const projection = perspective(camera.fov, camera.aspectRatio, camera.zNear, camera.zFar)
-    const quaternion = degToQuaternion(rotation)
-    
-    const rotatedCameraMatrix = quaternionToRotationMatrix(quaternion)
-    const cameraMatrix = M4.translate(rotatedCameraMatrix, 0, 0, distance)
-    const cameraPosition = [ cameraMatrix[12], cameraMatrix[13], cameraMatrix[14] ] as Vec3
-    
-    const lookAtMatrix = lookAt(cameraPosition, camera.target, UP)
-    const view = M4.inverse(lookAtMatrix)
-    
-    const lightPosition = [ cameraMatrix[12], cameraMatrix[13], cameraMatrix[14] ] as Vec3
-    const worldCamera = M4.identity()
+    const { projection, view, world } = getLookAtMatrices(camera)
 
     gl.useProgram(program!)
     gl.uniformMatrix4fv(uniforms.projection.p, false, projection)
     gl.uniformMatrix4fv(uniforms.view.p, false, view)
-    gl.uniformMatrix4fv(uniforms.world.p, false, worldCamera)
-    gl.uniform3fv(uniforms.lightDirection.p, lightPosition)
+    gl.uniformMatrix4fv(uniforms.world.p, false, world)
+    gl.uniform3fv(uniforms.lightDirection.p, [0, 0, 5])
   }
   
   function draw(): void {

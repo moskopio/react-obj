@@ -1,5 +1,5 @@
 import { Matrix4 } from "./m4"
-import { degToRad } from "./util"
+import { degToRad } from "./angles"
 import { Vec3 } from "./v3"
 import { Vec4 } from "./v4"
 

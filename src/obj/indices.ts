@@ -1,4 +1,4 @@
-import { RawObj } from "./types"
+import { RawObj } from "./read"
 
 export function getVerticesIndices(obj: RawObj): number[] {
   const verticesIndices: number[] = []

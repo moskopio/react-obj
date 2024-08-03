@@ -1,7 +1,7 @@
-import { V3, Vec3 } from "../v3"
+import { V3, Vec3 } from "../math/v3"
 import { getVerticesIndices } from "./indices"
 import { getNormals } from "./normals"
-import { RawObj } from "./types"
+import { RawObj } from "./read"
 
 export interface ParsedObj {
   vertices:       Vec3[]

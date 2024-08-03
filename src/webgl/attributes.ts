@@ -1,4 +1,4 @@
-import { Dict } from "../preview/utils"
+import { Dict } from "../types"
 
 type Attributes = Dict<Attribute>
 type AttributeValue = Dict<number[]>

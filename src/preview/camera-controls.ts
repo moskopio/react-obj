@@ -11,14 +11,22 @@ interface ControlProps {
 
 export function useCameraControls(props: ControlProps): void {
   const { canvasRef } = props
-  const { setDistance, setRotation } = useContext(AppContext)
+  const { setPosition, setRotation } = useContext(AppContext)
   
-  const limit = useCallback((rotation: number): number => {
+  const limitRotation = useCallback((rotation: number): number => {
     return rotation > -360
       ? rotation < 360
         ? rotation
         : rotation - 720
       : 720 - rotation
+  }, [])
+  
+  const limitPosition = useCallback((position: number): number => {
+    return position > -10
+      ? position < 10
+        ? position
+        : -10
+      : 10
   }, [])
     
   useEffect(() => {
@@ -64,10 +72,10 @@ export function useCameraControls(props: ControlProps): void {
       event.stopImmediatePropagation()
       updateDistance(event)
     }
-    
+        
     function updateDistance(event: WheelEvent): void {
       const delta = (event.deltaY > 0 ? WHEEL_STEP : -WHEEL_STEP)
-      setDistance(d => d + delta)
+      setPosition(d => [d[0], d[1], d[2] + delta])
     }
     
     function updateRotation(event: MouseEvent): void {
@@ -76,10 +84,10 @@ export function useCameraControls(props: ControlProps): void {
       const xDelta = (mouseX - previousPosition[0]) * SENSITIVITY
       const yDelta = (mouseY - previousPosition[1]) * SENSITIVITY
       
-      setRotation(r => [limit(r[0] - yDelta), limit(r[1] - xDelta), r[2]])
+      setRotation(r => [limitRotation(r[0] - yDelta), limitRotation(r[1] - xDelta), r[2]])
       previousPosition[0] = event.clientX
       previousPosition[1] = event.clientY
     }
   
-  },[canvasRef, setRotation, setDistance, limit])
+  },[canvasRef, setRotation, setPosition, limitRotation, limitPosition])
 }

@@ -92,7 +92,8 @@ function transpose(m: Matrix4): Matrix4 {
   ]
 }
 
-function translation(tx: number, ty: number, tz: number): Matrix4 {
+function translation(t: Vec3): Matrix4 {
+  const [tx, ty, tz] = t
   return [
       1,  0,  0, 0,
       0,  1,  0, 0,
@@ -101,8 +102,8 @@ function translation(tx: number, ty: number, tz: number): Matrix4 {
   ]
 }
 
-function translate(m: Matrix4, tx: number, ty: number, tz: number): Matrix4 {
-  const translationM4 = translation(tx, ty, tz)
+function translate(m: Matrix4, t: Vec3): Matrix4 {
+  const translationM4 = translation(t)
   return multiply(translationM4, m)
 }
 
@@ -146,7 +147,7 @@ function zRotation(angle: number): Matrix4 {
   
   return [
       c, s, 0, 0,
-    -s, c, 0, 0,
+     -s, c, 0, 0,
       0, 0, 1, 0,
       0, 0, 0, 1
   ]
@@ -182,7 +183,8 @@ function axisRotate(m: Matrix4, axis: Vec3, angle: number): Matrix4 {
   return multiply(axisRotationM4, m)
 }
 
-function scaling(sx: number, sy: number, sz: number): Matrix4 {
+function scaling(s: Vec3): Matrix4 {
+  const [sx, sy, sz] = s
   return [
     sx,  0,  0, 0,
      0, sy,  0, 0,
@@ -191,17 +193,16 @@ function scaling(sx: number, sy: number, sz: number): Matrix4 {
   ]
 }
 
-function scale(m: Matrix4, sx: number, sy: number, sz: number): Matrix4 {
-  const scalingM4 = scaling(sx, sy, sz)
+function scale(m: Matrix4, s: Vec3): Matrix4 {
+  const scalingM4 = scaling(s)
   return multiply(scalingM4, m)
 }
 
 // TODO: refactor - could be composed from multiple M4!
 function compose(translation: Vec3, quaternion: Vec4, scale: Vec3): Matrix4 {
-  const x = quaternion[0]
-  const y = quaternion[1]
-  const z = quaternion[2]
-  const w = quaternion[3]
+  const [x, y, z, w] = quaternion
+  const [tx, ty, tz] = translation
+  const [sx, sy, sz] = scale
 
   const x2 = x + x
   const y2 = y + y
@@ -219,15 +220,12 @@ function compose(translation: Vec3, quaternion: Vec4, scale: Vec3): Matrix4 {
   const wy = w * y2
   const wz = w * z2
 
-  const sx = scale[0]
-  const sy = scale[1]
-  const sz = scale[2]
   
   return [
     ((1 - (yy + zz)) * sx), ((xy + wz) * sx), ((xz - wy) * sx), 0,
     ((xy - wz) * sy), ((1 - (xx + zz)) * sy), ((xz - wy) * sx), 0,
     ((xz + wy) * sz), ((yz - wx) * sz), ((1 - (xx + yy)) * sz), 0,
-    translation[0], translation[1], translation[2], 1
+    tx, ty, tz, 1
   ]
 }
 
@@ -239,15 +237,12 @@ interface Decomposition {
 }
 
 function decompose(m: Matrix4): Decomposition {
-  let sx = V3.length(m.slice(0, 3) as Vec3)
+  const det = determinate(m)
+  
+  // if determinate is negative, we need to invert one scale
+  const sx = V3.length(m.slice(0, 3) as Vec3) * (det < 0 ? -1 : 1)
   const sy = V3.length(m.slice(4, 7) as Vec3)
   const sz = V3.length(m.slice(8, 11) as Vec3)
-
-  // if determinate is negative, we need to invert one scale
-  const det = determinate(m)
-  if (det < 0) {
-    sx = -sx
-  }
 
   // scale the rotation part
   const matrix = [...m]
@@ -293,7 +288,7 @@ function determinate(m: Matrix4): number {
 function quatFromRotationMatrix(m: Matrix4): Vec4 {
   // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
   
-  const dst: Vec4 = [0, 0, 0, 0]
+  const q: Vec4 = [0, 0, 0, 0]
 
   // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
   const rm = [
@@ -306,61 +301,61 @@ function quatFromRotationMatrix(m: Matrix4): Vec4 {
 
   if (trace > 0) {
     const s = 0.5 / Math.sqrt(trace + 1)
-    dst[3] = 0.25 / s
-    dst[0] = (rm[6] - rm[9]) * s
-    dst[1] = (rm[8] - rm[2]) * s
-    dst[2] = (rm[1] - rm[4]) * s
+    q[3] = 0.25 / s
+    q[0] = (rm[6] - rm[9]) * s
+    q[1] = (rm[8] - rm[2]) * s
+    q[2] = (rm[1] - rm[4]) * s
   } else if (rm[0] > rm[5] && rm[0] > rm[10]) {
     const s = 2 * Math.sqrt(1 + rm[0] - rm[5] - rm[10])
-    dst[3] = (rm[6] - rm[9]) / s
-    dst[0] = 0.25 * s
-    dst[1] = (rm[4] + rm[1]) / s
-    dst[2] = (rm[8] + rm[2]) / s
+    q[3] = (rm[6] - rm[9]) / s
+    q[0] = 0.25 * s
+    q[1] = (rm[4] + rm[1]) / s
+    q[2] = (rm[8] + rm[2]) / s
   } else if (rm[5] > rm[10]) {
     const s = 2 * Math.sqrt(1 + rm[5] - rm[0] - rm[10])
-    dst[3] = (rm[8] - rm[2]) / s
-    dst[0] = (rm[4] + rm[1]) / s
-    dst[1] = 0.25 * s
-    dst[2] = (rm[9] + rm[6]) / s
+    q[3] = (rm[8] - rm[2]) / s
+    q[0] = (rm[4] + rm[1]) / s
+    q[1] = 0.25 * s
+    q[2] = (rm[9] + rm[6]) / s
   } else {
     const s = 2 * Math.sqrt(1 + rm[10] - rm[0] - rm[5])
-    dst[3] = (rm[1] - rm[4]) / s
-    dst[0] = (rm[8] + rm[2]) / s
-    dst[1] = (rm[9] + rm[6]) / s
-    dst[2] = 0.25 * s;
+    q[3] = (rm[1] - rm[4]) / s
+    q[0] = (rm[8] + rm[2]) / s
+    q[1] = (rm[9] + rm[6]) / s
+    q[2] = 0.25 * s;
   }
   
-  return dst
+  return q
 }
 
 
 function inverse(m: Matrix4): Matrix4 {
-  const dst = []
+  const inv = []
   const det = determinate(m)
 
   if (det > 0.00001) {
     const d = 1 / det
-    dst[0] = d * M3.inverseSum(getSubMatrix(m, 0, 0))
-    dst[1] = -d * M3.inverseSum(getSubMatrix(m, 1, 0))
-    dst[2] = d * M3.inverseSum(getSubMatrix(m, 2, 0))
-    dst[3] = -d * M3.inverseSum(getSubMatrix(m, 3, 0))
+    inv[0] = d * M3.inverseSum(getSubMatrix(m, 0, 0))
+    inv[1] = -d * M3.inverseSum(getSubMatrix(m, 1, 0))
+    inv[2] = d * M3.inverseSum(getSubMatrix(m, 2, 0))
+    inv[3] = -d * M3.inverseSum(getSubMatrix(m, 3, 0))
     
-    dst[4] = -d * M3.inverseSum(getSubMatrix(m, 0, 1))
-    dst[5] = d * M3.inverseSum(getSubMatrix(m, 1, 1))
-    dst[6] = -d * M3.inverseSum(getSubMatrix(m, 2, 1))
-    dst[7] = d * M3.inverseSum(getSubMatrix(m, 3, 1))
+    inv[4] = -d * M3.inverseSum(getSubMatrix(m, 0, 1))
+    inv[5] = d * M3.inverseSum(getSubMatrix(m, 1, 1))
+    inv[6] = -d * M3.inverseSum(getSubMatrix(m, 2, 1))
+    inv[7] = d * M3.inverseSum(getSubMatrix(m, 3, 1))
     
-    dst[8] = d * M3.inverseSum(getSubMatrix(m, 0, 2))
-    dst[9] = -d * M3.inverseSum(getSubMatrix(m, 1, 2))
-    dst[10] = d * M3.inverseSum(getSubMatrix(m, 2, 2))
-    dst[11] = -d * M3.inverseSum(getSubMatrix(m, 3, 2))
+    inv[8] = d * M3.inverseSum(getSubMatrix(m, 0, 2))
+    inv[9] = -d * M3.inverseSum(getSubMatrix(m, 1, 2))
+    inv[10] = d * M3.inverseSum(getSubMatrix(m, 2, 2))
+    inv[11] = -d * M3.inverseSum(getSubMatrix(m, 3, 2))
     
-    dst[12] = -d * M3.inverseSum(getSubMatrix(m, 0, 3))
-    dst[13] = d * M3.inverseSum(getSubMatrix(m, 1, 3))
-    dst[14] = -d * M3.inverseSum(getSubMatrix(m, 2, 3))
-    dst[15] = d * M3.inverseSum(getSubMatrix(m, 3, 3))
+    inv[12] = -d * M3.inverseSum(getSubMatrix(m, 0, 3))
+    inv[13] = d * M3.inverseSum(getSubMatrix(m, 1, 3))
+    inv[14] = -d * M3.inverseSum(getSubMatrix(m, 2, 3))
+    inv[15] = d * M3.inverseSum(getSubMatrix(m, 3, 3))
   
-    return transpose(dst)
+    return transpose(inv)
   } else {
     return empty()
   }
