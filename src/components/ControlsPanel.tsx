@@ -1,15 +1,12 @@
 import { ChangeEvent, ReactElement, useCallback, useContext } from "react"
-import { AppContext } from "../state"
 import { readObj } from "../obj/read"
-import { Checkbox } from "./Checkbox"
+import { AppContext } from "../state"
 import "./ControlsPanel.css"
 import { FileInput } from "./FileInput"
 import { Slider } from "./Slider"
 
 export function ControlsPanel(): ReactElement {
-  const { setObj, rotation, setRotation, position, setPosition, settings, setSettings } = useContext(AppContext)
-  
-  console.log(position)
+  const { setObj, rotation, setRotation, position, setPosition } = useContext(AppContext)
   
   const onFile = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const file = event?.target?.files?.[0]
@@ -37,14 +34,9 @@ export function ControlsPanel(): ReactElement {
   const updateZPosition = useCallback((v: number) => setPosition(p => [p[0], p[1], v]), [setPosition])
   
   
-  const updateSwapXZ = (value: boolean) => {
-    setSettings({...settings, swapXZ: value})
-  }
-  
   return (
     <div className="controls-panel" >
       <FileInput label="Load obj file..." onFile={onFile} />
-      <Checkbox label="Flip Y/Z" value={settings.swapXZ!} onChange={updateSwapXZ} />
       <Slider
         label={`X Axis: ${Math.floor(rotation[0])}°`}
         min={-360}

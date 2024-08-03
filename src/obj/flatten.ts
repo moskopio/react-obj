@@ -2,7 +2,7 @@ import { Vec3 } from "../math/v3"
 import { generateFlatNormals } from "./normals"
 import { ParsedObj } from "./parse"
 
-interface FlattenObj {
+export interface FlattenObj {
   vertices:       Vec3[]
   definedNormals: Vec3[]
   flatNormals:    Vec3[]

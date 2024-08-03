@@ -1,29 +1,26 @@
+import { degToRad } from '../math/angles'
+import { Vec3 } from '../math/v3'
 import { flattenParsedObj } from '../obj/flatten'
 import { parseObj } from '../obj/parse'
 import { RawObj } from '../obj/read'
-import { degToRad } from '../math/angles'
-import { Vec2, Vec3 } from '../math/v3'
 import { setupAttributes, updateAttributes } from '../webgl/attributes'
 import { getLookAtMatrices } from '../webgl/camera'
 import { createShaderProgram } from '../webgl/program'
 import fragmentShaderSource from './mesh.frag'
 import vertexShaderSource from './mesh.vert'
-import { Dict } from '../types'
 
 export interface MeshDrawer {
   setObj:         (obj: RawObj) => void
   updateCamera:   (rotation: Vec3, position: Vec3) => void
-  updateSettings: (settings: Partial<Settings>) => void
-  draw:           () => void
+  draw:           (timme: number) => void
 }
-
-type Settings = Dict<number | string | boolean | Vec2>
 
 enum TYPE { 
   M4 = 1,
   V3 = 2,
   V4 = 3,
   Bool = 4,
+  F = 5,
 }
 
 export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefined {
@@ -49,6 +46,8 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     view:           { p: gl.getUniformLocation(program, 'uView'),          t: TYPE.M4 },
     world:          { p: gl.getUniformLocation(program, 'uWorld'),         t: TYPE.M4 },
     lightDirection: { p: gl.getUniformLocation(program, 'uLightDirection'),t: TYPE.V3 },
+    time:           { p: gl.getUniformLocation(program, 'uTime'),          t: TYPE.F },
+    outline:        { p: gl.getUniformLocation(program, 'uOutline'),       t: TYPE.Bool },
   }
   
   // attributes
@@ -64,21 +63,19 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     flatNormals:   [] as Vec3[],
   }
   
+
   setViewPort(600, 400)
   
-  return { setObj, updateSettings, updateCamera, draw }
+  return { setObj, updateCamera, draw }
   
   function setObj(obj: RawObj): void {
     const readyObj = parseObj(obj)
-    const { definedNormals, flatNormals, smoothNormals, vertices } = flattenParsedObj(readyObj)
-    
-    // console.log('normals d, f, s:', definedNormals, flatNormals, smoothNormals)
-    // console.log('vertices', vertices)
+    const flatObj = flattenParsedObj(readyObj)
 
-    geometry.vertices = vertices
-    geometry.definedNormals = definedNormals
-    geometry.flatNormals = flatNormals
-    geometry.smoothNormals = smoothNormals
+    geometry.vertices = flatObj.vertices
+    geometry.definedNormals = flatObj.definedNormals
+    geometry.flatNormals = flatObj.flatNormals
+    geometry.smoothNormals = flatObj.smoothNormals
     
     updateGeometry()
   }
@@ -87,16 +84,11 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     
     const values = {
       position: geometry.vertices.flatMap(v => v),
-      normal:   geometry.flatNormals.flatMap(n => n)
+      normal:   geometry.smoothNormals.flatMap(n => n)
     }
-    
     updateAttributes({ gl, attributes, values })
   }
   
-  
-  function updateSettings(newSettings: Partial<Settings>): void {
-    const keys = Object.keys(newSettings)
-  }
   
   function setViewPort(width: number, height: number): void {
     gl.viewport(0, 0, width, height)
@@ -118,12 +110,22 @@ export function createMeshDrawer(gl: WebGLRenderingContext): MeshDrawer | undefi
     gl.uniform3fv(uniforms.lightDirection.p, [0, 0, 5])
   }
   
-  function draw(): void {
+  function draw(time: number): void {
     gl.useProgram(program!)
     gl?.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     setupAttributes({ gl, attributes })
+    
+    gl.uniform1f(uniforms.time.p, time)
+    
+
+    gl.uniform1i(uniforms.outline.p, 1)
     gl.drawArrays(gl.TRIANGLES, 0, geometry.vertices.length)
     
+    gl?.clear(gl.DEPTH_BUFFER_BIT)
+    gl.uniform1i(uniforms.outline.p, 0)
+    gl.drawArrays(gl.TRIANGLES, 0, geometry.vertices.length)
+    
+
     requestAnimationFrame(draw)
   }
 }
