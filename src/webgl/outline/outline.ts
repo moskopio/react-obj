@@ -6,26 +6,22 @@ import { Program } from '../../types'
 import { setupAttributes, updateAttributes } from '../attributes'
 import { getLookAtMatrices } from '../camera'
 import { createShaderProgram } from '../program'
+import { TYPE, updateUniforms } from '../uniforms'
 import fragmentShaderSource from './outline.frag'
 import vertexShaderSource from './outline.vert'
 
-enum TYPE { 
-  M4 = 1,
-  V3 = 2,
-  V4 = 3,
-  Bool = 4,
-  F = 5,
-}
-
 export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefined {
   const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
+  
   if (!program) {
     console.error('Failed to create a WebGL Program')
     return undefined
   }
   
-  const settings = {
-    isRendering: true
+  // attributes
+  const attributes = {
+    position: { p: gl.getAttribLocation(program, 'aPosition'), s: 3, b: gl.createBuffer()! },
+    normal:   { p: gl.getAttribLocation(program, 'aNormal'),   s: 3, b: gl.createBuffer()! },
   }
   
   // uniforms
@@ -37,12 +33,10 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
     distance:   { p: gl.getUniformLocation(program, 'uDistance'),   t: TYPE.F },
   }
   
-  // attributes
-  const attributes = {
-    position: { p: gl.getAttribLocation(program, 'aPosition'), s: 3, b: gl.createBuffer()! },
-    normal:   { p: gl.getAttribLocation(program, 'aNormal'),   s: 3, b: gl.createBuffer()! },
+  const settings = {
+    isRendering: true
   }
-
+  
   const geometry = {
     vertices: [] as Vec3[],
     normals:  [] as Vec3[],
@@ -55,7 +49,6 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
 
     geometry.vertices = flat.vertices
     geometry.normals = flat.smoothNormals
-    
     updateGeometry()
   }
   
@@ -73,12 +66,10 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
   }
   
   function updateCamera(camera: Camera): void {
-    const { projection, view, world } = getLookAtMatrices(camera)
+    const {cameraPosition, ...rest} = getLookAtMatrices(camera)
 
     gl.useProgram(program!)
-    gl.uniformMatrix4fv(uniforms.projection.p, false, projection)
-    gl.uniformMatrix4fv(uniforms.view.p, false, view)
-    gl.uniformMatrix4fv(uniforms.world.p, false, world)
+    updateUniforms({ gl, uniforms, values: rest })
     gl.uniform1f(uniforms.distance.p, camera.position[2])
   }
   

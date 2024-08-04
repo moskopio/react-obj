@@ -40,6 +40,7 @@ export function setupAttributes(args: SetupArgs): void {
   
   const attributeNames = Object.keys(attributes)
   
+  
   attributeNames.forEach(name => {
     const attribute = attributes[name]
     if (attribute) {
