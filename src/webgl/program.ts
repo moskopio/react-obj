@@ -28,7 +28,7 @@ function compileShader(gl: WebGLRenderingContext, type: number, source: string):
     
   if (!gl.getShaderParameter( shader, gl.COMPILE_STATUS) ) {
     console.error(gl.getShaderInfoLog(shader))
-    gl.deleteShader(shader);
+    gl.deleteShader(shader)
     return undefined
   }
   

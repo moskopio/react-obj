@@ -68,6 +68,16 @@ function areEqual(a: Vec3, b: Vec3): boolean {
   return a[0] === b[0] && a[1] === b[1] && a[2] === b[2]
 }
 
+function limit(v: Vec3, min: number, max: number): Vec3 { 
+  return [limitPart(v[0]), limitPart(v[1]), limitPart(v[2])]
+  
+  function limitPart(v: number): number {
+    return v > min
+      ? v < max ? v : max
+      : min
+  }
+}
+
 export const V3 = { 
   add, 
   cross, 
@@ -78,5 +88,6 @@ export const V3 = {
   normalize, 
   scale, 
   subtract, 
-  areEqual
+  areEqual,
+  limit
 }

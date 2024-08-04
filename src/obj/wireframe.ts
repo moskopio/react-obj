@@ -12,21 +12,29 @@ export function wireframeFlattenObj(obj: FlattenObj): FlattenObj {
   for (let i = 0; i < vertices.length; i = i + 3) {
     wireframeVertices.push(vertices[i])
     wireframeVertices.push(vertices[i + 1])
+    wireframeVertices.push(vertices[i + 1])
+    wireframeVertices.push(vertices[i + 2])
     wireframeVertices.push(vertices[i + 2])
     wireframeVertices.push(vertices[i])
     
     wireframeDefinedNormals.push(definedNormals[i])
     wireframeDefinedNormals.push(definedNormals[i + 1])
+    wireframeDefinedNormals.push(definedNormals[i + 1])
+    wireframeDefinedNormals.push(definedNormals[i + 2])
     wireframeDefinedNormals.push(definedNormals[i + 2])
     wireframeDefinedNormals.push(definedNormals[i])
     
     wireframeSmoothNormals.push(smoothNormals[i])
     wireframeSmoothNormals.push(smoothNormals[i + 1])
+    wireframeSmoothNormals.push(smoothNormals[i + 1])
+    wireframeSmoothNormals.push(smoothNormals[i + 2])
     wireframeSmoothNormals.push(smoothNormals[i + 2])
     wireframeSmoothNormals.push(smoothNormals[i])
     
     wireframeFlatNormals.push(flatNormals[i])
     wireframeFlatNormals.push(flatNormals[i + 1])
+    wireframeFlatNormals.push(flatNormals[i + 1])
+    wireframeFlatNormals.push(flatNormals[i + 2])
     wireframeFlatNormals.push(flatNormals[i + 2])
     wireframeFlatNormals.push(flatNormals[i])
   }

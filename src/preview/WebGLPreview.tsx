@@ -11,7 +11,7 @@ const PREVIEW_HEIGHT = 400
 export function WebGLPreview(): ReactElement {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const gl = useWebGLContext({ canvasRef })
-  usePrograms({ gl, width: PREVIEW_WIDTH, height: PREVIEW_HEIGHT } )
+  usePrograms({ gl, resolution: { width: PREVIEW_WIDTH, height: PREVIEW_HEIGHT } } )
   useCameraControls({ canvasRef })
   
   return (

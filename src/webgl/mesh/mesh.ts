@@ -1,8 +1,9 @@
-import { degToRad } from '../../math/angles'
 import { Vec3 } from '../../math/v3'
 import { flattenParsedObj } from '../../obj/flatten'
 import { parseObj } from '../../obj/parse'
 import { RawObj } from '../../obj/read'
+import { Camera } from '../../state/camera'
+import { Settings } from '../../state/settings'
 import { Program } from '../../types'
 import { setupAttributes, updateAttributes } from '../attributes'
 import { getLookAtMatrices } from '../camera'
@@ -24,15 +25,9 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
     console.error('Failed to create a WebGL Program')
     return undefined
   }
-
-  const camera = { 
-    aspectRatio: 3 / 2,
-    fov:         degToRad(60),
-    zNear:       -10,
-    zFar:        50,
-    target:      [0, 0, 0] as Vec3,
-    rotation:    [0, 0, 0] as Vec3,
-    position:    [0, 0, 2.5] as Vec3,
+  
+  const settings = {
+    isRendering: true
   }
   
   // uniforms
@@ -57,10 +52,7 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
     flatNormals:   [] as Vec3[],
   }
   
-
-  setViewPort(600, 400)
-  
-  return { setObj, updateCamera, draw }
+  return { setObj, updateCamera, updateSettings, draw }
   
   function setObj(obj: RawObj): void {
     const readyObj = parseObj(obj)
@@ -75,7 +67,6 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
   }
   
   function updateGeometry(): void {
-    
     const values = {
       position: geometry.vertices.flatMap(v => v),
       normal:   geometry.flatNormals.flatMap(n => n)
@@ -83,32 +74,27 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
     updateAttributes({ gl, attributes, values })
   }
   
-  
-  function setViewPort(width: number, height: number): void {
-    gl.viewport(0, 0, width, height)
-    gl.enable(gl.DEPTH_TEST)
-    gl.enable(gl.CULL_FACE)
-    camera.aspectRatio = width / height
+  function updateSettings(newSettings: Settings): void {
+    settings.isRendering = newSettings.showMesh
   }
   
-  function updateCamera(rotation: Vec3, position: Vec3): void {
-    camera.rotation = rotation
-    camera.position = position
-    
-    const { projection, view, world } = getLookAtMatrices(camera)
+  function updateCamera(camera: Camera): void {
+    const { projection, view, world, cameraPosition } = getLookAtMatrices(camera)
 
     gl.useProgram(program!)
     gl.uniformMatrix4fv(uniforms.projection.p, false, projection)
     gl.uniformMatrix4fv(uniforms.view.p, false, view)
     gl.uniformMatrix4fv(uniforms.world.p, false, world)
-    gl.uniform3fv(uniforms.lightDirection.p, [0, 0, 5])
+    gl.uniform3fv(uniforms.lightDirection.p, cameraPosition)
   }
   
   function draw(time: number): void {
-    gl.useProgram(program!)
-    setupAttributes({ gl, attributes })
-    
-    gl.uniform1f(uniforms.time.p, time)
-    gl.drawArrays(gl.TRIANGLES, 0, geometry.vertices.length)
+    if (settings.isRendering) {
+      gl.useProgram(program!)
+      setupAttributes({ gl, attributes })
+      
+      gl.uniform1f(uniforms.time.p, time)
+      gl.drawArrays(gl.TRIANGLES, 0, geometry.vertices.length)
+    }
   }
 }

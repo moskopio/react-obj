@@ -16,15 +16,16 @@ interface Camera {
   position:    Vec3
 }
 
-interface CameraMatrices {
-  projection: Matrix4
-  view:       Matrix4
-  world:      Matrix4
+interface CameraOutput {
+  projection:     Matrix4
+  view:           Matrix4
+  world:          Matrix4
+  cameraPosition: Vec3
 }
 
 // TODO: how come camera.rotation at lookAt is just working fine, without using any quaternians?!
 // How to then apply translation?!
-export function getLookAtMatrices(camera: Camera): CameraMatrices {
+export function getLookAtMatrices(camera: Camera): CameraOutput {
   const quaternion = degToQuaternion(camera.rotation)
   
   // // const position = [0, 0, camera.position[2]]
@@ -39,5 +40,5 @@ export function getLookAtMatrices(camera: Camera): CameraMatrices {
   const view = M4.inverse(lookAtMatrix)
   const world = M4.identity()
   
-  return { projection, view, world }
+  return { projection, view, world, cameraPosition }
 }

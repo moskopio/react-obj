@@ -2,7 +2,7 @@ import { ReactElement, ReactNode } from "react"
 import './App.css'
 import { ControlsPanel } from "./components/ControlsPanel"
 import { WebGLPreview } from "./preview/WebGLPreview"
-import { AppContext, useAppState } from "./state"
+import { AppContext, useAppState } from "./state/context"
 
 
 export function App(): ReactNode {  

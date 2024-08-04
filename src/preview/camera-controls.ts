@@ -1,5 +1,5 @@
-import { MutableRefObject, useCallback, useContext, useEffect } from "react"
-import { AppContext } from "../state"
+import { MutableRefObject, useContext, useEffect } from "react"
+import { AppContext } from "../state/context"
 import './WebGLPreview.css'
 
 const SENSITIVITY = 0.5
@@ -11,24 +11,9 @@ interface ControlProps {
 
 export function useCameraControls(props: ControlProps): void {
   const { canvasRef } = props
-  const { setPosition, setRotation } = useContext(AppContext)
+  const {cameraDispatch } = useContext(AppContext)
   
-  const limitRotation = useCallback((rotation: number): number => {
-    return rotation > -360
-      ? rotation < 360
-        ? rotation
-        : rotation - 720
-      : 720 - rotation
-  }, [])
   
-  const limitPosition = useCallback((position: number): number => {
-    return position > -10
-      ? position < 10
-        ? position
-        : -10
-      : 10
-  }, [])
-    
   useEffect(() => {
     const canvas = canvasRef.current
     const previousPosition = [0, 0]
@@ -72,10 +57,10 @@ export function useCameraControls(props: ControlProps): void {
       event.stopImmediatePropagation()
       updateDistance(event)
     }
-        
+    
     function updateDistance(event: WheelEvent): void {
       const delta = (event.deltaY > 0 ? WHEEL_STEP : -WHEEL_STEP)
-      setPosition(d => [d[0], d[1], d[2] + delta])
+      cameraDispatch({ type: 'updatePosition', position: [0, 0, delta] } )
     }
     
     function updateRotation(event: MouseEvent): void {
@@ -84,10 +69,10 @@ export function useCameraControls(props: ControlProps): void {
       const xDelta = (mouseX - previousPosition[0]) * SENSITIVITY
       const yDelta = (mouseY - previousPosition[1]) * SENSITIVITY
       
-      setRotation(r => [limitRotation(r[0] - yDelta), limitRotation(r[1] - xDelta), r[2]])
+      cameraDispatch({ type: 'updateRotation', rotation: [-yDelta, -xDelta, 0] } )
       previousPosition[0] = event.clientX
       previousPosition[1] = event.clientY
     }
   
-  },[canvasRef, setRotation, setPosition, limitRotation, limitPosition])
+  },[canvasRef, cameraDispatch])
 }
