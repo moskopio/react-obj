@@ -1,9 +1,6 @@
 import { Vec3 } from '../../math/v3'
-import { flattenParsedObj } from '../../obj/flatten'
-import { parseObj } from '../../obj/parse'
-import { RawObj } from '../../obj/read'
-import { wireframeFlattenObj } from '../../obj/wireframe'
 import { Camera } from '../../state/camera'
+import { Obj } from '../../state/obj'
 import { Settings } from '../../state/settings'
 import { Program } from '../../types'
 import { setupAttributes, updateAttributes } from '../attributes'
@@ -55,14 +52,11 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
   
   return { setObj, updateCamera, updateSettings, draw }
   
-  function setObj(obj: RawObj): void {
-    const readyObj = parseObj(obj)
-    const flatObj = flattenParsedObj(readyObj)
-    const wireframeObj = wireframeFlattenObj(flatObj)
-    
-    geometry.vertices = wireframeObj.vertices
-    geometry.normals = wireframeObj.smoothNormals
-    
+  function setObj(obj: Obj): void {
+    const { wireframe } = obj
+    geometry.vertices = wireframe.vertices
+    geometry.normals = wireframe.smoothNormals
+  
     updateGeometry()
   }
   

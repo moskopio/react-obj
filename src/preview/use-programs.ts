@@ -4,6 +4,7 @@ import { createMeshDrawer } from "../webgl/mesh/mesh"
 import { Program } from "../types"
 import { createOutlineDrawer } from "../webgl/outline/outline"
 import { createWireframeDrawer } from "../webgl/wireframe/wireframe"
+import { ObjContext } from "../state/obj"
 
 interface Props {
   gl:         WebGLRenderingContext | null
@@ -14,7 +15,8 @@ export function usePrograms(props: Props): void {
   const { gl, resolution } = props
   const [programs, setPrograms] = useState<Program[]>([])
   const requestId = useRef<number>()
-  const { obj, camera, settings } = useContext(AppContext)
+  const { camera, settings } = useContext(AppContext)
+  const { obj } = useContext(ObjContext)
   
   useEffect(() => {
     if (gl) {

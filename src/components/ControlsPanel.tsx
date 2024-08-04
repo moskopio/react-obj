@@ -1,10 +1,15 @@
 import { ChangeEvent, ReactElement, useCallback, useContext } from "react"
 import { readObj } from "../obj/read"
 import { AppContext } from "../state/context"
-import "./ControlsPanel.css"
-import { FileInput } from "./FileInput"
-import { Slider } from "./Slider"
-import { Checkbox } from "./Checkbox"
+import { FileInput } from "./basic/FileInput"
+import { Slider } from "./basic/Slider"
+import { Checkbox } from "./basic/Checkbox"
+import { Panel } from "./basic/Panel"
+import { Divider } from "./basic/Divider"
+import { ObjContext } from "../state/obj"
+import { parseObj } from "../obj/parse"
+import { flattenParsedObj } from "../obj/flatten"
+import { wireframeFlattenObj } from "../obj/wireframe"
 
 export function ControlsPanel(): ReactElement {
   const { camera, cameraDispatch, settings, settingsDispatch } = useContext(AppContext)
@@ -37,8 +42,10 @@ export function ControlsPanel(): ReactElement {
   
   
   return (
-    <div className="controls-panel" >
+    <Panel>
       <FileInput label="Load obj file..." onFile={onFile} />
+      <Divider />
+      
       <Checkbox 
         label="Show Mesh"
         value={settings.showMesh}
@@ -54,6 +61,7 @@ export function ControlsPanel(): ReactElement {
         value={settings.showWireframe}
         onChange={toggleWireframe}
       />
+      <Divider />
       
       <Slider
         label={`X Axis: ${Math.floor(camera.rotation[0])}°`}
@@ -79,15 +87,22 @@ export function ControlsPanel(): ReactElement {
         defaultValue={2.5}
         value={camera.position[2]}
         />
-    </div>
+    </Panel>
   )
 }
 
 function useObjLoad(): (event: ChangeEvent<HTMLInputElement>) => void {
-  const { setObj } = useContext(AppContext)
+  const { setObj } = useContext(ObjContext)
   
   const onObjLoad = useCallback((data: string) => {
-    setObj(readObj(data))
+    const tick = Date.now()
+    const raw = readObj(data)
+    const parsed = parseObj(raw)
+    const flat = flattenParsedObj(parsed)
+    const wireframe = wireframeFlattenObj(flat)
+    const parsingTime = Date.now() - tick
+    
+    setObj({ raw, parsed, flat, wireframe, parsingTime })
   }, [setObj])
   
   return useCallback((event: ChangeEvent<HTMLInputElement>) => {

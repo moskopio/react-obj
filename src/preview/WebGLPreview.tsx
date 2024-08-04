@@ -16,7 +16,7 @@ export function WebGLPreview(): ReactElement {
   
   return (
     <canvas 
-      ref={canvasRef} 
+      ref={canvasRef}
       className="webgl-canvas" 
       width={PREVIEW_WIDTH} 
       height={PREVIEW_HEIGHT} 

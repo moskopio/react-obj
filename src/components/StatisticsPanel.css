@@ -1,0 +1,26 @@
+.stat {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  justify-content: space-between;
+}
+
+.stat-label {
+  flex: 2;
+  font-weight: bold;
+  font-size: 12px;
+  color: var(--highlight-color);
+  font-family: monospace;
+  user-select: none;
+  text-shadow: var(--text-shadow);
+}
+
+.stat-value {
+  flex: 1;
+  font-size: 12px;
+  text-align: right;
+  color: var(--highlight-color);
+  font-family: monospace;
+  user-select: none;
+  text-shadow: var(--text-shadow);
+}

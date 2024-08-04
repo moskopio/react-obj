@@ -1,8 +1,6 @@
 import { Vec3 } from '../../math/v3'
-import { flattenParsedObj } from '../../obj/flatten'
-import { parseObj } from '../../obj/parse'
-import { RawObj } from '../../obj/read'
 import { Camera } from '../../state/camera'
+import { Obj } from '../../state/obj'
 import { Settings } from '../../state/settings'
 import { Program } from '../../types'
 import { setupAttributes, updateAttributes } from '../attributes'
@@ -54,14 +52,13 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
   
   return { setObj, updateCamera, updateSettings, draw }
   
-  function setObj(obj: RawObj): void {
-    const readyObj = parseObj(obj)
-    const flatObj = flattenParsedObj(readyObj)
+  function setObj(obj: Obj): void {
+    const { flat } = obj
 
-    geometry.vertices = flatObj.vertices
-    geometry.definedNormals = flatObj.definedNormals
-    geometry.flatNormals = flatObj.flatNormals
-    geometry.smoothNormals = flatObj.smoothNormals
+    geometry.vertices = flat.vertices
+    geometry.definedNormals = flat.definedNormals
+    geometry.flatNormals = flat.flatNormals
+    geometry.smoothNormals = flat.smoothNormals
     
     updateGeometry()
   }

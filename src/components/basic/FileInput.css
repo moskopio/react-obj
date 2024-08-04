@@ -29,11 +29,7 @@ linear-gradient(
   align-items: center;
   justify-content: center;
   color: var(--highlight-color);
-  text-shadow:
-  1px 1px 0 var(--shadow-color),
-  -1px 1px 0 var(--shadow-color),
-  -1px -1px 0 var(--shadow-color),
-  1px -1px 0 var(--shadow-color);
+  text-shadow: var(--text-shadow);
 }
 
 .file-input-icon input[type="file"] {
@@ -48,9 +44,5 @@ linear-gradient(
   color: var(--highlight-color);
   font-family: monospace;
   user-select: none;
-  text-shadow:
-  1px 1px 0 #000,
-  -1px 1px 0 #000,
-  -1px -1px 0 #000,
-  1px -1px 0 #000;
+  text-shadow: var(--text-shadow);
 }

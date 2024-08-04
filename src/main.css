@@ -10,8 +10,14 @@
   
   --elements-border: 2px;
   --elements-radius: 3px;
+  
+  --text-shadow: 
+    1px 1px 0 var(--shadow-color),
+    -1px 1px 0 var(--shadow-color),
+    -1px -1px 0 var(--shadow-color),
+    1px -1px 0 var(--shadow-color);
 }
-
+ 
 body {
   background: var(--bg-color);
 }
