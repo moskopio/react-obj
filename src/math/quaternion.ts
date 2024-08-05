@@ -1,6 +1,6 @@
 import { Matrix4 } from "./m4"
 import { degToRad } from "./angles"
-import { Vec3 } from "./v3"
+import { V3, Vec3 } from "./v3"
 import { Vec4 } from "./v4"
 
 export function degToQuaternion(angles: Vec3): Vec4 {
@@ -22,6 +22,22 @@ export function degToQuaternion(angles: Vec3): Vec4 {
   cr * cp * sy - sr * sp * cy,
   cr * cp * cy + sr * sp * sy,
   ]
+}
+
+// angle in radians!
+export function setAxisAngle(axis: Vec3, angle: number): Vec4 {
+  const v = V3.scale(axis, Math.sin(angle /2))
+  const w = Math.cos(angle / 2)
+  return [...v, w]
+}
+
+export function multiplyQuaternion(a: Vec4, b: Vec4): Vec4 {
+  const x = a[3] * b[3] - a[0] * b[0] - a[1] * b[1] - a[2] * b[2]
+  const y = a[3] * b[0] + a[0] * b[3] + a[1] * b[2] - a[2] * b[1]
+  const z = a[3] * b[1] + a[1] * b[3] + a[2] * b[0] - a[0] * b[2]
+  const w = a[3] * b[2] + a[2] * b[3] + a[0] * b[1] - a[1] * b[0]
+  
+  return [x, y, z, w]
 }
 
 export function quaternionToRotationMatrix(quaternion: Vec4): Matrix4 {
@@ -46,19 +62,4 @@ export function quaternionToRotationMatrix(quaternion: Vec4): Matrix4 {
     m02, m12, m22, 0,
       0,   0,   0, 1
   ]
-  
-  
-  // return [
-  //   m00, m01, m02, 0,
-  //   m10, m11, m12, 0,
-  //   m20, m21, m22, 0,
-  //     0,   0,   0, 1
-  // ]
-  
-  // return [
-  //   1 - 2 * (y * y + z * z),     2 * (x * y + w * z),     2 * (x * z - w * y), 0,
-  //       2 * (x * y - w * z), 1 - 2 * (x * x + z * z),     2 * (w * x + y * z), 0,
-  //       2 * (w * y + x * z),     2 * (y * z - w * x), 1 - 2 * (x * x + y * y), 0,
-  //                         0,                       0,                       0, 1
-  // ]
 }

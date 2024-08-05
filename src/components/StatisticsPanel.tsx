@@ -9,14 +9,19 @@ export function StatisticsPanel(): ReactElement {
    
   const groupsCount = obj.raw.groups.length
   const trianglesCount = obj.parsed.vertices.length
+  const flatTrianglesCount = obj.flat.vertices.length
   const definedNormalsCount = obj.parsed.definedNormals.length
+  const indicesCount = obj.parsed.indices.length
   const parsingTime = obj.parsingTime
+
   
   return (
     <Panel>
       <Stat label='Groups' value={groupsCount} />
-      <Stat label='Triangles' value={trianglesCount} />
+      <Stat label='Triangles (defined)' value={trianglesCount} />
+      <Stat label='Triangles (displayed)' value={flatTrianglesCount} />
       <Stat label='Defined Normals' value={definedNormalsCount} />
+      <Stat label='Indices' value={indicesCount} />
       <Divider />
       <Stat label='Parsing Time' value={`${parsingTime}ms`} />
     </Panel>

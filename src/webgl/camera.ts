@@ -1,10 +1,8 @@
 import { degToRad } from "../math/angles"
 import { M4, Matrix4 } from "../math/m4"
-import { lookAt, perspective } from "../math/projections"
+import { perspective } from "../math/projections"
+import { quaternionToRotationMatrix, setAxisAngle } from "../math/quaternion"
 import { V3, Vec3 } from "../math/v3"
-
-
-const UP = [0, 1, 0] as Vec3
 
 interface Camera {
   aspectRatio: number
@@ -23,23 +21,34 @@ interface CameraOutput {
   cameraPosition: Vec3
 }
 
-
 export function getLookAtMatrices(camera: Camera): CameraOutput {
-  const cameraPosition = V3.add([0, 0, 1], camera.position)
-  const cameraTarget = camera.position
-
-  const lookAtMatrix = lookAt(cameraPosition, cameraTarget, UP)
+  const { position, rotation, target } = camera 
+  // 1. Tumble - rotating around Theta and Phi
+  // TODO: rotation angles to theta and phi!
+  const qTheta = setAxisAngle([1, 0, 0], degToRad(rotation[0]))
+  const qPhi = setAxisAngle([0, 1, 0], degToRad(rotation[1]))  
+  const thetaRotation = quaternionToRotationMatrix(qTheta)
+  const phiRotation = quaternionToRotationMatrix(qPhi)
+  const rotationMatrix = M4.multiply(thetaRotation, phiRotation)
+  
+  // 2. Track - move around X/Y
+  const lookAt = V3.multiply(V3.add(target, [position[0], position[1], 0]), rotationMatrix)
+  
+  
+  // 3. Dolly - move closer/further
+  // todo - should be not stored in position!
+  const cameraOrientation = V3.multiply([0, 0, 1], rotationMatrix)
+  const cameraPosition = V3.add(lookAt, V3.scale(cameraOrientation, position[2]))
+  
+  const cameraToWorld = [...rotationMatrix]
+  cameraToWorld[12] = cameraPosition[0]
+  cameraToWorld[13] = cameraPosition[1]
+  cameraToWorld[14] = cameraPosition[2]
+  
+  
   const projection = perspective(camera.fov, camera.aspectRatio, camera.zNear, camera.zFar)
-  const view = M4.inverse(lookAtMatrix)
-  
-  
-  // this is nor really correct! as the rotation will not take camera into the consideration!
-  // const cameraMatrix = M4.translate(quaternionToRotationMatrix(quaternion), [0, 0, camera.position[2]])
-  // const cameraPosition = [ cameraMatrix[12], cameraMatrix[13], cameraMatrix[14] ] as Vec3
-
-  const yRotation = M4.axisRotation([0, 1, 0], degToRad(camera.rotation[1]))
-  const xRotation = M4.axisRotation([1, 0, 0], degToRad(camera.rotation[0]))
-  const world = M4.combine(xRotation, yRotation)
+  const view = M4.inverse(cameraToWorld)
+  const world = M4.identity()
   
   return { projection, view, world, cameraPosition }
 }

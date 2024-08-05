@@ -89,7 +89,6 @@ export function useCameraControls(props: ControlProps): void {
       const yDelta = (mouseY - prevY) * SENSITIVITY
       
       if (shift.current) {
-        console.log('updating position!')
         // sensitivity shoud be based on distance! 
         cameraDispatch({ type: 'updatePosition', position: [-xDelta / 50, yDelta / 50, 0] } )
       } else {
