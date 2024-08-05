@@ -30,7 +30,7 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
     view:       { p: gl.getUniformLocation(program, 'uView'),       t: TYPE.M4 },
     world:      { p: gl.getUniformLocation(program, 'uWorld'),      t: TYPE.M4 },
     time:       { p: gl.getUniformLocation(program, 'uTime'),       t: TYPE.F },
-    distance:   { p: gl.getUniformLocation(program, 'uDistance'),   t: TYPE.F },
+    outline:    { p: gl.getUniformLocation(program, 'uOutline'),    t: TYPE.F },
   }
   
   const settings = {
@@ -70,7 +70,7 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
 
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values: rest })
-    gl.uniform1f(uniforms.distance.p, camera.position[2])
+    gl.uniform1f(uniforms.outline.p, 1 + camera.position[2]) // TODO: could be based on camera!
   }
   
   function draw(time: number): void {

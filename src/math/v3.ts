@@ -1,3 +1,5 @@
+import { Matrix4 } from "./m4"
+
 export type Vec2 = [number, number]
 export type Vec3 = [number, number, number]
 
@@ -72,10 +74,34 @@ function limit(v: Vec3, min: number, max: number): Vec3 {
   return [limitPart(v[0]), limitPart(v[1]), limitPart(v[2])]
   
   function limitPart(v: number): number {
-    return v > min
-      ? v < max ? v : max
-      : min
+    return Math.min(Math.max(v, min), max)
   }
+}
+
+function flip(v: Vec3, min: number, max: number): Vec3 { 
+  const length = max - min
+  return [flipPart(v[0]), flipPart(v[1]), flipPart(v[2])]
+  
+  function flipPart(v: number): number {
+    
+    if (v < min) {
+      return length - v
+    } else if (v > max) {
+      return v - length
+    }
+    
+    return v
+  }
+}
+
+
+
+function multiply(v: Vec3, m: Matrix4): Vec3 {
+  const x = m[0] * v[0] + m[4] * v[1] +  m[8] * v[2] + m[12]
+  const y = m[1] * v[0] + m[5] * v[1] +  m[9] * v[2] + m[13]
+  const z = m[2] * v[0] + m[6] * v[1] + m[10] * v[2] + m[14]
+
+  return [x, y, z]
 }
 
 export const V3 = { 
@@ -89,5 +115,7 @@ export const V3 = {
   scale, 
   subtract, 
   areEqual,
-  limit
+  limit,
+  flip,
+  multiply
 }

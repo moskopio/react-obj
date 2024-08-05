@@ -1,7 +1,7 @@
-import { lookAt, perspective } from "../math/projections"
+import { degToRad } from "../math/angles"
 import { M4, Matrix4 } from "../math/m4"
-import { degToQuaternion, quaternionToRotationMatrix } from "../math/quaternion"
-import { Vec3 } from "../math/v3"
+import { lookAt, perspective } from "../math/projections"
+import { V3, Vec3 } from "../math/v3"
 
 
 const UP = [0, 1, 0] as Vec3
@@ -23,22 +23,23 @@ interface CameraOutput {
   cameraPosition: Vec3
 }
 
-// TODO: how come camera.rotation at lookAt is just working fine, without using any quaternians?!
-// How to then apply translation?!
-export function getLookAtMatrices(camera: Camera): CameraOutput {
-  const quaternion = degToQuaternion(camera.rotation)
-  
-  // // const position = [0, 0, camera.position[2]]
-  const cameraMatrix = M4.translate(quaternionToRotationMatrix(quaternion), [0, 0, camera.position[2]])
-  const cameraPosition = [ cameraMatrix[12], cameraMatrix[13], cameraMatrix[14] ] as Vec3
-  
-  // this is interesting! but not exactly what I need!
-  const lookAtMatrix = lookAt(cameraPosition, camera.target, UP)
-  // const lookAtMatrix = lookAt([0, 0, 5], cameraPosition, UP)
-  const projection = perspective(camera.fov, camera.aspectRatio, camera.zNear, camera.zFar)
 
+export function getLookAtMatrices(camera: Camera): CameraOutput {
+  const cameraPosition = V3.add([0, 0, 1], camera.position)
+  const cameraTarget = camera.position
+
+  const lookAtMatrix = lookAt(cameraPosition, cameraTarget, UP)
+  const projection = perspective(camera.fov, camera.aspectRatio, camera.zNear, camera.zFar)
   const view = M4.inverse(lookAtMatrix)
-  const world = M4.identity()
+  
+  
+  // this is nor really correct! as the rotation will not take camera into the consideration!
+  // const cameraMatrix = M4.translate(quaternionToRotationMatrix(quaternion), [0, 0, camera.position[2]])
+  // const cameraPosition = [ cameraMatrix[12], cameraMatrix[13], cameraMatrix[14] ] as Vec3
+
+  const yRotation = M4.axisRotation([0, 1, 0], degToRad(camera.rotation[1]))
+  const xRotation = M4.axisRotation([1, 0, 0], degToRad(camera.rotation[0]))
+  const world = M4.combine(xRotation, yRotation)
   
   return { projection, view, world, cameraPosition }
 }

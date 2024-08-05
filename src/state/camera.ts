@@ -1,6 +1,7 @@
 import { degToRad } from "../math/angles"
 import { V3, Vec3 } from "../math/v3"
 
+// This is not good enought!
 export interface Camera { 
   aspectRatio: number
   fov:         number
@@ -24,7 +25,7 @@ export function createDefaultCamera(): Camera {
 }
 
 export interface CameraAction extends Partial<Camera> {
-  type: 'updateRotation' | 'updatePosition' | 'setXRotation' | 'setYRotation' | 'setZPosition'
+  type: 'updateRotation' | 'updatePosition' | 'setXRotation' | 'setYRotation' | 'setXPosition' | 'setYPosition' |  'setZPosition'
 }
 
 export function cameraReducer(state: Camera, action: CameraAction): Camera {
@@ -46,13 +47,22 @@ export function cameraReducer(state: Camera, action: CameraAction): Camera {
     case 'updatePosition': 
       newState.position = V3.add(newState.position, action.position!)
       break
-      
+    
+    case 'setXPosition':
+      newState.position = [action.position![0], newState.position[1], newState.position[2]]
+      break
+    
+    case 'setYPosition':
+      newState.position = [newState.position[0], action.position![1], newState.position[2]]
+      break
+    
     case 'setZPosition':
       newState.position = [newState.position[0], newState.position[1], action.position![2]]
+      break
   }
   
-  newState.rotation = V3.limit(newState.rotation, -360, 360)
-  newState.position = V3.limit(newState.position, 0, 10)
+  newState.rotation = V3.flip(newState.rotation, -360, 360)
+  newState.position = V3.limit(newState.position, -10, 10)
   
   return newState
 }

@@ -36,9 +36,19 @@ export function ControlsPanel(): ReactElement {
     cameraDispatch({ type: 'setYRotation', rotation: [0, a, 0] })
   }, [cameraDispatch])
   
+  const updateXPosition = useCallback((v: number) => {
+    cameraDispatch({ type: 'setXPosition', position: [-v, 0, 0] })
+  }, [cameraDispatch])
+  
+  const updateYPosition = useCallback((v: number) => {
+    cameraDispatch({ type: 'setYPosition', position: [0, -v, 0] })
+  }, [cameraDispatch])
+  
   const updateZPosition = useCallback((v: number) => {
     cameraDispatch({ type: 'setZPosition', position: [0, 0, v] })
   }, [cameraDispatch])
+  
+  
   
   
   return (
@@ -64,7 +74,7 @@ export function ControlsPanel(): ReactElement {
       <Divider />
       
       <Slider
-        label={`X Axis: ${Math.floor(camera.rotation[0])}°`}
+        label={`Tilt: ${Math.floor(camera.rotation[0])}°`}
         min={-360}
         max={360}
         onChange={updateXRotation}
@@ -72,15 +82,35 @@ export function ControlsPanel(): ReactElement {
         defaultValue={0}
       />
       <Slider
-        label={`Y Axis: ${Math.floor(camera.rotation[1])}°`}
+        label={`Arc: ${Math.floor(camera.rotation[1])}°`}
         min={-360} 
         max={360} 
         onChange={updateYRotation}
         value={camera.rotation[1]}
         defaultValue={0}
       />
+      
+      <Divider />
+  
+
       <Slider
-        label={`Distance ${camera.position[2].toFixed(2)}`} 
+        label={`Left/Right ${-camera.position[0].toFixed(2)}`} 
+        min={-10}
+        max={10}
+        onChange={updateXPosition}
+        defaultValue={0}
+        value={-camera.position[0]}
+        />
+      <Slider
+        label={`Up/Down ${-camera.position[1].toFixed(2)}`} 
+        min={-10}
+        max={10}
+        onChange={updateYPosition}
+        defaultValue={0}
+        value={-camera.position[1]}
+        />
+      <Slider
+        label={`Zoom ${camera.position[2].toFixed(2)}`} 
         min={0}
         max={10}
         onChange={updateZPosition}

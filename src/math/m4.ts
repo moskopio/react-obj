@@ -27,6 +27,7 @@ export const M4 = {
   getSubMatrix,
   determinate,
   inverse,
+  combine,
 }
 
 function getColumn(m: Matrix4, c: number): Vec4 {
@@ -54,6 +55,12 @@ function multiply(a: Matrix4, b: Matrix4): Matrix4 {
 		V4.dot(r0, c2), V4.dot(r1, c2), V4.dot(r2, c2), V4.dot(r3, c2),
     V4.dot(r0, c3), V4.dot(r1, c3), V4.dot(r2, c3), V4.dot(r3, c3),
   ]
+}
+
+function combine(...matrices: Matrix4[]): Matrix4 {
+  const reversedMatrices = [...matrices].reverse()
+  
+  return reversedMatrices.reduce((p, c) => multiply(c, p), identity())
 }
 
 function multiplyBy(m: Matrix4, n: number): Matrix4 {

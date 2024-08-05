@@ -1,4 +1,4 @@
-import { MutableRefObject, useContext, useEffect } from "react"
+import { MutableRefObject, useContext, useEffect, useRef } from "react"
 import { AppContext } from "../state/context"
 import './WebGLPreview.css'
 
@@ -12,14 +12,17 @@ interface ControlProps {
 export function useCameraControls(props: ControlProps): void {
   const { canvasRef } = props
   const {cameraDispatch } = useContext(AppContext)
+  const shift = useRef(false)
+  const position = useRef([0, 0])
   
   
   useEffect(() => {
     const canvas = canvasRef.current
-    const previousPosition = [0, 0]
     
     canvas?.addEventListener('mousedown', onMouseDown)
     canvas?.addEventListener('wheel', onWheel, { passive: true })
+    window.addEventListener('keydown', onKeyDown)
+    window.addEventListener('keyup', onKeyUp)
     
     return () => {
       canvas?.removeEventListener('contextmenu', onMouseDown)
@@ -27,6 +30,8 @@ export function useCameraControls(props: ControlProps): void {
       canvas?.removeEventListener('mouseup', onMouseUp)
       canvas?.removeEventListener('mousemove', onMouseMove)
       canvas?.removeEventListener('mouseleave', onMouseUp)
+      window.removeEventListener('keydown', onKeyDown)
+      window.removeEventListener('keyup', onKeyUp)
     }
     
     function onMouseDown(event: MouseEvent): void {
@@ -35,8 +40,7 @@ export function useCameraControls(props: ControlProps): void {
       canvas?.addEventListener('mouseup', onMouseUp)
       canvas?.addEventListener('mouseleave', onMouseUp)
       canvas?.addEventListener('mousemove', onMouseMove)
-      previousPosition[0] = event.clientX
-      previousPosition[1] = event.clientY
+      position.current = [event.clientX, event.clientY]
     }
     
     function onMouseUp(event: MouseEvent): void {
@@ -53,6 +57,20 @@ export function useCameraControls(props: ControlProps): void {
       updateRotation(event)
     }
     
+    function onKeyDown(event: KeyboardEvent): void {
+      if (event.key === 'Shift') {
+        console.log('shift! down')
+        shift.current = true
+      }
+    }
+    
+    function onKeyUp(event: KeyboardEvent): void {
+      if (event.key === 'Shift') { 
+        console.log('shift! up')
+          shift.current = false
+      }
+    }
+    
     function onWheel(event: WheelEvent): void {
       event.stopImmediatePropagation()
       updateDistance(event)
@@ -66,12 +84,19 @@ export function useCameraControls(props: ControlProps): void {
     function updateRotation(event: MouseEvent): void {
       const mouseX = Math.round(event.clientX)
       const mouseY = Math.round(event.clientY)
-      const xDelta = (mouseX - previousPosition[0]) * SENSITIVITY
-      const yDelta = (mouseY - previousPosition[1]) * SENSITIVITY
+      const [prevX, prevY] = position.current 
+      const xDelta = (mouseX - prevX) * SENSITIVITY
+      const yDelta = (mouseY - prevY) * SENSITIVITY
       
-      cameraDispatch({ type: 'updateRotation', rotation: [-yDelta, -xDelta, 0] } )
-      previousPosition[0] = event.clientX
-      previousPosition[1] = event.clientY
+      if (shift.current) {
+        console.log('updating position!')
+        // sensitivity shoud be based on distance! 
+        cameraDispatch({ type: 'updatePosition', position: [-xDelta / 50, yDelta / 50, 0] } )
+      } else {
+        cameraDispatch({ type: 'updateRotation', rotation: [yDelta, xDelta, 0] } )
+      }
+      
+      position.current  = [event.clientX, event.clientY]
     }
   
   },[canvasRef, cameraDispatch])
