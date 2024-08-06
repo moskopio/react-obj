@@ -28,24 +28,24 @@ export function ControlsPanel(): ReactElement {
     settingsDispatch({ type: 'toggleOutline' })
   }, [settingsDispatch])
   
-  const updateXRotation = useCallback((a: number) => { 
-    cameraDispatch({ type: 'setXRotation', rotation: [a, 0, 0] })
+  const setThetaRotation = useCallback((a: number) => { 
+    cameraDispatch({ type: 'setThetaRotation', rotation: { theta: a, phi: 0 }})
   }, [cameraDispatch])
   
-  const updateYRotation = useCallback((a: number) => { 
-    cameraDispatch({ type: 'setYRotation', rotation: [0, a, 0] })
+  const setPhiRotation = useCallback((a: number) => { 
+    cameraDispatch({ type: 'setPhiRotation', rotation: { theta: 0, phi: a }})
   }, [cameraDispatch])
   
-  const updateXPosition = useCallback((v: number) => {
-    cameraDispatch({ type: 'setXPosition', position: [-v, 0, 0] })
+  const updateXTrack = useCallback((v: number) => {
+    cameraDispatch({ type: 'setXTrack', track: { x: v, y: 0 } })
   }, [cameraDispatch])
   
-  const updateYPosition = useCallback((v: number) => {
-    cameraDispatch({ type: 'setYPosition', position: [0, -v, 0] })
+  const updateYTrack = useCallback((v: number) => {
+    cameraDispatch({ type: 'setYTrack', track: { x: 0, y: v } })
   }, [cameraDispatch])
   
-  const updateZPosition = useCallback((v: number) => {
-    cameraDispatch({ type: 'setZPosition', position: [0, 0, v] })
+  const setDolly = useCallback((dolly: number) => {
+    cameraDispatch({ type: 'setDolly', dolly })
   }, [cameraDispatch])
   
   
@@ -74,48 +74,47 @@ export function ControlsPanel(): ReactElement {
       <Divider />
       
       <Slider
-        label={`Tilt: ${Math.floor(camera.rotation[0])}°`}
+        label={`Theta: ${Math.floor(camera.rotation.theta)}°`}
         min={-360}
         max={360}
-        onChange={updateXRotation}
-        value={camera.rotation[0]}
+        onChange={setThetaRotation}
+        value={camera.rotation.theta}
         defaultValue={0}
       />
       <Slider
-        label={`Arc: ${Math.floor(camera.rotation[1])}°`}
+        label={`Phi: ${Math.floor(camera.rotation.phi)}°`}
         min={-360} 
         max={360} 
-        onChange={updateYRotation}
-        value={camera.rotation[1]}
+        onChange={setPhiRotation}
+        value={camera.rotation.phi}
         defaultValue={0}
       />
       
       <Divider />
-  
 
       <Slider
-        label={`Left/Right ${-camera.position[0].toFixed(2)}`} 
+        label={`Track X: ${camera.track.x.toFixed(2)}`} 
         min={-10}
         max={10}
-        onChange={updateXPosition}
+        onChange={updateXTrack}
         defaultValue={0}
-        value={-camera.position[0]}
+        value={camera.track.x}
         />
       <Slider
-        label={`Up/Down ${-camera.position[1].toFixed(2)}`} 
+        label={`Track Y: ${camera.track.y.toFixed(2)}`} 
         min={-10}
         max={10}
-        onChange={updateYPosition}
+        onChange={updateYTrack}
         defaultValue={0}
-        value={-camera.position[1]}
+        value={camera.track.y}
         />
       <Slider
-        label={`Zoom ${camera.position[2].toFixed(2)}`} 
+        label={`Dolly ${camera.dolly.toFixed(2)}`} 
         min={0}
         max={10}
-        onChange={updateZPosition}
+        onChange={setDolly}
         defaultValue={2.5}
-        value={camera.position[2]}
+        value={camera.dolly}
         />
     </Panel>
   )

@@ -70,14 +70,6 @@ function areEqual(a: Vec3, b: Vec3): boolean {
   return a[0] === b[0] && a[1] === b[1] && a[2] === b[2]
 }
 
-function limit(v: Vec3, min: number, max: number): Vec3 { 
-  return [limitPart(v[0]), limitPart(v[1]), limitPart(v[2])]
-  
-  function limitPart(v: number): number {
-    return Math.min(Math.max(v, min), max)
-  }
-}
-
 function flip(v: Vec3, min: number, max: number): Vec3 { 
   const length = max - min
   return [flipPart(v[0]), flipPart(v[1]), flipPart(v[2])]
@@ -115,7 +107,5 @@ export const V3 = {
   scale, 
   subtract, 
   areEqual,
-  limit,
-  flip,
   multiply
 }

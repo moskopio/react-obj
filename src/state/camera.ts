@@ -1,15 +1,15 @@
 import { degToRad } from "../math/angles"
-import { V3, Vec3 } from "../math/v3"
+import { Vec3 } from "../math/v3"
 
-// This is not good enought!
 export interface Camera { 
   aspectRatio: number
   fov:         number
   zNear:       number
   zFar:        number
   target:      Vec3
-  rotation:    Vec3
-  position:    Vec3
+  rotation:    { theta: number, phi: number }
+  dolly:       number
+  track:       { x: number, y: number } 
 }
 
 export function createDefaultCamera(): Camera {
@@ -19,13 +19,14 @@ export function createDefaultCamera(): Camera {
     zNear:       -10,
     zFar:        50,
     target:      [0, 0, 0] as Vec3,
-    rotation:    [0, 0, 0] as Vec3,
-    position:    [0, 0, 2.5] as Vec3,
+    rotation:    { theta: 0, phi: 0 },
+    dolly:       2.5,
+    track:       { x: 0, y : 0 }
   }
 }
 
 export interface CameraAction extends Partial<Camera> {
-  type: 'updateRotation' | 'updatePosition' | 'setXRotation' | 'setYRotation' | 'setXPosition' | 'setYPosition' |  'setZPosition'
+  type: 'updateRotation' | 'updateTrack' | 'setThetaRotation' | 'setPhiRotation' | 'setXTrack' | 'setYTrack' | 'setDolly' | 'updateDolly'
 }
 
 export function cameraReducer(state: Camera, action: CameraAction): Camera {
@@ -33,36 +34,59 @@ export function cameraReducer(state: Camera, action: CameraAction): Camera {
   
   switch (action.type) { 
     case 'updateRotation': 
-      newState.rotation = V3.add(state.rotation, action.rotation!)
+      newState.rotation = { 
+        theta: newState.rotation.theta + action.rotation!.theta, 
+        phi: newState.rotation.phi + action.rotation!.phi
+      }
       break
       
-    case 'setXRotation': 
-      newState.rotation = [action.rotation![0], newState.rotation[1], newState.rotation[2]]
+    case 'setThetaRotation': 
+      newState.rotation = { ...newState.rotation, theta: action.rotation!.theta }
       break
     
-    case 'setYRotation': 
-      newState.rotation = [newState.rotation[0], action.rotation![1], newState.rotation[2]]
+    case 'setPhiRotation': 
+      newState.rotation = { ...newState.rotation, phi: action.rotation!.phi }
       break
   
-    case 'updatePosition': 
-      newState.position = V3.add(newState.position, action.position!)
+    case 'updateTrack': 
+      newState.track = { 
+        x: newState.track.x + action.track!.x, 
+        y: newState.track.y + action.track!.y 
+      }
       break
     
-    case 'setXPosition':
-      newState.position = [action.position![0], newState.position[1], newState.position[2]]
+    case 'setXTrack':
+      newState.track = { ...newState.track, x: action.track!.x }
       break
     
-    case 'setYPosition':
-      newState.position = [newState.position[0], action.position![1], newState.position[2]]
+    case 'setYTrack':
+      newState.track = { ...newState.track, y: action.track!.y }
       break
     
-    case 'setZPosition':
-      newState.position = [newState.position[0], newState.position[1], action.position![2]]
+    case 'updateDolly':
+      newState.dolly += action.dolly!
+    break
+      
+    case 'setDolly':
+      newState.dolly = action.dolly!
       break
   }
   
-  newState.rotation = V3.flip(newState.rotation, -360, 360)
-  newState.position = V3.limit(newState.position, -10, 10)
+  newState.rotation.phi = limitAngle(newState.rotation.phi)
+  newState.rotation.theta = limitAngle(newState.rotation.theta)
+  
+  newState.track.x = Math.min(10, Math.max(-10, newState.track.x), newState.track.x)
+  newState.track.y = Math.min(10, Math.max(-10, newState.track.y), newState.track.y)
+  
+  newState.dolly = Math.min(10, Math.max(0, newState.dolly), newState.dolly)
   
   return newState
+}
+
+function limitAngle(angle: number): number {
+  return angle > -360
+    ? angle < 360
+      ? angle
+      : angle - 720
+    : 720 - angle
 }

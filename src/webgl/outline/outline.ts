@@ -70,7 +70,7 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
 
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values: rest })
-    gl.uniform1f(uniforms.outline.p, 1 + camera.position[2]) // TODO: could be based on camera!
+    gl.uniform1f(uniforms.outline.p, 1 + camera.dolly) // TODO: could be based on camera!
   }
   
   function draw(time: number): void {
