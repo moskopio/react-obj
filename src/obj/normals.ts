@@ -63,9 +63,9 @@ function generateSmoothNormals(vertices: Vec3[], indices: number[]): Vec3[] {
     const i0 = indices[i]
     const i1 = indices[(i + 1) >= indices.length ? i : i + 1]
     const i2 = indices[(i + 2) >= indices.length ? i : i + 2]
-    const v0 = vertices[i0] || V3.normalize([0, 0, 0])
-    const v1 = vertices[i1] || V3.normalize([0, 0, 0])
-    const v2 = vertices[i2] || V3.normalize([0, 0, 0])
+    const v0 = vertices[i0] || [0, 0, 0]
+    const v1 = vertices[i1] || [0, 0, 0]
+    const v2 = vertices[i2] || [0, 0, 0]
     
     const a = V3.subtract(v1, v0)
     const b = V3.subtract(v2, v0)

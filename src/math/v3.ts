@@ -13,6 +13,7 @@ export const V3 = {
   normalize,
   scale,
   subtract,
+  areEqual
 }
 
 function add(a: Vec3, b: Vec3): Vec3 {
@@ -40,10 +41,10 @@ function scale(v: Vec3, s: number): Vec3 {
 }
 
 function normalize(v: Vec3): Vec3 {
-  const length = Math.hypot(v[0], v[1], v[2])
+  let vectorLength = length(v)
   
-  return length > 0.00001
-    ? scale(v, 1 / length)
+  return vectorLength > 0
+    ? scale(v, 1 / vectorLength)
     : [0, 0, 0]
 }
 
@@ -80,5 +81,9 @@ function multiply(v: Vec3, m: Matrix4): Vec3 {
   const z = m[2] * v[0] + m[6] * v[1] + m[10] * v[2] + m[14]
 
   return [x, y, z]
+}
+
+function areEqual(a: Vec3, b: Vec3): boolean {
+  return a[0] === b[0] && a[1] === b[1] && a[2] === b[2]
 }
 
