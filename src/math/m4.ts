@@ -6,28 +6,18 @@ export type Matrix4 = number[]
 
 export const M4 = {
   multiply,
-  multiplyBy,
   identity,
-  empty,
   transpose,
   translation,
-  translate,
   xRotation,
-  xRotate,
   yRotation,
-  yRotate,
   zRotation,
-  zRotate,
   axisRotation,
-  axisRotate,
   scaling,
-  scale,
   compose,
-  decompose,
   getSubMatrix,
   determinate,
   inverse,
-  combine,
 }
 
 function getColumn(m: Matrix4, c: number): Vec4 {
@@ -54,21 +44,6 @@ function multiply(a: Matrix4, b: Matrix4): Matrix4 {
 		V4.dot(r0, c1), V4.dot(r1, c1), V4.dot(r2, c1), V4.dot(r3, c1),
 		V4.dot(r0, c2), V4.dot(r1, c2), V4.dot(r2, c2), V4.dot(r3, c2),
     V4.dot(r0, c3), V4.dot(r1, c3), V4.dot(r2, c3), V4.dot(r3, c3),
-  ]
-}
-
-function combine(...matrices: Matrix4[]): Matrix4 {
-  const reversedMatrices = [...matrices].reverse()
-  
-  return reversedMatrices.reduce((p, c) => multiply(c, p), identity())
-}
-
-function multiplyBy(m: Matrix4, n: number): Matrix4 {
-  return [
-     m[0] * n,  m[1] * n,  m[2] * n,  m[3] * n, 
-     m[4] * n,  m[5] * n,  m[6] * n,  m[7] * n, 
-     m[8] * n,  m[9] * n, m[10] * n, m[11] * n, 
-    m[12] * n, m[13] * n, m[14] * n, m[15] * n, 
   ]
 }
 
@@ -109,11 +84,6 @@ function translation(t: Vec3): Matrix4 {
   ]
 }
 
-function translate(m: Matrix4, t: Vec3): Matrix4 {
-  const translationM4 = translation(t)
-  return multiply(translationM4, m)
-}
-
 function xRotation(angle: number): Matrix4 {
   const c = Math.cos(angle)
   const s = Math.sin(angle)
@@ -124,11 +94,6 @@ function xRotation(angle: number): Matrix4 {
     0, -s,  c, 0,
     0,  0,  0, 1
  ]
-}
-
-function xRotate(m: Matrix4, angle: number) {
-  const xRotationM4 = xRotation(angle)
-  return multiply(xRotationM4, m)
 }
 
 function yRotation(angle: number): Matrix4 {
@@ -143,11 +108,6 @@ function yRotation(angle: number): Matrix4 {
   ]
 }
 
-function yRotate(m: Matrix4, angle: number): Matrix4 {
-  const yRotationM4 = yRotation(angle)
-  return multiply(yRotationM4, m)
-}
-
 function zRotation(angle: number): Matrix4 {
   const c = Math.cos(angle)
   const s = Math.sin(angle)
@@ -158,11 +118,6 @@ function zRotation(angle: number): Matrix4 {
       0, 0, 1, 0,
       0, 0, 0, 1
   ]
-}
-
-function zRotate(m: Matrix4, angle: number): Matrix4 {
-  const zRotationM4 = zRotation(angle)
-  return multiply(zRotationM4, m)
 }
 
 function axisRotation(axis: Vec3, angle: number): Matrix4 {
@@ -185,11 +140,6 @@ function axisRotation(axis: Vec3, angle: number): Matrix4 {
   ]
 }
 
-function axisRotate(m: Matrix4, axis: Vec3, angle: number): Matrix4 {
-  const axisRotationM4 = axisRotation(axis, angle)
-  return multiply(axisRotationM4, m)
-}
-
 function scaling(s: Vec3): Matrix4 {
   const [sx, sy, sz] = s
   return [
@@ -200,12 +150,6 @@ function scaling(s: Vec3): Matrix4 {
   ]
 }
 
-function scale(m: Matrix4, s: Vec3): Matrix4 {
-  const scalingM4 = scaling(s)
-  return multiply(scalingM4, m)
-}
-
-// TODO: refactor - could be composed from multiple M4!
 function compose(translation: Vec3, quaternion: Vec4, scale: Vec3): Matrix4 {
   const [x, y, z, w] = quaternion
   const [tx, ty, tz] = translation
@@ -236,47 +180,6 @@ function compose(translation: Vec3, quaternion: Vec4, scale: Vec3): Matrix4 {
   ]
 }
 
-
-interface Decomposition {
-  quaternion:  Vec4
-  scale:       Vec3
-  translation: Vec3
-}
-
-function decompose(m: Matrix4): Decomposition {
-  const det = determinate(m)
-  
-  // if determinate is negative, we need to invert one scale
-  const sx = V3.length(m.slice(0, 3) as Vec3) * (det < 0 ? -1 : 1)
-  const sy = V3.length(m.slice(4, 7) as Vec3)
-  const sz = V3.length(m.slice(8, 11) as Vec3)
-
-  // scale the rotation part
-  const matrix = [...m]
-
-  const invSX = 1 / sx
-  const invSY = 1 / sy
-  const invSZ = 1 / sz
-
-  matrix[0] *= invSX
-  matrix[1] *= invSX
-  matrix[2] *= invSX
-
-  matrix[4] *= invSY
-  matrix[5] *= invSY
-  matrix[6] *= invSY
-
-  matrix[8] *= invSZ
-  matrix[9] *= invSZ
-  matrix[10] *= invSZ
-
-  const quaternion = quatFromRotationMatrix(matrix)
-  const scale = [sx, sy, sz] as Vec3
-  const translation = [m[12], m[13], m[14]] as Vec3
-  
-  return { quaternion, scale, translation }
-}
-
 function getSubMatrix(m: Matrix4, i: number, j: number): Matrix3 {
   const skipList = [j * 4, j * 4 + 1, j *4 + 2, j * 4 + 3, i, i + 4, i + 8, i + 12]
   return m.filter((_, i) => !skipList.includes(i))
@@ -290,51 +193,6 @@ function determinate(m: Matrix4): number {
 
   return part0 - part1 + part2 - part3;
 }
-
-// TODO: refactor
-function quatFromRotationMatrix(m: Matrix4): Vec4 {
-  // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
-  
-  const q: Vec4 = [0, 0, 0, 0]
-
-  // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
-  const rm = [
-    m[0], m[4], m[8],
-    m[1], m[5], m[9],
-    m[2], m[6], m[10]
-  ]
-  
-  const trace = rm[0] + rm[5] + rm[10]
-
-  if (trace > 0) {
-    const s = 0.5 / Math.sqrt(trace + 1)
-    q[3] = 0.25 / s
-    q[0] = (rm[6] - rm[9]) * s
-    q[1] = (rm[8] - rm[2]) * s
-    q[2] = (rm[1] - rm[4]) * s
-  } else if (rm[0] > rm[5] && rm[0] > rm[10]) {
-    const s = 2 * Math.sqrt(1 + rm[0] - rm[5] - rm[10])
-    q[3] = (rm[6] - rm[9]) / s
-    q[0] = 0.25 * s
-    q[1] = (rm[4] + rm[1]) / s
-    q[2] = (rm[8] + rm[2]) / s
-  } else if (rm[5] > rm[10]) {
-    const s = 2 * Math.sqrt(1 + rm[5] - rm[0] - rm[10])
-    q[3] = (rm[8] - rm[2]) / s
-    q[0] = (rm[4] + rm[1]) / s
-    q[1] = 0.25 * s
-    q[2] = (rm[9] + rm[6]) / s
-  } else {
-    const s = 2 * Math.sqrt(1 + rm[10] - rm[0] - rm[5])
-    q[3] = (rm[1] - rm[4]) / s
-    q[0] = (rm[8] + rm[2]) / s
-    q[1] = (rm[9] + rm[6]) / s
-    q[2] = 0.25 * s;
-  }
-  
-  return q
-}
-
 
 function inverse(m: Matrix4): Matrix4 {
   const inv = []

@@ -3,7 +3,15 @@ import { degToRad } from "./angles"
 import { V3, Vec3 } from "./v3"
 import { Vec4 } from "./v4"
 
-export function degToQuaternion(angles: Vec3): Vec4 {
+export const Q = {
+  fromAngle,
+  fromAxisAngle,
+  multiply,
+  toMatrix
+}
+
+
+function fromAngle(angles: Vec3): Vec4 {
   // Abbreviations for the various angular functions
   const roll = degToRad(angles[0])
   const pitch = degToRad(angles[1])
@@ -24,14 +32,13 @@ export function degToQuaternion(angles: Vec3): Vec4 {
   ]
 }
 
-// angle in radians!
-export function setAxisAngle(axis: Vec3, angle: number): Vec4 {
+function fromAxisAngle(axis: Vec3, angle: number): Vec4 {
   const v = V3.scale(axis, Math.sin(angle /2))
   const w = Math.cos(angle / 2)
   return [...v, w]
 }
 
-export function multiplyQuaternion(a: Vec4, b: Vec4): Vec4 {
+function multiply(a: Vec4, b: Vec4): Vec4 {
   const x = a[3] * b[3] - a[0] * b[0] - a[1] * b[1] - a[2] * b[2]
   const y = a[3] * b[0] + a[0] * b[3] + a[1] * b[2] - a[2] * b[1]
   const z = a[3] * b[1] + a[1] * b[3] + a[2] * b[0] - a[0] * b[2]
@@ -40,7 +47,7 @@ export function multiplyQuaternion(a: Vec4, b: Vec4): Vec4 {
   return [x, y, z, w]
 }
 
-export function quaternionToRotationMatrix(quaternion: Vec4): Matrix4 {
+function toMatrix(quaternion: Vec4): Matrix4 {
   const [x, y, z, w] = quaternion
   
   const m00 = 1 - 2 * (y * y + z * z)

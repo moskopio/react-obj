@@ -3,6 +3,18 @@ import { Matrix4 } from "./m4"
 export type Vec2 = [number, number]
 export type Vec3 = [number, number, number]
 
+export const V3 = { 
+  add,
+  cross,
+  distance,
+  dot, 
+  length,
+  multiply,
+  normalize,
+  scale,
+  subtract,
+}
+
 function add(a: Vec3, b: Vec3): Vec3 {
   return [
     a[0] + b[0],
@@ -39,10 +51,6 @@ function length(v: Vec3): number {
   return Math.hypot(v[0], v[1], v[2])
 }
 
-function lengthSq(v: Vec3): number {
-  return v[0] * v[0] + v[1] * v[1] + v[2] * v[2]
-}
-
 function cross(a: Vec3, b: Vec3): Vec3 {
   return [
     a[1] * b[2] - a[2] * b[1],
@@ -66,28 +74,6 @@ function distance(a: Vec3, b: Vec3): number {
   return Math.sqrt(distanceSq(a, b))
 }
 
-function areEqual(a: Vec3, b: Vec3): boolean {
-  return a[0] === b[0] && a[1] === b[1] && a[2] === b[2]
-}
-
-function flip(v: Vec3, min: number, max: number): Vec3 { 
-  const length = max - min
-  return [flipPart(v[0]), flipPart(v[1]), flipPart(v[2])]
-  
-  function flipPart(v: number): number {
-    
-    if (v < min) {
-      return length - v
-    } else if (v > max) {
-      return v - length
-    }
-    
-    return v
-  }
-}
-
-
-
 function multiply(v: Vec3, m: Matrix4): Vec3 {
   const x = m[0] * v[0] + m[4] * v[1] +  m[8] * v[2] + m[12]
   const y = m[1] * v[0] + m[5] * v[1] +  m[9] * v[2] + m[13]
@@ -96,16 +82,3 @@ function multiply(v: Vec3, m: Matrix4): Vec3 {
   return [x, y, z]
 }
 
-export const V3 = { 
-  add, 
-  cross, 
-  distance,
-  dot, 
-  length, 
-  lengthSq, 
-  normalize, 
-  scale, 
-  subtract, 
-  areEqual,
-  multiply
-}

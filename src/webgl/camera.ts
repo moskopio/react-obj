@@ -1,7 +1,7 @@
 import { degToRad } from "../math/angles"
 import { M4, Matrix4 } from "../math/m4"
 import { perspective } from "../math/projections"
-import { quaternionToRotationMatrix, setAxisAngle } from "../math/quaternion"
+import { Q } from "../math/quaternion"
 import { V3, Vec3 } from "../math/v3"
 import { Camera } from "../state/camera"
 
@@ -15,15 +15,14 @@ interface CameraOutput {
 export function getLookAtMatrices(camera: Camera): CameraOutput {
   const { track, dolly, rotation, target } = camera 
   // 1. Tumble - rotating around Theta and Phi
-  const qTheta = setAxisAngle([1, 0, 0], degToRad(rotation.theta))
-  const qPhi = setAxisAngle([0, 1, 0], degToRad(-rotation.phi))
-  const thetaRotation = quaternionToRotationMatrix(qTheta)
-  const phiRotation = quaternionToRotationMatrix(qPhi)
+  const qTheta = Q.fromAxisAngle([1, 0, 0], degToRad(rotation.theta))
+  const qPhi = Q.fromAxisAngle([0, 1, 0], degToRad(-rotation.phi))
+  const thetaRotation = Q.toMatrix(qTheta)
+  const phiRotation = Q.toMatrix(qPhi)
   const rotationMatrix = M4.multiply(thetaRotation, phiRotation)
   
   // 2. Track - move around X/Y
   const lookAt = V3.multiply(V3.add(target, [-track.x, -track.y, 0]), rotationMatrix)
-  
   
   // 3. Dolly - move closer/further
   const cameraOrientation = V3.multiply([0, 0, 1], rotationMatrix)
