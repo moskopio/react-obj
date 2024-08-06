@@ -81,9 +81,9 @@ function parseFace(g: Group, parts: string[]): void {
   const face = parts.filter(p => p !== 'f')
   face.forEach(p => {
     const indices = p.split('/')
-    vIndices.push(parseInt(indices[0]) - 1)
-    indices[1] && uvIndices.push(parseInt(indices[1]) - 1)
-    indices[2] && nIndices.push(parseInt(indices[2]) - 1)
+    parseInt(indices[0]) && vIndices.push(parseInt(indices[0]) - 1)
+    parseInt(indices[1]) && uvIndices.push(parseInt(indices[1]) - 1)
+    parseInt(indices[2]) && nIndices.push(parseInt(indices[2]) - 1)
   })
   
   g.faces.push( { vIndices, nIndices, uvIndices} )

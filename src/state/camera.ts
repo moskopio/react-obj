@@ -25,8 +25,19 @@ export function createDefaultCamera(): Camera {
   }
 }
 
+const CAMERA_ACTIONS = [
+  'setDolly',
+  'setPhiRotation',
+  'setThetaRotation',
+  'setXTrack',
+  'setYTrack',
+  'updateDolly',
+  'updateRotation',
+  'updateTrack', 
+] as const
+
 export interface CameraAction extends Partial<Camera> {
-  type: 'updateRotation' | 'updateTrack' | 'setThetaRotation' | 'setPhiRotation' | 'setXTrack' | 'setYTrack' | 'setDolly' | 'updateDolly'
+  type: typeof CAMERA_ACTIONS[number]
 }
 
 export function cameraReducer(state: Camera, action: CameraAction): Camera {

@@ -16,18 +16,6 @@ export function ControlsPanel(): ReactElement {
   
   const onFile = useObjLoad()
   
-  const toggleMesh = useCallback(() => {
-    settingsDispatch({ type: 'toggleMesh' })
-  }, [settingsDispatch])
-  
-  const toggleWireframe = useCallback(() => {
-    settingsDispatch({ type: 'toggleWireframe' })
-  }, [settingsDispatch])
-  
-  const toggleOutline = useCallback(() => {
-    settingsDispatch({ type: 'toggleOutline' })
-  }, [settingsDispatch])
-  
   const setThetaRotation = useCallback((a: number) => { 
     cameraDispatch({ type: 'setThetaRotation', rotation: { theta: a, phi: 0 }})
   }, [cameraDispatch])
@@ -59,17 +47,23 @@ export function ControlsPanel(): ReactElement {
       <Checkbox 
         label="Show Mesh"
         value={settings.showMesh}
-        onChange={toggleMesh}
+        onChange={() => settingsDispatch({ type: 'toggleMesh' })}
       />
       <Checkbox 
         label="Show Outline"
         value={settings.showOutline}
-        onChange={toggleOutline}
+        onChange={() => settingsDispatch({ type: 'toggleOutline' })}
       />
       <Checkbox 
         label="Show Wireframe"
         value={settings.showWireframe}
-        onChange={toggleWireframe}
+        onChange={() => settingsDispatch({ type: 'toggleWireframe' })}
+      />
+      
+      <Checkbox 
+        label="Swap Y/Z"
+        value={settings.swapYZ}
+        onChange={() => settingsDispatch({ type: 'toggleSwapYZ' })}
       />
       <Divider />
       

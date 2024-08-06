@@ -2,25 +2,32 @@ export interface Settings {
   showMesh:      boolean
   showWireframe: boolean
   showOutline:   boolean
+  swapYZ:        boolean
 }
 
 export function createDefaultSettings(): Settings {
   return {
     showMesh:      true,
     showWireframe: false,
-    showOutline:   true
+    showOutline:   true,
+    swapYZ:        false,
   }
 }
 
+const SETTING_ACTIONS = [
+  'toggleMesh',
+  'toggleOutline',
+  'toggleSwapYZ',
+  'toggleWireframe',
+] as const
+
 export interface SettingsAction extends Partial<Settings> {
-  type: 'toggleMesh' | 'toggleWireframe' | 'toggleOutline'
+  type: typeof SETTING_ACTIONS[number]
 }
 
 export function settingsReducer(state: Settings, action: SettingsAction): Settings {
   const newState = { ...state }
   
-  console.log(newState)
-    
   switch (action.type) {
     case 'toggleMesh': 
       newState.showMesh = !newState.showMesh
@@ -32,6 +39,10 @@ export function settingsReducer(state: Settings, action: SettingsAction): Settin
       
     case 'toggleWireframe': 
       newState.showWireframe = !newState.showWireframe
+      break
+    
+    case 'toggleSwapYZ': 
+      newState.swapYZ = !newState.swapYZ
       break
   }
   

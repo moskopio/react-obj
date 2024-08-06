@@ -8,12 +8,12 @@ import { Camera } from "../state/camera"
 interface CameraOutput {
   projection:     Matrix4
   view:           Matrix4
-  world:          Matrix4
   cameraPosition: Vec3
 }
 
 export function getLookAtMatrices(camera: Camera): CameraOutput {
-  const { track, dolly, rotation, target } = camera 
+  const { fov, aspectRatio, zNear, zFar, track, dolly, rotation, target } = camera 
+  
   // 1. Tumble - rotating around Theta and Phi
   const qTheta = Q.fromAxisAngle([1, 0, 0], degToRad(rotation.theta))
   const qPhi = Q.fromAxisAngle([0, 1, 0], degToRad(-rotation.phi))
@@ -34,9 +34,8 @@ export function getLookAtMatrices(camera: Camera): CameraOutput {
   cameraToWorld[14] = cameraPosition[2]
   
   
-  const projection = perspective(camera.fov, camera.aspectRatio, camera.zNear, camera.zFar)
+  const projection = perspective(fov, aspectRatio, zNear, zFar)
   const view = M4.inverse(cameraToWorld)
-  const world = M4.identity()
   
-  return { projection, view, world, cameraPosition }
+  return { projection, view, cameraPosition }
 }

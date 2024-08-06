@@ -6,7 +6,7 @@ import { Divider } from "./basic/Divider"
 
 export function StatisticsPanel(): ReactElement {
   const { obj } = useContext(ObjContext)
-   
+  
   const groupsCount = obj.raw.groups.length
   const trianglesCount = obj.parsed.vertices.length
   const flatTrianglesCount = obj.flat.vertices.length
@@ -14,7 +14,6 @@ export function StatisticsPanel(): ReactElement {
   const indicesCount = obj.parsed.indices.length
   const parsingTime = obj.parsingTime
 
-  
   return (
     <Panel>
       <Stat label='Groups' value={groupsCount} />

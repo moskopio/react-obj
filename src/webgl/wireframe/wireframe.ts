@@ -1,10 +1,10 @@
-import { Vec3 } from '../../math/v3'
 import { Camera } from '../../state/camera'
-import { Obj } from '../../state/obj'
-import { Settings } from '../../state/settings'
+import { createEmptyObj, Obj } from '../../state/obj'
+import { createDefaultSettings, Settings } from '../../state/settings'
 import { Program } from '../../types'
 import { setupAttributes, updateAttributes } from '../attributes'
 import { getLookAtMatrices } from '../camera'
+import { getModelMatrix } from '../model'
 import { createShaderProgram } from '../program'
 import { TYPE, updateUniforms } from '../uniforms'
 import fragmentShaderSource from './wireframe.frag'
@@ -18,6 +18,9 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
     return undefined
   }
   
+  let obj = createEmptyObj()
+  let settings = createDefaultSettings()
+  
   // attributes
   const attributes = {
     position: { p: gl.getAttribLocation(program, 'aPosition'), s: 3, b: gl.createBuffer()! },
@@ -28,41 +31,33 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
   const uniforms = {
     projection:     { p: gl.getUniformLocation(program, 'uProjection'),    t: TYPE.M4 },
     view:           { p: gl.getUniformLocation(program, 'uView'),          t: TYPE.M4 },
-    world:          { p: gl.getUniformLocation(program, 'uWorld'),         t: TYPE.M4 },
+    model:          { p: gl.getUniformLocation(program, 'uModel'),         t: TYPE.M4 },
     lightDirection: { p: gl.getUniformLocation(program, 'uLightDirection'),t: TYPE.V3 },
     time:           { p: gl.getUniformLocation(program, 'uTime'),          t: TYPE.F },
   }
   
-  const settings = {
-    isRendering: false
-  }
-  
-  const geometry = {
-    vertices: [] as Vec3[],
-    normals:  [] as Vec3[],
-  }
-  
-  
   return { setObj, updateCamera, updateSettings, draw }
   
-  function setObj(obj: Obj): void {
-    const { wireframe } = obj
-    geometry.vertices = wireframe.vertices
-    geometry.normals = wireframe.smoothNormals
-  
+  function setObj(newObj: Obj): void {
+    obj = newObj 
     updateGeometry()
   }
   
   function updateGeometry(): void {
+    const { wireframe } = obj
     const values = {
-      position: geometry.vertices.flatMap(v => v),
-      normal:   geometry.normals.flatMap(n => n)
+      position: wireframe.vertices.flatMap(v => v),
+      normal:   wireframe.smoothNormals.flatMap(n => n)
     }
     updateAttributes({ gl, attributes, values })
   }
   
   function updateSettings(newSettings: Settings): void {
-    settings.isRendering = newSettings.showWireframe
+    settings = newSettings
+    
+    const model = getModelMatrix(obj, settings)
+    gl.useProgram(program!)
+    gl.uniformMatrix4fv(uniforms.model.p, false, model)
   }
   
   function updateCamera(camera: Camera): void {
@@ -74,12 +69,12 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
   }
   
   function draw(time: number): void {
-    if (settings.isRendering) {
+    if (settings.showWireframe) {
       gl.useProgram(program!)
       setupAttributes({ gl, attributes })
       
       gl.uniform1f(uniforms.time.p, time)
-      gl.drawArrays(gl.LINES, 0, geometry.vertices.length)
+      gl.drawArrays(gl.LINES, 0, obj.wireframe.vertices.length)
     }
   }
 }

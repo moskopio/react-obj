@@ -5,7 +5,7 @@ attribute vec3 aNormal;
 
 uniform mat4 uProjection;
 uniform mat4 uView;
-uniform mat4 uWorld;
+uniform mat4 uModel;
 
 uniform float uOutline;
 uniform float uTime;
@@ -20,5 +20,5 @@ void main() {
   position.y += normal.y * outline;
   position.z += normal.z * outline;
   
-  gl_Position = uProjection * uView * uWorld * vec4(position, 1);
+  gl_Position = uProjection * uView * uModel * vec4(position, 1);
 }

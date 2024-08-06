@@ -59,14 +59,12 @@ export function useCameraControls(props: ControlProps): void {
     
     function onKeyDown(event: KeyboardEvent): void {
       if (event.key === 'Shift') {
-        console.log('shift! down')
         shift.current = true
       }
     }
     
     function onKeyUp(event: KeyboardEvent): void {
       if (event.key === 'Shift') { 
-        console.log('shift! up')
           shift.current = false
       }
     }
