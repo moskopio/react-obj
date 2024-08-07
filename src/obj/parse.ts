@@ -1,4 +1,4 @@
-import { V3, Vec3 } from "../math/v3"
+import { Vec3 } from "../math/v3"
 import { getVerticesIndices } from "./indices"
 import { getNormals } from "./normals"
 import { RawObj } from "./read"
@@ -8,29 +8,16 @@ export interface ParsedObj {
   indices:        number[]
   definedNormals: Vec3[]
   smoothNormals:  Vec3[]
+  boundingBox:    [Vec3, Vec3]
 }
 
 export function parseObj(obj: RawObj): ParsedObj {
-  const vertices: Vec3[] = prepareVertices(obj)
+  const vertices: Vec3[] = getAllVertices(obj)
   const indices: number[] = getVerticesIndices(obj)
   const { definedNormals, smoothNormals } = getNormals(obj)
+  const boundingBox = getBoundingBox(vertices)
   
-  return { vertices, indices, definedNormals, smoothNormals }
-}
-
-function prepareVertices(obj: RawObj): Vec3[] {
-  const vertices: Vec3[] = getAllVertices(obj)
-  return vertices.length > 0 ? scaleVertices(vertices): vertices
-}
-
-function scaleVertices(vertices: Vec3[]): Vec3[] {
-  const { min, max } = getExtents(vertices)
-  const range = V3.subtract(max, min)
-  const offset = V3.scale(V3.add(min, V3.scale(range, 0.5)), -1)
-  const scaling = Math.max(...range)
-  const scale = 2 / scaling
-  
-  return vertices.map(v => V3.scale(V3.add(v, offset), scale))
+  return { vertices, indices, definedNormals, smoothNormals, boundingBox }
 }
 
 function getAllVertices(obj: RawObj): Vec3[] {
@@ -40,14 +27,9 @@ function getAllVertices(obj: RawObj): Vec3[] {
   return vertices
 }
 
-interface Size {
-  min: Vec3
-  max: Vec3
-}
-
-function getExtents(vertices: Vec3[]): Size {
-  const min: Vec3 = [0, 0, 0]
-  const max: Vec3 = [0, 0, 0]
+function getBoundingBox(vertices: Vec3[]): [Vec3, Vec3] {
+  const min: Vec3 = [...vertices[0] || [0, 0, 0]]
+  const max: Vec3 = [...vertices[0] || [0, 0, 0]]
   
   vertices.forEach(v => {
     min[0] = Math.min(min[0], v[0])
@@ -59,5 +41,6 @@ function getExtents(vertices: Vec3[]): Size {
     max[2] = Math.max(max[2], v[2])
   })
   
-  return { min, max }
+  return [min, max]
 }
+

@@ -51,6 +51,10 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
       normal:   flat.smoothNormals.flatMap(n => n)
     }
     updateAttributes({ gl, attributes, values })
+    
+    const model = getModelMatrix(obj, settings)
+    gl.useProgram(program!)
+    gl.uniformMatrix4fv(uniforms.model.p, false, model)
   }
   
   function updateSettings(newSettings: Settings): void {

@@ -6,7 +6,7 @@ import { FlattenObj } from "../obj/flatten"
 export function createEmptyObj(): Obj {
   return {
     raw:         { groups: [] },
-    parsed:      { vertices: [], indices: [], definedNormals: [], smoothNormals: [] },
+    parsed:      { vertices: [], indices: [], definedNormals: [], smoothNormals: [], boundingBox: [[0,0,0], [0,0,0]] },
     flat:        { vertices: [], flatNormals: [], definedNormals: [], smoothNormals: [] },
     wireframe:   { vertices: [], flatNormals: [], definedNormals: [], smoothNormals: [] },
     parsingTime: 0

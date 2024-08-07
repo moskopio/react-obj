@@ -5,19 +5,20 @@ import { Vec4, V4 } from "./v4"
 export type Matrix4 = number[]
 
 export const M4 = {
-  multiply,
+  axisRotation,
+  combine,
+  compose,
+  determinate,
+  getSubMatrix,
   identity,
-  transpose,
+  inverse,
+  multiply,
+  scaling,
   translation,
+  transpose,
   xRotation,
   yRotation,
   zRotation,
-  axisRotation,
-  scaling,
-  compose,
-  getSubMatrix,
-  determinate,
-  inverse,
 }
 
 function getColumn(m: Matrix4, c: number): Vec4 {
@@ -26,6 +27,11 @@ function getColumn(m: Matrix4, c: number): Vec4 {
 
 function getRow(m: Matrix4, r: number): Vec4 {
 	return [ m[r], m[r + 4], m[r + 8], m[r + 12]]
+}
+
+function combine(...matrices: Matrix4[]): Matrix4 {
+  const reverseMatrices = [...matrices].reverse()
+  return reverseMatrices.reduce((p, c) => multiply(p, c), identity()) 
 }
 
 function multiply(a: Matrix4, b: Matrix4): Matrix4 {
