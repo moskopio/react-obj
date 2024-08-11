@@ -36,8 +36,7 @@
 }
 
 .panel-bar {
-  background-image: var(--component-reverse-background);
-  /* background: white; */
+  background-image: var(--component-background);
   box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
   border-right: var(--highlight-color) solid 1px;
   cursor: pointer;

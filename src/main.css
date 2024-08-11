@@ -8,14 +8,6 @@
   --accent-color-1: #B2C99E;
   --accent-color-2: #628090;
   
-  --accent-color-3: #bf5c39;
-  --accent-color-4: #efd5a5;
-  
-  --accent-color-dark-blue: #022636;
-  --accent-color-medium-blue: #103D50;
-  --accent-color-light-blue: #467386;
-  --accent-color-highlight-blue: #6E92A1;
-  
   --elements-border: 2px;
   --elements-radius: 3px;
   
@@ -26,14 +18,6 @@
     1px -1px 0 var(--shadow-color);
     
   --component-background: 
-    linear-gradient(
-      var(--accent-color-1)  3px,
-      var(--highlight-color) 4px,
-      var(--line-color-2)    5px,
-      var(--accent-color-2)  10px
-    );
-    
-  --component-reverse-background: 
     linear-gradient(
       var(--accent-color-1)  3px,
       var(--highlight-color) 4px,
