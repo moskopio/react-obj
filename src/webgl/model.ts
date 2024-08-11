@@ -1,5 +1,5 @@
-import { M4, Matrix4 } from "../math/m4"
-import { V3 } from "../math/v3"
+import { M4, Matrix4 } from "../utils/math/m4"
+import { V3 } from "../utils/math/v3"
 import { Obj } from "../state/obj"
 import { Settings } from "../state/settings"
 

@@ -9,13 +9,7 @@
 .slider-handle {
   height: 15px;
   box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
-  background-image: 
-  linear-gradient(
-    var(--accent-color-1)  3px, 
-    var(--highlight-color) 4px, 
-    var(--line-color-2)    5px, 
-    var(--accent-color-2) 10px
-  );
+  background-image: var(--component-background);
   background-size: 1px 15px;
 }
 
@@ -25,7 +19,7 @@
   text-align: center;
   pointer-events: none;
   user-select: none;
-  color: white;
+  color: var(--highlight-color);
   font-family: monospace;
   text-shadow: var(--text-shadow);
 }

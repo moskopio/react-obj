@@ -1,10 +1,8 @@
-import { ReactElement, ReactNode } from "react"
-import './App.css'
-import { ControlsPanel } from "./components/ControlsPanel"
+import { ReactNode } from "react"
 import { WebGLPreview } from "./preview/WebGLPreview"
 import { AppContext, useAppState } from "./state/context"
-import { StatisticsPanel } from "./components/StatisticsPanel"
 import { ObjContext, useObjState } from "./state/obj"
+import { Panels } from "./panels/Panels"
 
 
 export function App(): ReactNode {
@@ -14,28 +12,9 @@ export function App(): ReactNode {
   return (
     <ObjContext.Provider value={objState}>
     <AppContext.Provider value={state}>
-      <div className="application">
-        <Preview />
-        <Panels />
-      </div>
+      <WebGLPreview />
+      <Panels />
     </AppContext.Provider>
     </ObjContext.Provider>
-  )
-}
-
-function Preview(): ReactElement {
-  return (
-    <div className="preview">
-      <WebGLPreview />
-    </div>
-  )
-}
-
-function Panels(): ReactElement {
-  return (
-    <div className="panels">
-      <ControlsPanel />
-      <StatisticsPanel />
-    </div>
   )
 }

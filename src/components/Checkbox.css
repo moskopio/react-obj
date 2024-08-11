@@ -7,22 +7,16 @@
 .checkbox-box {
   font-size: 14px;
   font-family: monospace;
-  border-radius: var(--elements-radius);
   border: var(--elements-border) var(--highlight-color) solid;
   box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
   height: 15px;
   outline: var(--elements-border) var(--shadow-color) solid;
   width: 15px;
+  border-radius: 14px;
 }
 
 .checked {
-  background-image: 
-  linear-gradient(
-    var(--accent-color-1)  3px, 
-    var(--highlight-color) 4px, 
-    var(--line-color-2)    5px, 
-    var(--accent-color-2) 10px
-  );
+  background-image: var(--component-background);
   background-size: 1px 15px;
 }
 

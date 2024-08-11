@@ -50,6 +50,10 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
       normal:   wireframe.smoothNormals.flatMap(n => n)
     }
     updateAttributes({ gl, attributes, values })
+    
+    const model = getModelMatrix(obj, settings)
+    gl.useProgram(program!)
+    gl.uniformMatrix4fv(uniforms.model.p, false, model)
   }
   
   function updateSettings(newSettings: Settings): void {

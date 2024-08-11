@@ -15,7 +15,7 @@ export function usePrograms(props: Props): void {
   const { gl, resolution } = props
   const [programs, setPrograms] = useState<Program[]>([])
   const requestId = useRef<number>()
-  const { camera, settings } = useContext(AppContext)
+  const { camera, settings, cameraDispatch } = useContext(AppContext)
   const { obj } = useContext(ObjContext)
   
   useEffect(() => {
@@ -37,6 +37,7 @@ export function usePrograms(props: Props): void {
     gl?.viewport(0, 0, resolution.width, resolution.height)
     gl?.enable(gl.DEPTH_TEST)
     gl?.enable(gl.CULL_FACE)
+    cameraDispatch({ type: 'setAspectRatio', aspectRatio: resolution.width / resolution.height })
   }, [gl, resolution])
   
   useEffect(() => { 

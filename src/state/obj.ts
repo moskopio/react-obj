@@ -1,7 +1,7 @@
 import { createContext, Dispatch, SetStateAction, useMemo, useState } from "react"
-import { RawObj } from "../obj/read"
-import { ParsedObj } from "../obj/parse"
-import { FlattenObj } from "../obj/flatten"
+import { RawObj } from "../utils/obj/read"
+import { ParsedObj } from "../utils/obj/parse"
+import { FlattenObj } from "../utils/obj/flatten"
 
 export function createEmptyObj(): Obj {
   return {
@@ -9,7 +9,8 @@ export function createEmptyObj(): Obj {
     parsed:      { vertices: [], indices: [], definedNormals: [], smoothNormals: [], boundingBox: [[0,0,0], [0,0,0]] },
     flat:        { vertices: [], flatNormals: [], definedNormals: [], smoothNormals: [] },
     wireframe:   { vertices: [], flatNormals: [], definedNormals: [], smoothNormals: [] },
-    parsingTime: 0
+    parsingTime: 0,
+    name:        ''
   }
 }
 
@@ -19,6 +20,7 @@ export interface Obj {
   flat:        FlattenObj
   wireframe:   FlattenObj
   parsingTime: number
+  name:        string
 }
 
 

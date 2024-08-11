@@ -1,25 +1,38 @@
-import { ReactElement, useRef } from "react"
+import { ReactElement, useLayoutEffect, useRef, useState } from "react"
 import './WebGLPreview.css'
 import { useCameraControls } from "./camera-controls"
 import { usePrograms } from "./use-programs"
 import { useWebGLContext } from "../webgl/use-context"
 
-const PREVIEW_WIDTH = 600
-const PREVIEW_HEIGHT = 400
-
-
 export function WebGLPreview(): ReactElement {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [resolution, setResolution] = useState({ width: window.innerWidth, height: window.innerHeight })
+  
   const gl = useWebGLContext({ canvasRef })
-  usePrograms({ gl, resolution: { width: PREVIEW_WIDTH, height: PREVIEW_HEIGHT } } )
-  useCameraControls({ canvasRef })
+  
+  usePrograms({ gl, resolution })
+  useCameraControls()
+  
+  useLayoutEffect(() => {  
+    window.addEventListener('resize', updateResolution)
+    return () => window.removeEventListener('resize', updateResolution)
+    
+    function updateResolution(): void {
+      const dpr = window.devicePixelRatio
+      const displayWidth  = Math.round(window.innerWidth * dpr)
+      const displayHeight = Math.round(window.innerHeight * dpr)
+    
+      setResolution({ width: displayWidth, height: displayHeight })
+    }
+  }, [gl, setResolution])
+  
   
   return (
     <canvas 
       ref={canvasRef}
-      className="webgl-canvas" 
-      width={PREVIEW_WIDTH} 
-      height={PREVIEW_HEIGHT} 
+      className="webgl-canvas"
+      width={resolution.width}
+      height={resolution.height}
     />
   )
 }

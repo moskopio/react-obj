@@ -1,5 +1,5 @@
-import { degToRad } from "../math/angles"
-import { Vec3 } from "../math/v3"
+import { degToRad } from "../utils/math/angles"
+import { Vec3 } from "../utils/math/v3"
 
 export interface Camera { 
   aspectRatio: number
@@ -29,11 +29,12 @@ const CAMERA_ACTIONS = [
   'setDolly',
   'setPhiRotation',
   'setThetaRotation',
+  'setAspectRatio',
   'setXTrack',
   'setYTrack',
   'updateDolly',
   'updateRotation',
-  'updateTrack', 
+  'updateTrack',
 ] as const
 
 export interface CameraAction extends Partial<Camera> {
@@ -58,6 +59,10 @@ export function cameraReducer(state: Camera, action: CameraAction): Camera {
     case 'setPhiRotation': 
       newState.rotation = { ...newState.rotation, phi: action.rotation!.phi }
       break
+      
+    case 'setAspectRatio': 
+      newState.aspectRatio = action.aspectRatio ?? newState.aspectRatio
+    break
   
     case 'updateTrack': 
       newState.track = { 

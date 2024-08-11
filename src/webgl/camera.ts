@@ -1,8 +1,8 @@
-import { degToRad } from "../math/angles"
-import { M4, Matrix4 } from "../math/m4"
-import { perspective } from "../math/projections"
-import { Q } from "../math/quaternion"
-import { V3, Vec3 } from "../math/v3"
+import { degToRad } from "../utils/math/angles"
+import { M4, Matrix4 } from "../utils/math/m4"
+import { perspective } from "../utils/math/projections"
+import { Q } from "../utils/math/quaternion"
+import { V3, Vec3 } from "../utils/math/v3"
 import { Camera } from "../state/camera"
 
 interface CameraOutput {
