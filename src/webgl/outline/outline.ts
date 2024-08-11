@@ -2,6 +2,7 @@ import { Camera } from '../../state/camera'
 import { createEmptyObj, Obj } from '../../state/obj'
 import { createDefaultSettings, Settings } from '../../state/settings'
 import { Program } from '../../types'
+import { colorToVec3 } from '../../utils/color'
 import { setupAttributes, updateAttributes } from '../attributes'
 import { getLookAtMatrices } from '../camera'
 import { getModelMatrix } from '../model'
@@ -34,6 +35,8 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
     model:      { p: gl.getUniformLocation(program, 'uModel'),      t: TYPE.M4 },
     time:       { p: gl.getUniformLocation(program, 'uTime'),       t: TYPE.F },
     outline:    { p: gl.getUniformLocation(program, 'uOutline'),    t: TYPE.F },
+    colorA:     { p: gl.getUniformLocation(program, 'uColorA'),     t: TYPE.V3 },
+    colorB:     { p: gl.getUniformLocation(program, 'uColorB'),     t: TYPE.V3 },
   }
     
   return { setObj, updateCamera, updateSettings, draw }
@@ -46,23 +49,36 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
   function updateGeometry(): void {
     const { flat } = obj
     
+    const vertices = [...flat.vertices].reverse()
+    const normals  = [...flat.smoothNormals].reverse()
+    
     const values = {
-      position: flat.vertices.flatMap(v => v),
-      normal:   flat.smoothNormals.flatMap(n => n)
+      position: vertices.flatMap(v => v),
+      normal:   normals.flatMap(n => n)
     }
     updateAttributes({ gl, attributes, values })
-    
+    updateModel()
+  }
+  
+  function updateModel(): void {
     const model = getModelMatrix(obj, settings)
+    
     gl.useProgram(program!)
     gl.uniformMatrix4fv(uniforms.model.p, false, model)
   }
   
+  function updateColors(): void {
+    const colorA = settings.showReverseOutline ? colorToVec3(0x000000) : colorToVec3(0xB2C99E)
+    const colorB = settings.showReverseOutline ? colorToVec3(0x333333) : colorToVec3(0x628090)
+    gl.useProgram(program!)
+    gl.uniform3f(uniforms.colorA.p, ...colorA)
+    gl.uniform3f(uniforms.colorB.p, ...colorB)
+  }
+  
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
-    
-    const model = getModelMatrix(obj, settings)
-    gl.useProgram(program!)
-    gl.uniformMatrix4fv(uniforms.model.p, false, model)
+    updateModel()
+    updateColors()
   }
   
   function updateCamera(camera: Camera): void {
@@ -70,17 +86,18 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
 
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values: rest })
-    gl.uniform1f(uniforms.outline.p, 1 + camera.dolly)
+    gl.uniform1f(uniforms.outline.p, camera.dolly)
   }
   
   function draw(time: number): void {
-    if (settings.showOutline) {
+    if (settings.showOutline || settings.showReverseOutline) {
       gl.useProgram(program!)
       setupAttributes({ gl, attributes })
       
       gl.uniform1f(uniforms.time.p, time)
       gl.drawArrays(gl.TRIANGLES, 0, obj.flat.vertices.length)
-      gl?.clear(gl.DEPTH_BUFFER_BIT)
+      const shouldCleanDepth = settings.showOutline && !settings.showReverseOutline
+      shouldCleanDepth && gl?.clear(gl.DEPTH_BUFFER_BIT)
     }
   }
 }

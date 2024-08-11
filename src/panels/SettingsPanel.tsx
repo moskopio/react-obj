@@ -13,16 +13,6 @@ export function SettingsPanel(): ReactElement {
         value={settings.showMesh}
         onChange={() => settingsDispatch({ type: 'toggleMesh' })}
       />
-      <Checkbox 
-        label="Show Outline"
-        value={settings.showOutline}
-        onChange={() => settingsDispatch({ type: 'toggleOutline' })}
-      />
-      <Checkbox 
-        label="Show Wireframe"
-        value={settings.showWireframe}
-        onChange={() => settingsDispatch({ type: 'toggleWireframe' })}
-      />
       
       <Checkbox 
         label="Show Normals"
@@ -31,10 +21,42 @@ export function SettingsPanel(): ReactElement {
       />
       
       <Checkbox 
+        label="Cell Shading"
+        value={settings.cellShading}
+        onChange={() => settingsDispatch({ type: 'toggleCellShading' })}
+      />
+      
+      <Checkbox 
+        label="Show Outline"
+        value={settings.showOutline}
+        onChange={() => settingsDispatch({ type: 'toggleOutline' })}
+      />
+      
+      <Checkbox 
+        label="Show Reverse Outline"
+        value={settings.showReverseOutline}
+        onChange={() => settingsDispatch({ type: 'toggleReverseOutline' })}
+      />
+      
+      <Checkbox 
+        label="Show Wireframe"
+        value={settings.showWireframe}
+        onChange={() => settingsDispatch({ type: 'toggleWireframe' })}
+      />
+      
+      
+      <Checkbox 
+        label="Show Grid"
+        value={settings.showGrid}
+        onChange={() => settingsDispatch({ type: 'toggleGrid' })}
+      />
+      
+      <Checkbox 
         label="Swap Y/Z"
         value={settings.swapYZ}
         onChange={() => settingsDispatch({ type: 'toggleSwapYZ' })}
       />
+      
     </Panel>
   )
 }

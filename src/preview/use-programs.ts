@@ -5,6 +5,7 @@ import { Program } from "../types"
 import { createOutlineDrawer } from "../webgl/outline/outline"
 import { createWireframeDrawer } from "../webgl/wireframe/wireframe"
 import { ObjContext } from "../state/obj"
+import { createGridDrawer } from "../webgl/grid/grid"
 
 interface Props {
   gl:         WebGLRenderingContext | null
@@ -23,8 +24,10 @@ export function usePrograms(props: Props): void {
       const meshDrawer = createMeshDrawer(gl)
       const outlineDrawer = createOutlineDrawer(gl)
       const wireframeDrawer = createWireframeDrawer(gl)
+      const gridDrawer = createGridDrawer(gl)
 
       const newPrograms = [...programs]
+      gridDrawer && newPrograms.push(gridDrawer)
       outlineDrawer && newPrograms.push(outlineDrawer)
       wireframeDrawer && newPrograms.push(wireframeDrawer)
       meshDrawer && newPrograms.push(meshDrawer)

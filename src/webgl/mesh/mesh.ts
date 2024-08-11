@@ -2,7 +2,6 @@ import { Camera } from '../../state/camera'
 import { createEmptyObj, Obj } from '../../state/obj'
 import { createDefaultSettings, Settings } from '../../state/settings'
 import { Program } from '../../types'
-import { M4 } from '../../utils/math/m4'
 import { setupAttributes, updateAttributes } from '../attributes'
 import { getLookAtMatrices } from '../camera'
 import { getModelMatrix } from '../model'
@@ -36,6 +35,7 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
     cameraPosition: { p: gl.getUniformLocation(program, 'uCameraPosition'),t: TYPE.V3 },
     time:           { p: gl.getUniformLocation(program, 'uTime'),          t: TYPE.F },
     showNormals:    { p: gl.getUniformLocation(program, 'uShowNormals'),   t: TYPE.B },
+    cellShading:    { p: gl.getUniformLocation(program, 'uCellShading'),   t: TYPE.B },
   }
     
   return { setObj, updateCamera, updateSettings, draw }
@@ -58,6 +58,10 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
   
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
+    
+    gl.useProgram(program!)
+    gl.uniform1i(uniforms.showNormals.p, settings.showNormals ? 1 : 0)
+    gl.uniform1i(uniforms.cellShading.p, settings.cellShading ? 1 : 0)
     updateModel()
   }
   
@@ -82,7 +86,6 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
       setupAttributes({ gl, attributes })
       
       gl.uniform1f(uniforms.time.p, time)
-      gl.uniform1i(uniforms.showNormals.p, settings.showNormals ? 1 : 0)
       gl.drawArrays(gl.TRIANGLES, 0, obj.flat.vertices.length)
     }
   }

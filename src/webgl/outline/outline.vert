@@ -17,6 +17,6 @@ void main() {
   float change = 0.5 + sin(uTime / 1000.0) / 2.0;
   float outline = (0.01 + change * 0.01) * uOutline;
   position.xyz += outlineNormal * outline;
-
+  
   gl_Position = position;
 }
