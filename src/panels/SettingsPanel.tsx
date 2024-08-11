@@ -25,6 +25,12 @@ export function SettingsPanel(): ReactElement {
       />
       
       <Checkbox 
+        label="Show Normals"
+        value={settings.showNormals}
+        onChange={() => settingsDispatch({ type: 'toggleNormals' })}
+      />
+      
+      <Checkbox 
         label="Swap Y/Z"
         value={settings.swapYZ}
         onChange={() => settingsDispatch({ type: 'toggleSwapYZ' })}

@@ -3,6 +3,7 @@ export interface Settings {
   showWireframe: boolean
   showOutline:   boolean
   swapYZ:        boolean
+  showNormals:   boolean
 }
 
 export function createDefaultSettings(): Settings {
@@ -11,6 +12,7 @@ export function createDefaultSettings(): Settings {
     showWireframe: false,
     showOutline:   true,
     swapYZ:        false,
+    showNormals:   false,
   }
 }
 
@@ -19,6 +21,7 @@ const SETTING_ACTIONS = [
   'toggleOutline',
   'toggleSwapYZ',
   'toggleWireframe',
+  'toggleNormals',
 ] as const
 
 export interface SettingsAction extends Partial<Settings> {
@@ -44,6 +47,10 @@ export function settingsReducer(state: Settings, action: SettingsAction): Settin
     case 'toggleSwapYZ': 
       newState.swapYZ = !newState.swapYZ
       break
+    
+    case 'toggleNormals':
+      newState.showNormals = !newState.showNormals
+    break
   }
   
   return newState

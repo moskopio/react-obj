@@ -13,6 +13,6 @@ varying vec3 vNormal;
 void main() {
   vec3 position = aPosition;
   
-  vNormal = normalize(mat3(uModel) * aNormal);  
+  vNormal = normalize(aNormal);
   gl_Position = uProjection * uView * uModel * vec4(position, 1);
 }

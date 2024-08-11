@@ -11,14 +11,12 @@ uniform float uOutline;
 uniform float uTime;
 
 void main() {
-  vec3 position = aPosition;
-  vec3 normal =  aNormal;
+  vec4 position = uProjection * uView * uModel * vec4(aPosition, 1);
+  vec3 outlineNormal = normalize(mat3(uProjection) * mat3(uView) * mat3(uModel) * aNormal);
   
   float change = 0.5 + sin(uTime / 1000.0) / 2.0;
   float outline = (0.01 + change * 0.01) * uOutline;
-  position.x += normal.x * outline;
-  position.y += normal.y * outline;
-  position.z += normal.z * outline;
-  
-  gl_Position = uProjection * uView * uModel * vec4(position, 1);
+  position.xyz += outlineNormal * outline;
+
+  gl_Position = position;
 }

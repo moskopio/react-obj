@@ -2,6 +2,7 @@ import { Camera } from '../../state/camera'
 import { createEmptyObj, Obj } from '../../state/obj'
 import { createDefaultSettings, Settings } from '../../state/settings'
 import { Program } from '../../types'
+import { M4 } from '../../utils/math/m4'
 import { setupAttributes, updateAttributes } from '../attributes'
 import { getLookAtMatrices } from '../camera'
 import { getModelMatrix } from '../model'
@@ -32,8 +33,9 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
     projection:     { p: gl.getUniformLocation(program, 'uProjection'),    t: TYPE.M4 },
     view:           { p: gl.getUniformLocation(program, 'uView'),          t: TYPE.M4 },
     model:          { p: gl.getUniformLocation(program, 'uModel'),         t: TYPE.M4 },
-    lightDirection: { p: gl.getUniformLocation(program, 'uLightDirection'),t: TYPE.V3 },
+    cameraPosition: { p: gl.getUniformLocation(program, 'uCameraPosition'),t: TYPE.V3 },
     time:           { p: gl.getUniformLocation(program, 'uTime'),          t: TYPE.F },
+    showNormals:    { p: gl.getUniformLocation(program, 'uShowNormals'),   t: TYPE.B },
   }
     
   return { setObj, updateCamera, updateSettings, draw }
@@ -51,16 +53,17 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
       normal:   flat.smoothNormals.flatMap(n => n)
     }
     updateAttributes({ gl, attributes, values })
-    
-    const model = getModelMatrix(obj, settings)
-    gl.useProgram(program!)
-    gl.uniformMatrix4fv(uniforms.model.p, false, model)
+    updateModel()
   }
   
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
-    
+    updateModel()
+  }
+  
+  function updateModel(): void {
     const model = getModelMatrix(obj, settings)
+    
     gl.useProgram(program!)
     gl.uniformMatrix4fv(uniforms.model.p, false, model)
   }
@@ -70,15 +73,16 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
 
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values: rest })
-    gl.uniform3fv(uniforms.lightDirection.p, cameraPosition)
+    gl.uniform3fv(uniforms.cameraPosition.p, cameraPosition)
   }
   
   function draw(time: number): void {
-    if (settings.showMesh) {
+    if (settings.showMesh || settings.showNormals) {
       gl.useProgram(program!)
       setupAttributes({ gl, attributes })
       
       gl.uniform1f(uniforms.time.p, time)
+      gl.uniform1i(uniforms.showNormals.p, settings.showNormals ? 1 : 0)
       gl.drawArrays(gl.TRIANGLES, 0, obj.flat.vertices.length)
     }
   }
