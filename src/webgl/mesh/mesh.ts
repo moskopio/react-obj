@@ -48,9 +48,12 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
   function updateGeometry(): void {
     const { flat } = obj
     
+    const vertices = flat.vertices
+    const normals = settings.flatNormals ? flat.flatNormals : flat.smoothNormals
+    
     const values = {
-      position: flat.vertices.flatMap(v => v),
-      normal:   flat.smoothNormals.flatMap(n => n)
+      position: vertices.flatMap(v => v),
+      normal:   normals.flatMap(n => n)
     }
     updateAttributes({ gl, attributes, values })
     updateModel()
@@ -63,6 +66,7 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
     gl.uniform1i(uniforms.showNormals.p, settings.showNormals ? 1 : 0)
     gl.uniform1i(uniforms.cellShading.p, settings.cellShading ? 1 : 0)
     updateModel()
+    updateGeometry()
   }
   
   function updateModel(): void {

@@ -49,12 +49,12 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
   function updateGeometry(): void {
     const { flat } = obj
     
-    const vertices = [...flat.vertices].reverse()
-    const normals  = [...flat.smoothNormals].reverse()
+    const vertices = [...flat.vertices]
+    const normals  = settings.flatNormals ? [...flat.flatNormals] : [...flat.smoothNormals]
     
     const values = {
-      position: vertices.flatMap(v => v),
-      normal:   normals.flatMap(n => n)
+      position: vertices.reverse().flatMap(v => v),
+      normal:   normals.reverse().flatMap(n => n)
     }
     updateAttributes({ gl, attributes, values })
     updateModel()
@@ -69,7 +69,7 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
   
   function updateColors(): void {
     const colorA = settings.showReverseOutline ? colorToVec3(0x000000) : colorToVec3(0xB2C99E)
-    const colorB = settings.showReverseOutline ? colorToVec3(0x333333) : colorToVec3(0x628090)
+    const colorB = settings.showReverseOutline ? colorToVec3(0x111111) : colorToVec3(0x628090)
     gl.useProgram(program!)
     gl.uniform3f(uniforms.colorA.p, ...colorA)
     gl.uniform3f(uniforms.colorB.p, ...colorB)
@@ -79,6 +79,7 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
     settings = newSettings
     updateModel()
     updateColors()
+    updateGeometry()
   }
   
   function updateCamera(camera: Camera): void {
@@ -86,7 +87,8 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
 
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values: rest })
-    gl.uniform1f(uniforms.outline.p, camera.dolly)
+    const outline = 0.5 * camera.dolly 
+    gl.uniform1f(uniforms.outline.p, outline)
   }
   
   function draw(time: number): void {

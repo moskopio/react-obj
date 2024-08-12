@@ -7,7 +7,7 @@
 .file-input-icon {
   font-size: 10px;
   font-family: monospace;
-  border-radius: 15px;
+  border-radius: var(--elements-radius);
   border: var(--elements-border) var(--highlight-color) solid;
   box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
   height: 15px;

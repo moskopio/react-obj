@@ -21,6 +21,12 @@ export function SettingsPanel(): ReactElement {
       />
       
       <Checkbox 
+        label="Flat Normals"
+        value={settings.flatNormals}
+        onChange={() => settingsDispatch({ type: 'toggleFlatNormals' })}
+      />
+      
+      <Checkbox 
         label="Cell Shading"
         value={settings.cellShading}
         onChange={() => settingsDispatch({ type: 'toggleCellShading' })}

@@ -34,8 +34,8 @@ void main() {
   vec3 color = lightShading(toCameraNormal);
   vec3 cellShadedColor = cellShading(toCameraNormal);
   
-  color = mix(color, normal, float(uShowNormals));
   color = mix(color, cellShadedColor, float(uCellShading));
+  color = mix(color, normal, float(uShowNormals));
 
   gl_FragColor = vec4(color, 1.0);
 }

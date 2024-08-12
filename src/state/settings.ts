@@ -7,6 +7,7 @@ export interface Settings {
   showWireframe:      boolean
   swapYZ:             boolean
   cellShading:        boolean
+  flatNormals:        boolean
 }
 
 export function createDefaultSettings(): Settings {
@@ -19,6 +20,7 @@ export function createDefaultSettings(): Settings {
     showWireframe:      false,
     swapYZ:             false,
     cellShading:        false,
+    flatNormals:        false,
   }
 }
 
@@ -31,6 +33,7 @@ const SETTING_ACTIONS = [
   'toggleSwapYZ',
   'toggleWireframe',
   'toggleCellShading',
+  'toggleFlatNormals',
 ] as const
 
 export interface SettingsAction extends Partial<Settings> {
@@ -72,6 +75,9 @@ export function settingsReducer(state: Settings, action: SettingsAction): Settin
     case 'toggleCellShading': 
       newState.cellShading = !newState.cellShading
       break
+      
+    case 'toggleFlatNormals':
+      newState.flatNormals = !newState.flatNormals
   }
   
   return newState

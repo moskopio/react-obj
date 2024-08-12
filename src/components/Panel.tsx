@@ -1,4 +1,5 @@
 import { ReactElement, useCallback, useState } from "react"
+import { IconCamera, IconFile, IconInfo, IconLight, IconSettings } from "./Icon"
 import "./Panel.css"
 
 interface Props {
@@ -6,22 +7,22 @@ interface Props {
   icon:     string
 }
 
+
 export function Panel(props: Props): ReactElement {
-  const { icon } = props
-  const [extended, setExtended] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
   
-  const onClick = useCallback(() => setExtended(!extended), [extended, setExtended])
+  const onClick = useCallback(() => setIsExpanded(!isExpanded), [isExpanded, setIsExpanded])
   
-  return extended 
+  return isExpanded 
     ? <ExtendedPanel onClick={onClick} {...props} />
-    : <div className={`panel-${icon}-icon`} onClick={onClick}></div>
+    : <PanelIcon onClick={onClick} {...props} />
 }
 
-interface ExtendedProps extends Props {
+interface ClickableProps extends Props {
   onClick: () => void
 }
 
-function ExtendedPanel(props: ExtendedProps): ReactElement {
+function ExtendedPanel(props: ClickableProps): ReactElement {
   const { onClick, children } = props
   
   return (
@@ -30,4 +31,18 @@ function ExtendedPanel(props: ExtendedProps): ReactElement {
       <div className="panel-content">{...children}</div>
     </div>
   )
+}
+
+function PanelIcon(props: ClickableProps): ReactElement {
+  const { icon, onClick } = props
+  
+  switch (icon) {
+    case 'camera': return <IconCamera onClick={onClick} />
+    case 'file'  : return <IconFile onClick={onClick} />
+    case 'info'  : return <IconInfo onClick={onClick} />
+    case 'light' : return <IconLight onClick={onClick} />
+    case 'settings': return <IconSettings onClick={onClick} />
+    default: return <IconInfo onClick={onClick} />
+  }
+
 }

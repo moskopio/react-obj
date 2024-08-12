@@ -1,7 +1,11 @@
 precision mediump float;
 
 uniform float uTime;
+uniform vec3 uColorA;
+uniform vec3 uColorB;
+
 varying vec2 vPosition;
+varying float vFogDepth;
 
 float grid(in vec2 st, vec2 size) {
   vec2 newSize = vec2(0.5)- size * 0.5;
@@ -12,13 +16,15 @@ float grid(in vec2 st, vec2 size) {
 
 void main() {
   float colorChange = 0.5 + sin(uTime /750.0) / 2.0;
-  vec3 color = mix(vec3(0.69, 0.78, 0.61), vec3(0.38, 0.5, 0.56), colorChange);
+  vec3 color = mix(uColorA, uColorB, colorChange);
   
   float sizeChange = 0.5 + sin(uTime /1000.0) / 2.0;
-  vec2 size = mix(vec2(0.8), vec2(0.95), sizeChange);
+  vec2 size = mix(vec2(0.9), vec2(0.97), sizeChange);
   
-  vec2 st = fract(vPosition * 6.0);
+  vec2 st = fract(vPosition * 5.0);
   float alpha = grid(st, size);
   
-  gl_FragColor = vec4(color, alpha);
+  float fogAmount = smoothstep(0.0, 15.0, vFogDepth);
+  
+  gl_FragColor = mix(vec4(color, alpha), vec4(0), fogAmount);
 }
