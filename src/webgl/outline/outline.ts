@@ -42,19 +42,29 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
   return { setObj, updateCamera, updateSettings, draw }
   
   function setObj(newObj: Obj): void {
-    obj = newObj 
+    
+    // Outline uses reversed geometry!
+    obj = {
+      ...newObj,
+      flat: {
+        vertices:       [...newObj.flat.vertices].reverse(),
+        flatNormals:    [...newObj.flat.flatNormals].reverse(),
+        smoothNormals:  [...newObj.flat.smoothNormals].reverse(),
+        definedNormals: [...newObj.flat.definedNormals].reverse(),
+      }
+    }
     updateGeometry()
   }
-  
+
   function updateGeometry(): void {
     const { flat } = obj
     
-    const vertices = [...flat.vertices]
-    const normals  = settings.flatNormals ? [...flat.flatNormals] : [...flat.smoothNormals]
+    const vertices = flat.vertices
+    const normals  = settings.flatNormals ? flat.flatNormals : flat.smoothNormals
     
     const values = {
-      position: vertices.reverse().flatMap(v => v),
-      normal:   normals.reverse().flatMap(n => n)
+      position: vertices.flatMap(v => v),
+      normal:   normals.flatMap(n => n)
     }
     updateAttributes({ gl, attributes, values })
     updateModel()
