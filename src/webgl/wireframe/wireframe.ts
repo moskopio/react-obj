@@ -6,7 +6,7 @@ import { setupAttributes, updateAttributes } from '../attributes'
 import { getLookAtMatrices } from '../camera'
 import { getModelMatrix } from '../model'
 import { createShaderProgram } from '../program'
-import { TYPE, updateUniforms } from '../uniforms'
+import { getUniforms, updateUniforms } from '../uniforms'
 import fragmentShaderSource from './wireframe.frag'
 import vertexShaderSource from './wireframe.vert'
 
@@ -26,15 +26,7 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
     position: { p: gl.getAttribLocation(program, 'aPosition'), s: 3, b: gl.createBuffer()! },
     normal:   { p: gl.getAttribLocation(program, 'aNormal'),   s: 3, b: gl.createBuffer()! },
   }
-  
-  // uniforms
-  const uniforms = {
-    projection:     { p: gl.getUniformLocation(program, 'uProjection'),    t: TYPE.M4 },
-    view:           { p: gl.getUniformLocation(program, 'uView'),          t: TYPE.M4 },
-    model:          { p: gl.getUniformLocation(program, 'uModel'),         t: TYPE.M4 },
-    lightDirection: { p: gl.getUniformLocation(program, 'uLightDirection'),t: TYPE.V3 },
-    time:           { p: gl.getUniformLocation(program, 'uTime'),          t: TYPE.F },
-  }
+  const uniforms = getUniforms(gl, program)
   
   return { setObj, updateCamera, updateSettings, draw }
   
@@ -50,26 +42,26 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
       normal:   wireframe.smoothNormals.flatMap(n => n)
     }
     updateAttributes({ gl, attributes, values })
-    
+    updateModel()
+  }
+  
+  function updateModel(): void {
     const model = getModelMatrix(obj, settings)
     gl.useProgram(program!)
-    gl.uniformMatrix4fv(uniforms.model.p, false, model)
+    updateUniforms({ gl, uniforms, values: { model } })
   }
+
   
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
-    
-    const model = getModelMatrix(obj, settings)
-    gl.useProgram(program!)
-    gl.uniformMatrix4fv(uniforms.model.p, false, model)
+    updateModel()
   }
   
   function updateCamera(camera: Camera): void {
-    const {cameraPosition, ...rest} = getLookAtMatrices(camera)
+    const { ...values } = getLookAtMatrices(camera)
 
     gl.useProgram(program!)
-    updateUniforms({ gl, uniforms, values: rest })
-    gl.uniform3fv(uniforms.lightDirection.p, cameraPosition)
+    updateUniforms({ gl, uniforms, values })
   }
   
   function draw(time: number): void {
@@ -77,7 +69,7 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
       gl.useProgram(program!)
       setupAttributes({ gl, attributes })
       
-      gl.uniform1f(uniforms.time.p, time)
+      updateUniforms({ gl, uniforms, values: { time: [time] } })
       gl.drawArrays(gl.LINES, 0, obj.wireframe.vertices.length)
     }
   }

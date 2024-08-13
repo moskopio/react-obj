@@ -6,7 +6,7 @@ import { M4 } from '../../utils/math/m4'
 import { setupAttributes, updateAttributes } from '../attributes'
 import { getLookAtMatrices } from '../camera'
 import { createShaderProgram } from '../program'
-import { TYPE, updateUniforms } from '../uniforms'
+import { getUniforms, updateUniforms } from '../uniforms'
 import fragmentShaderSource from './grid.frag'
 import vertexShaderSource from './grid.vert'
 
@@ -25,19 +25,8 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
   const attributes = {
     position: { p: gl.getAttribLocation(program, 'aPosition'), s: 3, b: gl.createBuffer()! },
     normal: { p: gl.getAttribLocation(program, 'aNormal'), s: 3, b: gl.createBuffer()! },
-  }
-  
-  
-  // uniforms
-  const uniforms = {
-    projection:     { p: gl.getUniformLocation(program, 'uProjection'),     t: TYPE.M4 },
-    view:           { p: gl.getUniformLocation(program, 'uView'),           t: TYPE.M4 },
-    model:          { p: gl.getUniformLocation(program, 'uModel'),          t: TYPE.M4 },
-    time:           { p: gl.getUniformLocation(program, 'uTime'),           t: TYPE.F },
-    colorA:         { p: gl.getUniformLocation(program, 'uColorA'),         t: TYPE.V3 },
-    colorB:         { p: gl.getUniformLocation(program, 'uColorB'),         t: TYPE.V3 },
-    cameraPosition: { p: gl.getUniformLocation(program, 'uCameraPosition'), t: TYPE.V3 }
-  }
+  }  
+  const uniforms = getUniforms(gl, program)
   
   createGeometry()
   return { setObj, updateCamera, updateSettings, draw }
@@ -76,15 +65,16 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
   function updateModel(): void {
     const model = M4.identity()
     gl.useProgram(program!)
-    gl.uniformMatrix4fv(uniforms.model.p, false, model)
+    updateUniforms({ gl, uniforms, values: { model } })
   }
   
   function updateColors(): void {
     const colorA = colorToVec3(0xB2C99E)
     const colorB = colorToVec3(0x628090)
+    
     gl.useProgram(program!)
-    gl.uniform3f(uniforms.colorA.p, ...colorA)
-    gl.uniform3f(uniforms.colorB.p, ...colorB)
+    const values = { colorA, colorB }
+    updateUniforms({ gl, uniforms, values})
   }
   
   function updateCamera(camera: Camera): void {
@@ -97,7 +87,7 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
     gl.useProgram(program!)
     setupAttributes({ gl, attributes })
     
-    gl.uniform1f(uniforms.time.p, time)
+    updateUniforms({ gl, uniforms, values: { time: [time] } })
     settings.showGrid && gl.drawArrays(gl.TRIANGLES, 0, 6)
   }
 }

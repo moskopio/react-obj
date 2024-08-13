@@ -6,7 +6,7 @@ import { setupAttributes, updateAttributes } from '../attributes'
 import { getLookAtMatrices } from '../camera'
 import { getModelMatrix } from '../model'
 import { createShaderProgram } from '../program'
-import { TYPE, updateUniforms } from '../uniforms'
+import { getUniforms, updateUniforms } from '../uniforms'
 import fragmentShaderSource from './mesh.frag'
 import vertexShaderSource from './mesh.vert'
 
@@ -26,18 +26,10 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
     position: { p: gl.getAttribLocation(program, 'aPosition'), s: 3, b: gl.createBuffer()! },
     normal:   { p: gl.getAttribLocation(program, 'aNormal'),   s: 3, b: gl.createBuffer()! },
   }
-  
+
   // uniforms
-  const uniforms = {
-    projection:     { p: gl.getUniformLocation(program, 'uProjection'),    t: TYPE.M4 },
-    view:           { p: gl.getUniformLocation(program, 'uView'),          t: TYPE.M4 },
-    model:          { p: gl.getUniformLocation(program, 'uModel'),         t: TYPE.M4 },
-    cameraPosition: { p: gl.getUniformLocation(program, 'uCameraPosition'),t: TYPE.V3 },
-    time:           { p: gl.getUniformLocation(program, 'uTime'),          t: TYPE.F },
-    showNormals:    { p: gl.getUniformLocation(program, 'uShowNormals'),   t: TYPE.B },
-    cellShading:    { p: gl.getUniformLocation(program, 'uCellShading'),   t: TYPE.B },
-  }
-    
+  const uniforms = getUniforms(gl, program)
+  
   return { setObj, updateCamera, updateSettings, draw }
   
   function setObj(newObj: Obj): void {
@@ -63,8 +55,11 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
     settings = newSettings
     
     gl.useProgram(program!)
-    gl.uniform1i(uniforms.showNormals.p, settings.showNormals ? 1 : 0)
-    gl.uniform1i(uniforms.cellShading.p, settings.cellShading ? 1 : 0)
+    const values = {
+      showNormals: [settings.showNormals ? 1 : 0],
+      cellShading: [settings.cellShading ? 1 : 0],
+    }
+    updateUniforms({ gl, uniforms, values })
     updateModel()
     updateGeometry()
   }
@@ -73,15 +68,13 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
     const model = getModelMatrix(obj, settings)
     
     gl.useProgram(program!)
-    gl.uniformMatrix4fv(uniforms.model.p, false, model)
+    updateUniforms({ gl, uniforms, values: { model } })
   }
   
   function updateCamera(camera: Camera): void {
-    const {cameraPosition, ...rest} = getLookAtMatrices(camera)
-
+    const { ...values} = getLookAtMatrices(camera)
     gl.useProgram(program!)
-    updateUniforms({ gl, uniforms, values: rest })
-    gl.uniform3fv(uniforms.cameraPosition.p, cameraPosition)
+    updateUniforms({ gl, uniforms, values })
   }
   
   function draw(time: number): void {
@@ -89,7 +82,7 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
       gl.useProgram(program!)
       setupAttributes({ gl, attributes })
       
-      gl.uniform1f(uniforms.time.p, time)
+      updateUniforms({ gl, uniforms, values: { time: [time] } })
       gl.drawArrays(gl.TRIANGLES, 0, obj.flat.vertices.length)
     }
   }
