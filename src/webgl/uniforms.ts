@@ -1,12 +1,12 @@
 import { Dict } from "../types"
-
-type Uniforms = Dict<Uniform>
+import { prepareName } from "./name"
 
 interface Uniform {
   loc:  WebGLUniformLocation | null
   type: GLenum
 }
 
+type Uniforms = Dict<Uniform>
 
 export function getUniforms(gl: WebGLRenderingContext, program: WebGLProgram): Uniforms {
   const uniforms: Uniforms = {}
@@ -24,12 +24,6 @@ export function getUniforms(gl: WebGLRenderingContext, program: WebGLProgram): U
   }
   
   return uniforms
-}
-
-function prepareName(name: string): string {
-  const noPrefix = name[0] === 'u' || name[0] === 'a' ? name.slice(1) : name
-  const noUppercase = noPrefix[0].toLowerCase() + noPrefix.slice(1)
-  return noUppercase
 }
 
 

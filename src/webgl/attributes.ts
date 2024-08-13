@@ -1,13 +1,14 @@
 import { Dict } from "../types"
 
-type Attributes = Dict<Attribute>
-type AttributeValue = Dict<number[]>
-
 interface Attribute {
   p: GLint,
   s: number,
   b: WebGLBuffer
 }
+type Attributes = Dict<Attribute>
+
+
+type AttributeValue = Dict<number[]>
 
 interface UpdateArgs {
   attributes: Attributes

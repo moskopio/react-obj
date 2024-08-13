@@ -72,7 +72,7 @@ export function useCameraControls(): void {
     
     function onKeyUp(event: KeyboardEvent): void {
       if (event.key === 'Shift') { 
-          shift.current = false
+        shift.current = false
       }
     }
     
