@@ -24,17 +24,19 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
   // attributes
   const attributes = {
     position: { p: gl.getAttribLocation(program, 'aPosition'), s: 3, b: gl.createBuffer()! },
+    normal: { p: gl.getAttribLocation(program, 'aNormal'), s: 3, b: gl.createBuffer()! },
   }
   
   
   // uniforms
   const uniforms = {
-    projection: { p: gl.getUniformLocation(program, 'uProjection'), t: TYPE.M4 },
-    view:       { p: gl.getUniformLocation(program, 'uView'),       t: TYPE.M4 },
-    model:      { p: gl.getUniformLocation(program, 'uModel'),      t: TYPE.M4 },
-    time:       { p: gl.getUniformLocation(program, 'uTime'),       t: TYPE.F },
-    colorA:     { p: gl.getUniformLocation(program, 'uColorA'),     t: TYPE.V3 },
-    colorB:     { p: gl.getUniformLocation(program, 'uColorB'),     t: TYPE.V3 },
+    projection:     { p: gl.getUniformLocation(program, 'uProjection'),     t: TYPE.M4 },
+    view:           { p: gl.getUniformLocation(program, 'uView'),           t: TYPE.M4 },
+    model:          { p: gl.getUniformLocation(program, 'uModel'),          t: TYPE.M4 },
+    time:           { p: gl.getUniformLocation(program, 'uTime'),           t: TYPE.F },
+    colorA:         { p: gl.getUniformLocation(program, 'uColorA'),         t: TYPE.V3 },
+    colorB:         { p: gl.getUniformLocation(program, 'uColorB'),         t: TYPE.V3 },
+    cameraPosition: { p: gl.getUniformLocation(program, 'uCameraPosition'), t: TYPE.V3 }
   }
   
   createGeometry()
@@ -52,7 +54,16 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
        2, -1,  2,
     ]
     
-    const values = { position }
+    const normal = [
+      0, 1, 0,
+      0, 1, 0,
+      0, 1, 0,
+      0, 1, 0,
+      0, 1, 0,
+      0, 1, 0,
+    ]
+    
+    const values = { position, normal }
     updateAttributes({ gl, attributes, values })
     updateModel()
   }
@@ -77,9 +88,9 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
   }
   
   function updateCamera(camera: Camera): void {
-    const {cameraPosition, ...rest} = getLookAtMatrices(camera)
+    const { ...values } = getLookAtMatrices(camera)
     gl.useProgram(program!)
-    updateUniforms({ gl, uniforms, values: rest })
+    updateUniforms({ gl, uniforms, values })
   }
   
   function draw(time: number): void {

@@ -8,7 +8,7 @@
 .stat-label {
   flex: 2;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--highlight-color);
   font-family: monospace;
   user-select: none;
@@ -17,8 +17,29 @@
 
 .stat-value {
   flex: 1;
-  font-size: 12px;
+  font-size: 11px;
   text-align: right;
+  color: var(--highlight-color);
+  font-family: monospace;
+  user-select: none;
+  text-shadow: var(--text-shadow);
+}
+
+.file-input {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.file-input input[type="file"] {
+  display: none;
+}
+
+.file-input-label {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  text-align: left;
   color: var(--highlight-color);
   font-family: monospace;
   user-select: none;

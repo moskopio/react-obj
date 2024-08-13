@@ -1,16 +1,15 @@
-import { ReactElement, useContext } from "react"
+import { ReactElement, useCallback, useContext, useRef } from "react"
 import { Divider } from "../components/Divider"
-import { FileInput } from "../components/FileInput"
+import { IconFile } from "../components/Icon"
 import { Panel } from "../components/Panel"
 import { ObjContext } from "../state/obj"
 import { useObjLoad } from "../utils/obj-load"
 import './ObjPanel.css'
+import { PASTEL_COLORS } from "../utils/color"
 
 
 export function ObjPanel(): ReactElement {
   const { obj } = useContext(ObjContext)
-  
-  const onFile = useObjLoad()
   
   const groupsCount = obj.raw.groups.length
   const trianglesCount = obj.parsed.vertices.length
@@ -20,8 +19,8 @@ export function ObjPanel(): ReactElement {
   const parsingTime = obj.parsingTime
 
   return (
-    <Panel icon='info'>
-      <FileInput label={obj.name || "Load obj file..."} onFile={onFile} />
+    <Panel icon='info' color={PASTEL_COLORS.gray}>
+      <File />
       <Divider />
       <Stat label='Groups' value={groupsCount} />
       <Stat label='Triangles (defined)' value={trianglesCount} />
@@ -31,6 +30,24 @@ export function ObjPanel(): ReactElement {
       <Divider />
       <Stat label='Parsing Time' value={`${parsingTime}ms`} />
     </Panel>
+  )
+}
+
+function File(): ReactElement {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const { obj } = useContext(ObjContext)
+  const onFile = useObjLoad()
+
+  const onClick = useCallback(() => {
+    inputRef.current?.click()
+  }, [])
+  
+  return (
+    <div className="file-input" onClick={onClick}>
+      <IconFile />
+      <input ref={inputRef} type="file" onChange={onFile} accept=".obj" />
+      <div className="file-input-label">{obj.name || "Load obj file..."}</div>
+    </div>
   )
 }
 

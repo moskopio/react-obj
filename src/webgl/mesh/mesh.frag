@@ -5,7 +5,6 @@ uniform bool uShowNormals;
 uniform bool uCellShading;
 
 varying vec3 vNormal;
-uniform float uTime;
 
 vec3 lightShading(in float toCameraNormal) {
   float diffuse = toCameraNormal * 0.5 + 0.5;
@@ -29,13 +28,13 @@ vec3 cellShading(in float toCameraNormal) {
 void main() {
   vec3 normal = normalize(vNormal);
   vec3 cameraPosition = normalize(uCameraPosition);
-  float toCameraNormal = dot(cameraPosition, normal);
+  float toCameraNormal = abs(dot(cameraPosition, normal));
   
   vec3 color = lightShading(toCameraNormal);
   vec3 cellShadedColor = cellShading(toCameraNormal);
   
   color = mix(color, cellShadedColor, float(uCellShading));
-  color = mix(color, normal, float(uShowNormals));
+  color = mix(color, abs(normal), float(uShowNormals));
 
   gl_FragColor = vec4(color, 1.0);
 }

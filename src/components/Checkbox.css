@@ -15,22 +15,6 @@
   border-radius: 14px;
 }
 
-.checked {
-  background-image: var(--component-background);
-  background-size: 1px 15px;
-}
-
-.checked:after {
-  font-family: monospace;
-  /* content: "\25CF"; */
-  content: "\2713";
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--highlight-color);
-  text-shadow: var(--text-shadow);
-}
-
 .checkbox-label {
   font-size: 12px;
   display: flex;

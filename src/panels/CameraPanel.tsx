@@ -1,11 +1,13 @@
 import { ReactElement, useCallback, useContext } from "react"
-import { AppContext } from "../state/context"
 import { Divider } from "../components/Divider"
 import { Panel } from "../components/Panel"
 import { Slider } from "../components/Slider"
+import { AppContext } from "../state/context"
+import { createPallette, PASTEL_COLORS } from "../utils/color"
 
 export function CameraPanel(): ReactElement {
   const { camera, cameraDispatch } = useContext(AppContext)
+  const pallette = createPallette()
   
   const setThetaRotation = useCallback((a: number) => { 
     cameraDispatch({ type: 'setThetaRotation', rotation: { theta: a, phi: 0 }})
@@ -27,9 +29,8 @@ export function CameraPanel(): ReactElement {
     cameraDispatch({ type: 'setDolly', dolly })
   }, [cameraDispatch])
   
-
   return (
-    <Panel icon='camera'>
+    <Panel icon='camera' color={PASTEL_COLORS.sirocco}>
 
       <Slider
         label={`Theta: ${Math.floor(camera.rotation.theta)}°`}
@@ -38,6 +39,7 @@ export function CameraPanel(): ReactElement {
         onChange={setThetaRotation}
         value={camera.rotation.theta}
         defaultValue={0}
+        color={pallette.getNextColor()}
       />
       <Slider
         label={`Phi: ${Math.floor(camera.rotation.phi)}°`}
@@ -46,6 +48,7 @@ export function CameraPanel(): ReactElement {
         onChange={setPhiRotation}
         value={camera.rotation.phi}
         defaultValue={0}
+        color={pallette.getNextColor()}
       />
       
       <Divider />
@@ -57,7 +60,8 @@ export function CameraPanel(): ReactElement {
         onChange={updateXTrack}
         defaultValue={0}
         value={camera.track.x}
-        />
+        color={pallette.getNextColor()}
+      />
       <Slider
         label={`Track Y: ${camera.track.y.toFixed(2)}`} 
         min={-10}
@@ -65,7 +69,8 @@ export function CameraPanel(): ReactElement {
         onChange={updateYTrack}
         defaultValue={0}
         value={camera.track.y}
-        />
+        color={pallette.getNextColor()}
+      />
       <Slider
         label={`Dolly ${camera.dolly.toFixed(2)}`} 
         min={0}
@@ -73,7 +78,8 @@ export function CameraPanel(): ReactElement {
         onChange={setDolly}
         defaultValue={2.5}
         value={camera.dolly}
-        />
+        color={pallette.getNextColor()}
+      />
     </Panel>
   )
 }

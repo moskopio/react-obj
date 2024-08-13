@@ -5,8 +5,6 @@
   --line-color-1: #666;
   --line-color-2: #333;
   --line-color-3: #222;
-  --accent-color-1: #B2C99E;
-  --accent-color-2: #628090;
   
   --elements-border: 2px;
   --elements-radius: 3px;
@@ -16,14 +14,6 @@
     -1px 1px 0 var(--shadow-color),
     -1px -1px 0 var(--shadow-color),
     1px -1px 0 var(--shadow-color);
-    
-  --component-background: 
-    linear-gradient(
-      var(--accent-color-1)  3px,
-      var(--highlight-color) 4px,
-      var(--line-color-2)    5px,
-      var(--accent-color-2)  10px
-    );
 }
  
 body {

@@ -17,13 +17,13 @@
 }
 
 .panel-bar {
-  background-image: var(--component-background);
+  background: #a6b4b6;
   box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
   border-right: var(--highlight-color) solid 1px;
   cursor: pointer;
   width: 6px;
   writing-mode: vertical-rl;
-text-orientation: upright;
+  text-orientation: upright;
 }
 
 .panel-content {

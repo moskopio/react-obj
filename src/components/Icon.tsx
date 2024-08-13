@@ -2,7 +2,7 @@ import { ReactElement } from "react"
 import './Icon.css'
 
 interface Props {
-  onClick: () => void
+  onClick?: () => void
 }
 
 export function IconCamera(props: Props): ReactElement {

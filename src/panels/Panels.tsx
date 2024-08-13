@@ -6,9 +6,6 @@ import './Panels.css'
 import { SettingsPanel } from "./SettingsPanel"
 
 export function Panels(): ReactElement {
-  
-
-  
   return (
     <div className="panels">
       <FileInputControls />
@@ -18,5 +15,3 @@ export function Panels(): ReactElement {
     </div>
   )
 }
-
-

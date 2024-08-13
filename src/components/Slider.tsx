@@ -1,5 +1,6 @@
-import { MutableRefObject, ReactElement, useCallback, useEffect, useRef } from "react"
+import { MutableRefObject, ReactElement, useCallback, useEffect, useMemo, useRef } from "react"
 import './Slider.css'
+import { PASTEL_COLORS } from "../utils/color"
 
 interface Props {
   label:         string
@@ -8,10 +9,12 @@ interface Props {
   onChange:      (value: number) => void
   value:         number
   defaultValue?: number
+  color?:        string
 }
 
 export function Slider(props: Props): ReactElement {
-  const { label, min, max, onChange, value, defaultValue = 0 } = props
+  const { label, min, max, onChange, value } = props
+  const { defaultValue = 0, color = PASTEL_COLORS.mojo } = props
   const sliderRef = useRef<HTMLDivElement | null>(null)
   const getPercentage = useCallback((v: number) => {
     const percentage = ((v - min) / (max - min)) * 100
@@ -24,11 +27,17 @@ export function Slider(props: Props): ReactElement {
   
   useControls({ sliderRef, min, max, onChange, defaultValue })
   
+  const handleStyle = useMemo(() => ({
+      width: `${getPercentage(value)}%`,
+      background: `${color}`
+  }), [value, color])
+  
   return (
-    <div ref={sliderRef} className="slider-track">
-      <div className="slider-handle" style={{ width: `${getPercentage(value)}%` }} />
+    <div className='slider' ref={sliderRef}>
+      <div className="slider-handle" style={handleStyle} />
+      <div className="slider-track" />
       <div className="slider-label">{label}</div>
-  </div>
+    </div>
   )
 }
 
