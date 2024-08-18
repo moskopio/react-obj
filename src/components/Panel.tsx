@@ -4,7 +4,7 @@ import "./Panel.css"
 import { PASTEL_COLORS } from "../utils/color"
 
 interface Props {
-  children: ReactElement[]
+  children: ReactElement | ReactElement[] | string
   icon:     string
   color?:   string
 }
@@ -28,7 +28,7 @@ function ExtendedPanel(props: ClickableProps): ReactElement {
   return (
     <div className="panel">
       <div className="panel-bar" style={{background: `${color}`}} onClick={onClick} />
-      <div className="panel-content">{...children}</div>
+      <div className="panel-content">{children}</div>
     </div>
   )
 }

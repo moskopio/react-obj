@@ -13,64 +13,63 @@ export function SettingsPanel(): ReactElement {
       <Checkbox 
         label="Show Mesh"
         value={settings.showMesh}
-        onChange={() => settingsDispatch({ type: 'toggleMesh' })}
+        onChange={(showMesh: boolean) => settingsDispatch({ showMesh })}
         color={pallette.getNextColor()}
       />
       
       <Checkbox 
         label="Show Normals"
         value={settings.showNormals}
-        onChange={() => settingsDispatch({ type: 'toggleNormals' })}
+        onChange={(showNormals: boolean) => settingsDispatch({ showNormals })}
         color={pallette.getNextColor()}
       />
       
       <Checkbox 
         label="Flat Normals"
         value={settings.flatNormals}
-        onChange={() => settingsDispatch({ type: 'toggleFlatNormals' })}
+        onChange={(flatNormals: boolean) => settingsDispatch({ flatNormals })}
         color={pallette.getNextColor()}
       />
       
       <Checkbox 
         label="Cell Shading"
         value={settings.cellShading}
-        onChange={() => settingsDispatch({ type: 'toggleCellShading' })}
+        onChange={(cellShading: boolean) => settingsDispatch({ cellShading })}
         color={pallette.getNextColor()}
       />
       
       <Checkbox 
         label="Show Outline"
         value={settings.showOutline}
-        onChange={() => settingsDispatch({ type: 'toggleOutline' })}
+        onChange={(showOutline: boolean) => settingsDispatch({ showOutline })}
         color='#707e7d'
       />
       
       <Checkbox 
         label="Show Reverse Outline"
         value={settings.showReverseOutline}
-        onChange={() => settingsDispatch({ type: 'toggleReverseOutline' })}
+        onChange={(showReverseOutline: boolean) => settingsDispatch({ showReverseOutline })}
         color={pallette.getNextColor()}
       />
       
       <Checkbox 
         label="Show Wireframe"
         value={settings.showWireframe}
-        onChange={() => settingsDispatch({ type: 'toggleWireframe' })}
+        onChange={(showWireframe: boolean) => settingsDispatch({ showWireframe })}
         color={pallette.getNextColor()}
       />
-      
       
       <Checkbox 
         label="Show Grid"
         value={settings.showGrid}
-        onChange={() => settingsDispatch({ type: 'toggleGrid' })}
+        onChange={(showGrid: boolean) => settingsDispatch({ showGrid })}
         color={pallette.getNextColor()}
       />
       
       <Checkbox 
         label="Swap Y/Z"
         value={settings.swapYZ}
-        onChange={() => settingsDispatch({ type: 'toggleSwapYZ' })}
+        onChange={(swapYZ: boolean) => settingsDispatch({ swapYZ })}
         color={pallette.getNextColor()}
       />
       

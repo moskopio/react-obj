@@ -35,6 +35,8 @@ const CAMERA_ACTIONS = [
   'updateDolly',
   'updateRotation',
   'updateTrack',
+  'update',
+  'set',
 ] as const
 
 export interface CameraAction extends Partial<Camera> {
@@ -44,7 +46,8 @@ export interface CameraAction extends Partial<Camera> {
 export function cameraReducer(state: Camera, action: CameraAction): Camera {
   const newState = { ...state }
   
-  switch (action.type) { 
+  switch (action.type) {
+    
     case 'updateRotation': 
       newState.rotation = { 
         theta: newState.rotation.theta + action.rotation!.theta, 

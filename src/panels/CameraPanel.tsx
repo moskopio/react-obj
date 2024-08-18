@@ -30,8 +30,10 @@ export function CameraPanel(): ReactElement {
   }, [cameraDispatch])
   
   return (
-    <Panel icon='camera' color={PASTEL_COLORS.sirocco}>
-
+    <Panel icon='camera' color={PASTEL_COLORS.pancho}>
+      
+      <Divider label='Rotation' />
+      
       <Slider
         label={`Theta: ${Math.floor(camera.rotation.theta)}°`}
         min={-360}
@@ -51,7 +53,7 @@ export function CameraPanel(): ReactElement {
         color={pallette.getNextColor()}
       />
       
-      <Divider />
+      <Divider label='Position' />
 
       <Slider
         label={`Track X: ${camera.track.x.toFixed(2)}`} 
@@ -80,6 +82,7 @@ export function CameraPanel(): ReactElement {
         value={camera.dolly}
         color={pallette.getNextColor()}
       />
+      
     </Panel>
   )
 }

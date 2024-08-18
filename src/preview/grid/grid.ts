@@ -29,6 +29,7 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
   const uniforms = getUniforms(gl, program)
   
   createGeometry()
+  
   return { setObj, updateCamera, updateSettings, draw }
   
   function setObj(): void { }

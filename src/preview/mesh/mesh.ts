@@ -1,9 +1,11 @@
 import { Camera } from '../../state/camera'
+import { Light } from '../../state/light'
 import { createEmptyObj, Obj } from '../../state/obj'
 import { createDefaultSettings, Settings } from '../../state/settings'
 import { Program } from '../../types'
 import { setupAttributes, updateAttributes } from '../../webgl/attributes'
 import { getLookAtMatrices } from '../../webgl/camera'
+import { getLightPosition } from '../../webgl/light'
 import { getModelMatrix } from '../../webgl/model'
 import { createShaderProgram } from '../../webgl/program'
 import { getUniforms, updateUniforms } from '../../webgl/uniforms'
@@ -30,7 +32,7 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
   // uniforms
   const uniforms = getUniforms(gl, program)
   
-  return { setObj, updateCamera, updateSettings, draw }
+  return { setObj, updateCamera, updateSettings, updateLight, draw }
   
   function setObj(newObj: Obj): void {
     obj = newObj 
@@ -75,6 +77,13 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
     const { ...values} = getLookAtMatrices(camera)
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values })
+  }
+  
+  function updateLight(light: Light): void {
+    const lightPosition = getLightPosition(light)
+    
+    gl.useProgram(program!)
+    updateUniforms({ gl, uniforms, values: { lightPosition } })
   }
   
   function draw(time: number): void {

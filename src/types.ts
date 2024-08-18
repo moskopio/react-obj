@@ -1,4 +1,5 @@
 import { Camera } from "./state/camera"
+import { Light } from "./state/light"
 import { Obj } from "./state/obj"
 import { Settings } from "./state/settings"
 
@@ -10,8 +11,9 @@ export interface Dict<T> {
 
 
 export interface Program {
-  setObj:         (obj: Obj) => void
-  updateSettings: (settings: Settings) => void
-  updateCamera:   (camera: Camera) => void
   draw:           (time: number) => void
+  setObj:         (obj: Obj) => void
+  updateCamera:   (camera: Camera) => void
+  updateLight?:   (light: Light) => void
+  updateSettings: (settings: Settings) => void
 }

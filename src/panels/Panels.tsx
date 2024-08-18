@@ -4,6 +4,7 @@ import { FileInputControls } from "./FileInput"
 import { ObjPanel } from "./ObjPanel"
 import './Panels.css'
 import { SettingsPanel } from "./SettingsPanel"
+import { LightPanel } from "./LightPanel"
 
 export function Panels(): ReactElement {
   return (
@@ -12,6 +13,7 @@ export function Panels(): ReactElement {
       <ObjPanel />
       <SettingsPanel />
       <CameraPanel />
+      <LightPanel />
     </div>
   )
 }

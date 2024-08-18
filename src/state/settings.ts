@@ -24,61 +24,8 @@ export function createDefaultSettings(): Settings {
   }
 }
 
-const SETTING_ACTIONS = [
-  'toggleGrid',
-  'toggleMesh',
-  'toggleNormals',
-  'toggleOutline',
-  'toggleReverseOutline',
-  'toggleSwapYZ',
-  'toggleWireframe',
-  'toggleCellShading',
-  'toggleFlatNormals',
-] as const
-
-export interface SettingsAction extends Partial<Settings> {
-  type: typeof SETTING_ACTIONS[number]
-}
+export type SettingsAction = Partial<Settings>
 
 export function settingsReducer(state: Settings, action: SettingsAction): Settings {
-  const newState = { ...state }
-  
-  switch (action.type) {
-    case 'toggleMesh': 
-      newState.showMesh = !newState.showMesh
-      break
-
-    case 'toggleOutline': 
-      newState.showOutline = !newState.showOutline
-      break
-      
-    case 'toggleReverseOutline': 
-      newState.showReverseOutline = !newState.showReverseOutline
-      break
-      
-    case 'toggleWireframe': 
-      newState.showWireframe = !newState.showWireframe
-      break
-    
-    case 'toggleNormals':
-      newState.showNormals = !newState.showNormals
-      break
-      
-    case 'toggleGrid':
-      newState.showGrid = !newState.showGrid
-      break
-    
-    case 'toggleSwapYZ': 
-      newState.swapYZ = !newState.swapYZ
-      break
-      
-    case 'toggleCellShading': 
-      newState.cellShading = !newState.cellShading
-      break
-      
-    case 'toggleFlatNormals':
-      newState.flatNormals = !newState.flatNormals
-  }
-  
-  return newState
+  return { ...state, ...action }
 }

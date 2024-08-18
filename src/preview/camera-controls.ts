@@ -18,7 +18,7 @@ export function useCameraControls(): void {
     window.addEventListener('keyup', onKeyUp)
     
     return () => {
-      window.removeEventListener('contextmenu', onMouseDown)
+      window.removeEventListener('mousedown', onMouseDown)
       window.removeEventListener('wheel', onWheel)
       window.removeEventListener('mouseup', onMouseUp)
       window.removeEventListener('mousemove', onMouseMove)
