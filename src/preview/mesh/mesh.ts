@@ -16,7 +16,8 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
   const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
   
   if (!program) {
-    console.error('Failed to create a WebGL Program')
+    console.error('Failed to create a WebGL Mesh Program')
+    cleanup()
     return undefined
   }
   
@@ -32,7 +33,7 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
   // uniforms
   const uniforms = getUniforms(gl, program)
   
-  return { setObj, updateCamera, updateSettings, updateLight, draw }
+  return { setObj, updateCamera, updateSettings, updateLight, draw, cleanup }
   
   function setObj(newObj: Obj): void {
     obj = newObj 
@@ -94,5 +95,10 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
       updateUniforms({ gl, uniforms, values: { time: [time] } })
       gl.drawArrays(gl.TRIANGLES, 0, obj.flat.vertices.length)
     }
+  }
+  
+  function cleanup(): void {
+    Object.values(attributes).forEach(a => gl.deleteBuffer(a.b))
+    gl.deleteProgram(program!)
   }
 }

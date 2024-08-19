@@ -15,7 +15,8 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
   const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
   
   if (!program) {
-    console.error('Failed to create a WebGL Program')
+    console.error('Failed to create a WebGL Outline Program')
+    cleanup()
     return undefined
   }
   
@@ -29,7 +30,7 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
   }
   const uniforms = getUniforms(gl, program)
   
-  return { setObj, updateCamera, updateSettings, draw }
+  return { setObj, updateCamera, updateSettings, draw, cleanup }
   
   function setObj(newObj: Obj): void {
     
@@ -100,5 +101,10 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
       const shouldCleanDepth = settings.showOutline && !settings.showReverseOutline
       shouldCleanDepth && gl?.clear(gl.DEPTH_BUFFER_BIT)
     }
+  }
+  
+  function cleanup(): void {
+    Object.values(attributes).forEach(a => gl.deleteBuffer(a.b))
+    gl.deleteProgram(program!)
   }
 }

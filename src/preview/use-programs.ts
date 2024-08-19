@@ -44,20 +44,26 @@ export function usePrograms(props: Props): void {
   }, [gl, resolution])
   
   useEffect(() => { 
-    programs.forEach(p => p.setObj(obj))
+    programs.forEach(p => p.setObj && p.setObj(obj))
   }, [gl, obj, programs])
   
   useEffect(() => { 
-    programs.forEach(p => p.updateCamera(camera))
+    programs.forEach(p => p.updateCamera && p.updateCamera(camera))
   }, [gl, programs, camera])
   
   useEffect(() => { 
-    programs.forEach(p => p.updateSettings(settings))
+    programs.forEach(p => p.updateSettings && p.updateSettings(settings))
   }, [gl, programs, settings])
   
   useEffect(() => {
     programs.forEach(p => p.updateLight && p.updateLight(light))
   }, [gl, programs, light])
+  
+  useEffect(() => {
+    return () => {
+      programs.forEach(p => p.cleanup())
+    }
+  }, [])
   
   useEffect(() => {
     draw(Date.now())

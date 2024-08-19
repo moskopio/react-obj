@@ -1,4 +1,5 @@
 import { Light } from "../../state/light"
+import { Program } from "../../types"
 import { colorToVec3 } from "../../utils/color"
 import { M4 } from "../../utils/math/m4"
 import { Vec3 } from "../../utils/math/v3"
@@ -11,17 +12,12 @@ import fragmentShaderSource from './light.frag'
 import vertexShaderSource from './light.vert'
 
 
-export interface LightProgram {
-  updateLight: (light: Light) => void
-  draw:        (time: number) => void
-}
-
-
-export function createLightDrawer(gl: WebGLRenderingContext): LightProgram | undefined {
+export function createLightDrawer(gl: WebGLRenderingContext): Program | undefined {
   const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
   
   if (!program) {
     console.error('Failed to create a WebGL Program')
+    cleanup()
     return undefined
   }
   
@@ -30,12 +26,12 @@ export function createLightDrawer(gl: WebGLRenderingContext): LightProgram | und
     normal: { p: gl.getAttribLocation(program, 'aNormal'), s: 3, b: gl.createBuffer()!, }
   }
   const uniforms = getUniforms(gl, program)
-  const sphereModel = M4.scaling([0.5, 0.5, 0.5])
-  const coneModel = M4.combine(M4.translation([0,0,1]),M4.scaling([0.2, 0.2, 0.1]))
+  const sphereModel = M4.scaling([0.6, 0.6, 0.6])
+  const coneModel = M4.combine(M4.translation([0,0,1.1]),M4.scaling([0.2, 0.2, 0.1]))
   
   buildGeometry()
   
-  return { updateLight, draw }
+  return { updateLight, draw, cleanup }
   
   function buildGeometry(): void {
     const sphere = createSphere(20, 20) //20 * 20 * 2 * 3 = 2400
@@ -65,15 +61,27 @@ export function createLightDrawer(gl: WebGLRenderingContext): LightProgram | und
     gl?.disable(gl.CULL_FACE)
     setupAttributes({ gl, attributes })
     
-    // Sphere
-    updateUniforms({ gl, uniforms, values: { model: sphereModel, useLight: [0] } })
+    // 1. Sphere
+    // 1A. Outline
+    updateUniforms({ gl, uniforms, values: { model: sphereModel, useOutline: [1] } })
     gl.drawArrays(gl.TRIANGLES, 51, 2400)
     gl?.clear(gl.DEPTH_BUFFER_BIT)
-
-    // Cone
-    updateUniforms({ gl, uniforms, values: { model: coneModel, useLight: [1] } })
+    // 1B. Shading
+    updateUniforms({ gl, uniforms, values: { model: sphereModel, useLight: [1], useOutline: [0] } })
+    gl.drawArrays(gl.TRIANGLES, 51, 2400)
+    
+    // 2. Cone
+    // 2A. Outline
+    updateUniforms({ gl, uniforms, values: { model: coneModel, useOutline: [1] } })
     gl.drawArrays(gl.TRIANGLES, 0, 51)
     gl?.clear(gl.DEPTH_BUFFER_BIT)
+    // 2B. Shading
+    updateUniforms({ gl, uniforms, values: { model: coneModel, useLight: [0], useOutline: [0] } })
+    gl.drawArrays(gl.TRIANGLES, 0, 51)
   }
-
+  
+  function cleanup(): void {
+    Object.values(attributes).forEach(a => gl.deleteBuffer(a.b))
+    gl.deleteProgram(program!)
+  }
 }

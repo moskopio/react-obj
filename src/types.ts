@@ -11,9 +11,10 @@ export interface Dict<T> {
 
 
 export interface Program {
-  draw:           (time: number) => void
-  setObj:         (obj: Obj) => void
-  updateCamera:   (camera: Camera) => void
-  updateLight?:   (light: Light) => void
-  updateSettings: (settings: Settings) => void
+  cleanup:         () => void
+  draw:            (time: number) => void
+  setObj?:         (obj: Obj) => void
+  updateCamera?:   (camera: Camera) => void
+  updateLight?:    (light: Light) => void
+  updateSettings?: (settings: Settings) => void
 }

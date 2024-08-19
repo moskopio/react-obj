@@ -15,6 +15,9 @@ export function createShaderProgram(gl: WebGLRenderingContext, vertex: string, f
 		return undefined
 	}
   
+  gl.deleteShader(vertexShader)
+  gl.deleteShader(fragmentShader)
+  
   return program
 }
 

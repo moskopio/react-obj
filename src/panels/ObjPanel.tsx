@@ -19,7 +19,7 @@ export function ObjPanel(): ReactElement {
   const parsingTime = obj.parsingTime
 
   return (
-    <Panel icon='info' color={PASTEL_COLORS.gray}>
+    <Panel icon='info' color={PASTEL_COLORS.rainee}>
       <File />
       <Divider />
       <Stat label='Groups' value={groupsCount} />

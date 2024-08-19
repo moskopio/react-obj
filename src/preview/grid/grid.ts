@@ -16,6 +16,7 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
   
   if (!program) {
     console.error('Failed to create a WebGL Program')
+    cleanup()
     return undefined
   }
   
@@ -30,9 +31,7 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
   
   createGeometry()
   
-  return { setObj, updateCamera, updateSettings, draw }
-  
-  function setObj(): void { }
+  return { updateCamera, updateSettings, draw, cleanup }
   
   function createGeometry(): void {
     const position = [
@@ -90,5 +89,10 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
     
     updateUniforms({ gl, uniforms, values: { time: [time] } })
     settings.showGrid && gl.drawArrays(gl.TRIANGLES, 0, 6)
+  }
+  
+  function cleanup(): void {
+    Object.values(attributes).forEach(a => gl.deleteBuffer(a.b))
+    gl.deleteProgram(program!)
   }
 }

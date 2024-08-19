@@ -24,12 +24,20 @@ export function lightReducer(state: Light, action: LightAction): Light {
   const newState = { ...state }
 
   switch (action.type) {
-  case 'updateRotation': 
-    newState.rotation = { 
-      theta: newState.rotation.theta + action.rotation!.theta, 
-      phi: newState.rotation.phi + action.rotation!.phi
-    }
-  break
+    case 'updateRotation': 
+      newState.rotation = { 
+        theta: newState.rotation.theta + action.rotation!.theta, 
+        phi: newState.rotation.phi + action.rotation!.phi
+      }
+      break
+    
+    case 'setThetaRotation': 
+      newState.rotation = { ...newState.rotation, theta: action.rotation!.theta }
+      break
+  
+    case 'setPhiRotation': 
+      newState.rotation = { ...newState.rotation, phi: action.rotation!.phi }
+      break
   }
   
   newState.rotation.phi = limitAngle(newState.rotation.phi)

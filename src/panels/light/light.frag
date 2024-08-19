@@ -6,6 +6,7 @@ uniform vec3 uColorC;
 
 varying vec3 vNormal;
 uniform bool uUseLight;
+uniform bool uUseOutline;
 
 vec3 lightShading(in float toCameraNormal, in float viewAngleNormal) {
   vec3 ambient = vec3(0.1);
@@ -20,10 +21,6 @@ vec3 lightShading(in float toCameraNormal, in float viewAngleNormal) {
   return color;
 }
 
-vec3 flatShading() { 
-  return gl_FrontFacing ? uColorC : uColorA;
-}
-
 void main() {
   vec3 normal = normalize(vNormal);
   vec3 cameraPosition = normalize(vec3(0, 0, 2));
@@ -31,9 +28,11 @@ void main() {
   float viewAngleNormal = max(0.0, dot(cameraPosition, normal));
   
   vec3 lightColor = lightShading(toCameraNormal, viewAngleNormal);
-  vec3 flatColor = flatShading(); 
-    
-  vec3 color = mix(lightColor, flatColor, float(uUseLight));
+  vec3 flatColor = gl_FrontFacing ? uColorC : uColorA;
+  vec3 outlineColor = vec3(1.0);
+  
+  vec3 color = mix(flatColor, lightColor, float(uUseLight));
+  color = mix(color, outlineColor, float(uUseOutline));
   
   gl_FragColor = vec4(color, 0.5);
 }

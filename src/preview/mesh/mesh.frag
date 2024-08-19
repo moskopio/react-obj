@@ -1,5 +1,7 @@
 precision mediump float;
 
+#define AA 0.01
+
 uniform vec3 uCameraPosition;
 uniform vec3 uLightPosition;
 uniform bool uShowNormals;
@@ -8,19 +10,23 @@ uniform bool uCellShading;
 varying vec3 vNormal;
 
 vec3 lightShading(in float toLightNormal) {
-  float diffuse = toLightNormal * 0.5 + 0.5;
-  vec3 ambient = vec3(0.5, 0.5, 0.5);
+  vec3 ambient = vec3(0.1);
+  vec3  diffuse = vec3(0.5) * toLightNormal;
 
-  return ambient * diffuse;
+  return ambient + diffuse;
 }
 
 vec3 cellShading(in float toLightNormal) {
-  float shade0 = step(toLightNormal, 0.5);
-  float shade1 = step(toLightNormal, 0.2);
-  float shade2 = step(toLightNormal, 0.15);
+  float shade0 = smoothstep(toLightNormal, toLightNormal + AA, 0.9);
+  float shade1 = smoothstep(toLightNormal, toLightNormal + AA, 0.7);
+  float shade2 = smoothstep(toLightNormal, toLightNormal + AA, 0.5);
+  float shade3 = smoothstep(toLightNormal, toLightNormal + AA, 0.2);
+  float shade4 = smoothstep(toLightNormal, toLightNormal + AA, 0.15);
   
-  vec3 color = mix(vec3(1.0), vec3(0.7), shade0);
-  color = mix(color, vec3(0.5), shade1);
+  vec3 color = mix(vec3(0.6), vec3(0.55), shade0);
+  color = mix(color, vec3(0.4), shade1);
+  color = mix(color, vec3(0.3), shade2);
+  color = mix(color, vec3(0.2), shade3);
   color = mix(color, vec3(0.1), shade2);
   
   return color;

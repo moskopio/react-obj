@@ -14,7 +14,8 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
   const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
   
   if (!program) {
-    console.error('Failed to create a WebGL Program')
+    console.error('Failed to create a WebGL Wireframe Program')
+    cleanup()
     return undefined
   }
   
@@ -28,7 +29,7 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
   }
   const uniforms = getUniforms(gl, program)
   
-  return { setObj, updateCamera, updateSettings, draw }
+  return { setObj, updateCamera, updateSettings, draw, cleanup }
   
   function setObj(newObj: Obj): void {
     obj = newObj 
@@ -72,5 +73,10 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
       updateUniforms({ gl, uniforms, values: { time: [time] } })
       gl.drawArrays(gl.LINES, 0, obj.wireframe.vertices.length)
     }
+  }
+  
+  function cleanup(): void {
+    Object.values(attributes).forEach(a => gl.deleteBuffer(a.b))
+    gl.deleteProgram(program!)
   }
 }
