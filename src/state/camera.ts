@@ -16,7 +16,7 @@ export function createDefaultCamera(): Camera {
   return {
     aspectRatio: 3 / 2,
     fov:         degToRad(60),
-    zNear:       -10,
+    zNear:       0,
     zFar:        50,
     target:      [0, 0, 0] as Vec3,
     rotation:    { theta: 0, phi: 0 },

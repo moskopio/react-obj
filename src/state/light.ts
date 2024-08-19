@@ -7,7 +7,7 @@ export interface Light {
 export function createDefaultLight(): Light {
   return {
     distance: 2.5,
-    rotation: { theta: 0, phi: 0 },
+    rotation: { theta: 45, phi: 0 },
   }
 }
 
