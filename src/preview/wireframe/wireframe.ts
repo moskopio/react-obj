@@ -15,43 +15,24 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
   
   if (!program) {
     console.error('Failed to create a WebGL Wireframe Program')
-    cleanup()
     return undefined
   }
   
   let obj = createEmptyObj()
   let settings = createDefaultSettings()
   
-  // attributes
   const attributes = {
     position: { p: gl.getAttribLocation(program, 'aPosition'), s: 3, b: gl.createBuffer()! },
     normal:   { p: gl.getAttribLocation(program, 'aNormal'),   s: 3, b: gl.createBuffer()! },
   }
   const uniforms = getUniforms(gl, program)
   
-  return { setObj, updateCamera, updateSettings, draw, cleanup }
+  return { updateObj, updateCamera, updateSettings, draw, cleanup }
   
-  function setObj(newObj: Obj): void {
+  function updateObj(newObj: Obj): void {
     obj = newObj 
     updateGeometry()
   }
-  
-  function updateGeometry(): void {
-    const { wireframe } = obj
-    const values = {
-      position: wireframe.vertices.flatMap(v => v),
-      normal:   wireframe.smoothNormals.flatMap(n => n)
-    }
-    updateAttributes({ gl, attributes, values })
-    updateModel()
-  }
-  
-  function updateModel(): void {
-    const model = getModelMatrix(obj, settings)
-    gl.useProgram(program!)
-    updateUniforms({ gl, uniforms, values: { model } })
-  }
-
   
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
@@ -78,5 +59,21 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
   function cleanup(): void {
     Object.values(attributes).forEach(a => gl.deleteBuffer(a.b))
     gl.deleteProgram(program!)
+  }
+  
+  function updateGeometry(): void {
+    const { wireframe } = obj
+    const values = {
+      position: wireframe.vertices.flatMap(v => v),
+      normal:   wireframe.smoothNormals.flatMap(n => n)
+    }
+    updateAttributes({ gl, attributes, values })
+    updateModel()
+  }
+  
+  function updateModel(): void {
+    const model = getModelMatrix(obj, settings)
+    gl.useProgram(program!)
+    updateUniforms({ gl, uniforms, values: { model } })
   }
 }

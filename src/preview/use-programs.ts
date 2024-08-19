@@ -44,7 +44,7 @@ export function usePrograms(props: Props): void {
   }, [gl, resolution])
   
   useEffect(() => { 
-    programs.forEach(p => p.setObj && p.setObj(obj))
+    programs.forEach(p => p.updateObj && p.updateObj(obj))
   }, [gl, obj, programs])
   
   useEffect(() => { 

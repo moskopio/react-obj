@@ -16,7 +16,6 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
   
   if (!program) {
     console.error('Failed to create a WebGL Program')
-    cleanup()
     return undefined
   }
   

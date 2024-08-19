@@ -11,29 +11,30 @@ import { getUniforms, updateUniforms } from '../../webgl/uniforms'
 import fragmentShaderSource from './outline.frag'
 import vertexShaderSource from './outline.vert'
 
+const BLACK_OUTLINE = [0x000000, 0x111111]
+const ACCENT_OUTLINE = [0xB2C99E, 0x628090]
+
+
 export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefined {
   const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
   
   if (!program) {
     console.error('Failed to create a WebGL Outline Program')
-    cleanup()
     return undefined
   }
   
   let obj = createEmptyObj()
   let settings = createDefaultSettings()
   
-  // attributes
   const attributes = {
     position: { p: gl.getAttribLocation(program, 'aPosition'), s: 3, b: gl.createBuffer()! },
     normal:   { p: gl.getAttribLocation(program, 'aNormal'),   s: 3, b: gl.createBuffer()! },
   }
   const uniforms = getUniforms(gl, program)
   
-  return { setObj, updateCamera, updateSettings, draw, cleanup }
+  return { updateObj, updateCamera, updateSettings, draw, cleanup }
   
-  function setObj(newObj: Obj): void {
-    
+  function updateObj(newObj: Obj): void {
     // Outline uses reversed geometry!
     obj = {
       ...newObj,
@@ -45,34 +46,6 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
       }
     }
     updateGeometry()
-  }
-
-  function updateGeometry(): void {
-    const { flat } = obj
-    
-    const vertices = flat.vertices
-    const normals  = settings.flatNormals ? flat.flatNormals : flat.smoothNormals
-    
-    const values = {
-      position: vertices.flatMap(v => v),
-      normal:   normals.flatMap(n => n)
-    }
-    updateAttributes({ gl, attributes, values })
-    updateModel()
-  }
-  
-  function updateModel(): void {
-    const model = getModelMatrix(obj, settings)
-    gl.useProgram(program!)
-    updateUniforms({ gl, uniforms, values: { model } })
-  }
-  
-  function updateColors(): void {
-    const colorA = settings.showReverseOutline ? colorToVec3(0x000000) : colorToVec3(0xB2C99E)
-    const colorB = settings.showReverseOutline ? colorToVec3(0x111111) : colorToVec3(0x628090)
-    gl.useProgram(program!)
-    const values = { colorA, colorB }
-    updateUniforms({ gl, uniforms, values})
   }
   
   function updateSettings(newSettings: Settings): void {
@@ -106,5 +79,38 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
   function cleanup(): void {
     Object.values(attributes).forEach(a => gl.deleteBuffer(a.b))
     gl.deleteProgram(program!)
+  }
+  
+  function updateGeometry(): void {
+    const { flat } = obj
+    
+    const vertices = flat.vertices
+    const normals  = settings.flatNormals ? flat.flatNormals : flat.smoothNormals
+    
+    const values = {
+      position: vertices.flatMap(v => v),
+      normal:   normals.flatMap(n => n)
+    }
+    updateAttributes({ gl, attributes, values })
+    updateModel()
+  }
+  
+  function updateModel(): void {
+    const model = getModelMatrix(obj, settings)
+    gl.useProgram(program!)
+    updateUniforms({ gl, uniforms, values: { model } })
+  }
+  
+  function updateColors(): void {
+    const colorA = settings.showReverseOutline 
+      ? colorToVec3(BLACK_OUTLINE[0]) 
+      : colorToVec3(ACCENT_OUTLINE[0])
+    
+    const colorB = settings.showReverseOutline 
+      ? colorToVec3(BLACK_OUTLINE[1])
+      : colorToVec3(ACCENT_OUTLINE[1])
+    
+    gl.useProgram(program!)
+    updateUniforms({ gl, uniforms, values: { colorA, colorB }})
   }
 }

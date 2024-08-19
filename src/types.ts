@@ -9,11 +9,14 @@ export interface Dict<T> {
   [key: string]: T | undefined;
 }
 
+export type DeepPartial<T> = T extends object ? {
+  [P in keyof T]?: DeepPartial<T[P]>
+} : T
 
 export interface Program {
   cleanup:         () => void
   draw:            (time: number) => void
-  setObj?:         (obj: Obj) => void
+  updateObj?:      (obj: Obj) => void
   updateCamera?:   (camera: Camera) => void
   updateLight?:    (light: Light) => void
   updateSettings?: (settings: Settings) => void
