@@ -30,8 +30,7 @@ vec3 lightShading(in float toLightNormal, in float viewAngleNormal) {
   
   vec3 ambient = uAmbientColor;
   vec3 diffuse = uDiffuseColor * diffuseStep;
-  // vec3 specular = uSpecularColor * diffuseStep * specularStep * float(uSpecularEnabled);
-  vec3 specular = uSpecularColor * specularStep * float(uSpecularEnabled);
+  vec3 specular = uSpecularColor * diffuseStep * specularStep * float(uSpecularEnabled);
   
   return ambient + diffuse + specular;
 }
@@ -42,17 +41,16 @@ vec3 cellShading(in float toLightNormal, in float viewAngleNormal) {
   float shade2 = smoothstep(toLightNormal, toLightNormal + AA, SHADE2);
   float shade3 = smoothstep(toLightNormal, toLightNormal + AA, SHADE3);
   float shade4 = smoothstep(toLightNormal, toLightNormal + AA, SHADE4);
+  
   float specularShade = smoothstep(0.00, 0.00 + AA, pow(viewAngleNormal, uSpecularIntensity));
-  
   vec3 specular = specularShade * uSpecularColor * float(uSpecularEnabled);
-  
-  vec3 objectColor = uAmbientColor + uDiffuseColor;
-  vec3 color = objectColor;
+
+  vec3 color = uAmbientColor + uDiffuseColor;
   // this should rather gradually turn color into ambient!
-  color = mix(color, objectColor * SHADE0, shade0) + specular * SHADE1;
-  color = mix(color, objectColor * SHADE1, shade1) + specular * SHADE2;
-  color = mix(color, objectColor * SHADE2, shade2) + specular * SHADE3;
-  color = mix(color, objectColor * SHADE3, shade3) + specular * SHADE4;
+  color = mix(color, uAmbientColor + uDiffuseColor * SHADE0, shade0) + specular * SHADE1;
+  color = mix(color, uAmbientColor + uDiffuseColor * SHADE1, shade1) + specular * SHADE2;
+  color = mix(color, uAmbientColor + uDiffuseColor * SHADE2, shade2) + specular * SHADE3;
+  color = mix(color, uAmbientColor + uDiffuseColor * SHADE3, shade3) + specular * SHADE4;
   color = mix(color, uAmbientColor, shade4);
 
   return color;
@@ -64,8 +62,8 @@ void main() {
   vec3 lightPosition = normalize(uLightPosition);
   vec3 cameraPosition = normalize(uCameraPosition);
   
-  float toLightNormal = dot(lightPosition, normal);
-  float viewAngleNormal = max(0.0, dot(cameraPosition, normal));
+  float toLightNormal = clamp(dot(lightPosition, normal), 0.0, 1.0);
+  float viewAngleNormal = clamp(dot(cameraPosition, normal), 0.0, 1.0);
   
   vec3 color = lightShading(toLightNormal, viewAngleNormal);
   vec3 cellShadedColor = cellShading(toLightNormal, viewAngleNormal);
