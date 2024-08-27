@@ -56,11 +56,11 @@ export function createLightDrawer(gl: WebGLRenderingContext): Program | undefine
     // 1. Sphere
     // 1A. Outline
     updateUniforms({ gl, uniforms, values: { model: SPHERE_MODEL, useOutline: [1] } })
-    gl.drawArrays(gl.TRIANGLES, 51, 2400)
+    gl.drawArrays(gl.TRIANGLES, 51, 600)
     gl?.clear(gl.DEPTH_BUFFER_BIT)
     // 1B. Shading
     updateUniforms({ gl, uniforms, values: { model: SPHERE_MODEL, useLight: [1], useOutline: [0] } })
-    gl.drawArrays(gl.TRIANGLES, 51, 2400)
+    gl.drawArrays(gl.TRIANGLES, 51, 600)
     
     // 2. Cone
     // 2A. Outline
@@ -78,7 +78,7 @@ export function createLightDrawer(gl: WebGLRenderingContext): Program | undefine
   }
   
   function buildGeometry(): void {
-    const sphere = createSphere(20, 20) //20 * 20 * 2 * 3 = 2400
+    const sphere = createSphere(10, 10) //10 * 10 * 2 * 3 = 600
     const cone = createCone(16) // 16 * 3 + 3 = 51
     
     const position: Vec3[] = [...cone.vertices, ...sphere.vertices]

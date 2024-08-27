@@ -28,9 +28,10 @@ vec3 lightShading(in float toLightNormal, in float viewAngleNormal) {
   float diffuseStep = toLightNormal;
   float specularStep = pow(viewAngleNormal, uSpecularIntensity);
   
-  vec3 ambient = vec3(0, 0, 0.2); //uAmbientColor;
+  vec3 ambient = uAmbientColor;
   vec3 diffuse = uDiffuseColor * diffuseStep;
-  vec3 specular = uSpecularColor * diffuseStep * specularStep * float(uSpecularEnabled);
+  // vec3 specular = uSpecularColor * diffuseStep * specularStep * float(uSpecularEnabled);
+  vec3 specular = uSpecularColor * specularStep * float(uSpecularEnabled);
   
   return ambient + diffuse + specular;
 }
@@ -45,12 +46,14 @@ vec3 cellShading(in float toLightNormal, in float viewAngleNormal) {
   
   vec3 specular = specularShade * uSpecularColor * float(uSpecularEnabled);
   
-  vec3 color = uAmbientColor + uDiffuseColor;
-  color = mix(color, color * SHADE0, shade0) + specular * SHADE1;
-  color = mix(color, color * SHADE1, shade1) + specular * SHADE2;
-  color = mix(color, color * SHADE2, shade2) + specular * SHADE3;
-  color = mix(color, color * SHADE3, shade3) + specular * SHADE4;
-  color = mix(color, color * SHADE4, shade4);
+  vec3 objectColor = uAmbientColor + uDiffuseColor;
+  vec3 color = objectColor;
+  // this should rather gradually turn color into ambient!
+  color = mix(color, objectColor * SHADE0, shade0) + specular * SHADE1;
+  color = mix(color, objectColor * SHADE1, shade1) + specular * SHADE2;
+  color = mix(color, objectColor * SHADE2, shade2) + specular * SHADE3;
+  color = mix(color, objectColor * SHADE3, shade3) + specular * SHADE4;
+  color = mix(color, uAmbientColor, shade4);
 
   return color;
 }
@@ -70,5 +73,5 @@ void main() {
   color = mix(color, cellShadedColor, float(uCellShading));
   color = mix(color, abs(normal), float(uShowNormals));
 
-  gl_FragColor = vec4(color, 0.5);
+  gl_FragColor = vec4(color, 1.0);
 }

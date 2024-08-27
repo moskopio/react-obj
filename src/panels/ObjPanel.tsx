@@ -23,8 +23,9 @@ export function ObjPanel(): ReactElement {
       <File />
       <Divider />
       <Stat label='Groups' value={groupsCount} />
-      <Stat label='Triangles (defined)' value={trianglesCount} />
-      <Stat label='Triangles (displayed)' value={flatTrianglesCount} />
+      <Stat label='Vertices (defined)' value={trianglesCount} />
+      <Stat label='Vertices (displayed)' value={flatTrianglesCount} />
+      <Stat label='Triangles' value={flatTrianglesCount / 3} />
       <Stat label='Defined Normals' value={definedNormalsCount} />
       <Stat label='Indices' value={indicesCount} />
       <Divider />

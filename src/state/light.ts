@@ -1,16 +1,22 @@
+import { flipConstrain } from "../components/utils/common"
 import { DeepPartial } from "../types"
+import { Vec3 } from "../utils/math/v3"
 
 export interface Light {
   distance: number
   rotation: { theta: number, phi: number }
-  specular: { intensity: number, enabled: boolean }
+  ambient:  { color: Vec3 },
+  diffuse:  { color: Vec3 },
+  specular: { color: Vec3, intensity: number, enabled: boolean }
 }
 
 export function createDefaultLight(): Light {
   return {
-    distance: 10,
+    distance: 2.5,
     rotation: { theta: 45, phi: 0 },
-    specular: { intensity: 1000, enabled: true }
+    ambient:  { color: [25, 25, 25] },
+    diffuse:  { color: [128, 128, 128] },
+    specular: { color: [255, 255, 255], intensity: 1000, enabled: true }
   }
 }
 
@@ -20,6 +26,7 @@ const LIGHT_ACTIONS = [
   'setPhiRotation',
   'setSpecularIntensity',
   'toggleSpecular',
+  'updateAmbientColor',
 ]
 
 export interface LightAction extends DeepPartial<Light> {
@@ -46,24 +53,28 @@ export function lightReducer(state: Light, action: LightAction): Light {
       break
       
     case 'setSpecularIntensity':
-        newState.specular.intensity = action.specular!.intensity!
-        break
+      newState.specular.intensity = action.specular!.intensity!
+      break
       
     case 'toggleSpecular': 
-        newState.specular.enabled = action.specular!.enabled!
-        break
+      newState.specular.enabled = action.specular!.enabled!
+      break
+    
+    case 'updateAmbientColor': 
+      newState.ambient.color = action.ambient!.color! as Vec3
+      break
+      
+    case 'updateDiffuseColor': 
+      newState.diffuse.color = action.diffuse!.color! as Vec3
+      break
+    
+    case 'updateSpecularColor': 
+      newState.specular.color = action.specular!.color! as Vec3
+      break
   }
   
-  newState.rotation.phi = limitAngle(newState.rotation.phi)
-  newState.rotation.theta = limitAngle(newState.rotation.theta)
+  newState.rotation.phi = flipConstrain(newState.rotation.phi, - 180, 180)
+  newState.rotation.theta = flipConstrain(newState.rotation.theta, -180, 180)
   
   return newState
-}
-
-function limitAngle(angle: number): number {
-  return angle > -360
-    ? angle < 360
-      ? angle
-      : angle - 720
-    : 720 - angle
 }

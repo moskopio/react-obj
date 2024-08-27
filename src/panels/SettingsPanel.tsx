@@ -52,7 +52,7 @@ export function SettingsPanel(): ReactElement {
       />
       
       <Checkbox 
-        label="Use flat Nrmals"
+        label="Use flat Normals"
         value={settings.flatNormals}
         onChange={(flatNormals: boolean) => settingsDispatch({ flatNormals })}
         color={pallette.getNextColor()}

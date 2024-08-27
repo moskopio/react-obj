@@ -16,6 +16,14 @@ export function colorToVec4(color: number): Vec4 {
   return [r, g, b, a]
 }
 
+export function vec3ToCSSColor(color: Vec3): string {
+  return '#' + color.map(p => p.toString(16).toLocaleUpperCase()).map(p => p.length < 2 ? `0${p}` : p).join('')
+}
+
+export function vec3ToShaderColor(color: Vec3): Vec3 {
+  return color.map(p => p / 255) as Vec3
+}
+
 
 export const PASTEL_COLORS = {
   pancho:   '#EFD5A5',

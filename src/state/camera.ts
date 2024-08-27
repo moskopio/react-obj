@@ -1,3 +1,4 @@
+import { flipConstrain } from "../components/utils/common"
 import { degToRad } from "../utils/math/angles"
 import { Vec3 } from "../utils/math/v3"
 
@@ -91,8 +92,8 @@ export function cameraReducer(state: Camera, action: CameraAction): Camera {
       break
   }
   
-  newState.rotation.phi = limitAngle(newState.rotation.phi)
-  newState.rotation.theta = limitAngle(newState.rotation.theta)
+  newState.rotation.phi = flipConstrain(newState.rotation.phi, -180, 180)
+  newState.rotation.theta = flipConstrain(newState.rotation.theta, -180, 180)
   
   newState.track.x = Math.min(10, Math.max(-10, newState.track.x), newState.track.x)
   newState.track.y = Math.min(10, Math.max(-10, newState.track.y), newState.track.y)
@@ -100,12 +101,4 @@ export function cameraReducer(state: Camera, action: CameraAction): Camera {
   newState.dolly = Math.min(10, Math.max(0, newState.dolly), newState.dolly)
   
   return newState
-}
-
-function limitAngle(angle: number): number {
-  return angle > -360
-    ? angle < 360
-      ? angle
-      : angle - 720
-    : 720 - angle
 }

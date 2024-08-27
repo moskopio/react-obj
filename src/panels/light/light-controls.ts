@@ -65,7 +65,7 @@ export function useLightControls(props: Props): void {
     
       lightDispatch({ type: 'updateRotation', rotation: { theta: -yDelta, phi: xDelta } } )
       
-      position.current  = [event.clientX, event.clientY]
+      position.current = [event.clientX, event.clientY]
     }
   
   },[lightDispatch])

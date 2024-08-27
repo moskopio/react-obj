@@ -9,6 +9,10 @@
   --elements-border: 2px;
   --elements-radius: 3px;
   
+  --accent-color-red: #BF5C38;
+  --accent-color-blue: #628090;
+  --accent-color-green: #B2C99E;
+  
   --text-shadow: 
     1px 1px 0 var(--shadow-color),
     -1px 1px 0 var(--shadow-color),

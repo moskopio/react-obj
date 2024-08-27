@@ -3,7 +3,6 @@
   align-items: center;
   height: 16px;
   color: var(--highlight-color);
-  /* gap: 5px; */
 }
 
 .divider::before {
@@ -18,7 +17,6 @@
     flex-grow: 1;
     box-sizing: border-box;
     border: 1px var(--highlight-color) solid;
-    box-shadow: inset 0px 0px 0px 1px var(--shadow-color);  
+    box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
     content: "";
-    /* margin: 10px 10px; */
 }

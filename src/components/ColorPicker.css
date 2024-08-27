@@ -1,0 +1,36 @@
+.color-picker {
+  display: flex;
+  gap: 5px;
+}
+
+.color-picker-controls {
+  flex: 3;
+  flex-direction: column;
+  display: flex;
+  width: 100%;
+  gap: 5px;
+}
+
+.color-picker-preview {
+  flex: 1;
+  flex-direction: column;
+  display: flex;
+}
+
+.color-picker-label {
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  margin: auto;
+}
+
+.color-picker-display {
+  flex: 1;
+  border: var(--elements-border) var(--highlight-color) solid;
+  outline: var(--elements-border) var(--shadow-color) solid;
+  box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
+  border-radius: 10px;
+}
+
+
+

@@ -1,0 +1,20 @@
+.light-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.light-controls-vertical {
+  display: flex;
+  flex-direction: row;
+}
+
+.light-controls-vertical .light-controller-canvas {
+  width: 90%;
+}
+
+
+.light-controls .precise-slider-horizontal {
+  width: 90%;
+}
+ 

@@ -3,7 +3,7 @@ import { Light } from '../../state/light'
 import { createEmptyObj, Obj } from '../../state/obj'
 import { createDefaultSettings, Settings } from '../../state/settings'
 import { Program } from '../../types'
-import { colorToVec3 } from '../../utils/color'
+import { colorToVec3, vec3ToShaderColor } from '../../utils/color'
 import { setupAttributes, updateAttributes } from '../../webgl/attributes'
 import { getLookAtMatrices } from '../../webgl/camera'
 import { getLightPosition } from '../../webgl/light'
@@ -63,14 +63,20 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
   }
   
   function updateLight(light: Light): void {
-    const { specular } = light
+    const { specular, ambient, diffuse } = light
     const lightPosition = getLightPosition(light)
     
     const specularIntensity = [2000 - specular.intensity]
     const specularEnabled = [specular.enabled ? 1 : 0]
     
+    const ambientColor = vec3ToShaderColor(ambient.color)
+    const diffuseColor = vec3ToShaderColor(diffuse.color)
+    const specularColor = vec3ToShaderColor(specular.color)
+    
+    const values = { lightPosition, specularIntensity, specularEnabled, ambientColor, diffuseColor, specularColor }
+    
     gl.useProgram(program!)
-    updateUniforms({ gl, uniforms, values: { lightPosition, specularIntensity, specularEnabled } })
+    updateUniforms({ gl, uniforms, values })
   }
   
   function draw(time: number): void {
@@ -101,7 +107,6 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
       count:    vertices.map((_, i) => i)
     }
     
-    console.log(values)
     updateAttributes({ gl, attributes, values })
     updateModel()
   }

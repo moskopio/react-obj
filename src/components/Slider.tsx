@@ -1,6 +1,9 @@
-import { MutableRefObject, ReactElement, useCallback, useEffect, useMemo, useRef } from "react"
-import './Slider.css'
+import { ReactElement, useMemo, useRef } from "react"
 import { PASTEL_COLORS } from "../utils/color"
+import './Slider.css'
+import { getPercentage } from "./utils/common"
+import { useSliderMouseDrag } from "./hooks/slider-mouse-drag"
+import { useSliderMouseWheel } from "./hooks/slider-mouse-wheel"
 
 interface Props {
   label:         string
@@ -16,19 +19,12 @@ export function Slider(props: Props): ReactElement {
   const { label, min, max, onChange, value } = props
   const { defaultValue = 0, color = PASTEL_COLORS.mojo } = props
   const sliderRef = useRef<HTMLDivElement | null>(null)
-  const getPercentage = useCallback((v: number) => {
-    const percentage = ((v - min) / (max - min)) * 100
-    return percentage > 0 
-      ? percentage < 100
-        ? percentage
-        : 100
-      : 0 
-  }, [min, max])
   
-  useControls({ sliderRef, min, max, onChange, defaultValue })
+  useSliderMouseDrag({ sliderRef, min, max, onChange, defaultValue })
+  useSliderMouseWheel({ sliderRef, min, max, onChange, value })
   
   const handleStyle = useMemo(() => ({
-      width: `${getPercentage(value)}%`,
+      width: `${getPercentage(value, min, max)}%`,
       background: `${color}`
   }), [value, color])
   
@@ -41,75 +37,3 @@ export function Slider(props: Props): ReactElement {
   )
 }
 
-interface ControlProps {
-  sliderRef:    MutableRefObject<HTMLElement | null>
-  max:          number
-  min:          number
-  defaultValue: number
-  onChange:     (value: number) => void
-}
- 
-function useControls(props: ControlProps): void {
-  const { sliderRef, onChange, min, max, defaultValue } = props
-  
-  const updateValue = useCallback((event: MouseEvent) => {
-    if (sliderRef.current) {
-      const boundingRect = sliderRef.current?.getBoundingClientRect()
-      const boundingLeft = Math.round(boundingRect.left)
-      const boundingRight = Math.round(boundingRect.right)
-      
-      const mouseX = Math.round(event.clientX)
-      const constrainedX = constrain(mouseX, boundingLeft, boundingRight)
-      
-      const percentage = (constrainedX - boundingLeft) / (boundingRight -boundingLeft)
-      
-      onChange(min + percentage * (max - min))
-    }
-  }, [onChange, min, max, sliderRef])
-  
-  useEffect(() => {
-    const slider = sliderRef?.current
-    slider?.addEventListener('contextmenu', onContextMenu)
-    slider?.addEventListener('mousedown', onMouseDown)
-    
-    return () => {
-      slider?.removeEventListener('contextmenu', onContextMenu)
-      slider?.removeEventListener('mousedown', onMouseDown)
-      document?.removeEventListener('mouseup', onMouseUp)
-      document?.removeEventListener('mousemove', onMouseMove)
-    }
-    
-    function onContextMenu(event: MouseEvent): void {
-      event.preventDefault()
-      event.stopImmediatePropagation()
-      onChange(defaultValue)
-    }
-    
-    function onMouseDown(event: MouseEvent): void {
-      event.preventDefault()
-      event.stopImmediatePropagation()
-      if (event.type !== 'contextmenu' && event.button !== 2) {
-        updateValue(event)
-        document?.addEventListener('mouseup', onMouseUp)
-        document?.addEventListener('mousemove', onMouseMove)
-      }
-    }
-    
-    function onMouseUp(event: MouseEvent): void {
-      event.preventDefault()
-      event.stopImmediatePropagation()
-      document?.removeEventListener('mouseup', onMouseUp)
-      document?.removeEventListener('mousemove', onMouseMove)
-    }
-    
-    function onMouseMove(event: MouseEvent): void {
-      event.preventDefault()
-      event.stopImmediatePropagation()
-      updateValue(event)
-    }
-  }, [sliderRef, updateValue])
-}
-
-function constrain(value: number, min: number, max: number): number {
-  return Math.max(Math.min(value, max), min)
-}
