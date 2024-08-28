@@ -1,9 +1,11 @@
 import { ReactElement, useContext } from "react"
 import { Checkbox } from "../components/Checkbox"
+import { Divider } from "../components/Divider"
 import { Panel } from "../components/Panel"
 import { AppContext } from "../state/context"
 import { createPallette, PASTEL_COLORS } from "../utils/color"
-import { Divider } from "../components/Divider"
+import './SettingsPanel.css'
+import { OutlineSettings } from "./settings/OutlineSettings"
 
 export function SettingsPanel(): ReactElement {
   const { settings, settingsDispatch } = useContext(AppContext)
@@ -11,7 +13,6 @@ export function SettingsPanel(): ReactElement {
 
   return (
     <Panel icon='settings' color={PASTEL_COLORS.hai}>
-      
       <Divider label='Mesh' />
       
       <Checkbox 
@@ -58,22 +59,7 @@ export function SettingsPanel(): ReactElement {
         color={pallette.getNextColor()}
       />
       
-
-      <Divider label="Outline" />
-      
-      <Checkbox
-        label="Show Outline"
-        value={settings.showOutline}
-        onChange={(showOutline: boolean) => settingsDispatch({ showOutline })}
-        color={pallette.getNextColor()}
-      />
-      
-      <Checkbox
-        label="Show Reversed"
-        value={settings.showReverseOutline}
-        onChange={(showReverseOutline: boolean) => settingsDispatch({ showReverseOutline })}
-        color={pallette.getNextColor()}
-      />
+      < OutlineSettings />
       
       <Divider label="Stage" />
       

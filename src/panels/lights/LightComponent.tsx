@@ -1,5 +1,5 @@
 import { ReactElement, useRef } from "react"
-import { useWebGLContext } from "../../webgl/use-context"
+import { useWebGLContext } from "../../webgl/hooks/use-context"
 import { useLightControls } from "./hooks/light-controls"
 import { useLightPreviewProgram } from "./hooks/light-program"
 import './LightComponent.css'

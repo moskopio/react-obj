@@ -3,10 +3,10 @@ import { PASTEL_COLORS } from "../utils/color"
 import './Checkbox.css'
 
 interface Props {
+  color?:    string
   label:     string
   onChange: (value: boolean) => void
   value:     boolean
-  color?:    string
 }
 
 export function Checkbox(props: Props): ReactElement {

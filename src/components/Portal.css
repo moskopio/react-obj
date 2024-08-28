@@ -45,23 +45,9 @@
 }
 
 .portal-label::before, .portal-label::after {
-    flex-grow: 1;
-    box-sizing: border-box;
-    border: 1px var(--highlight-color) solid;
-    box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
-    content: "";
-}
-
-
-.portal-close {
-  display: flex;
-  width: 12px;
-  height: 12px;
-  text-align: center;
-  align-items: center;
-  border: var(--elements-border) var(--highlight-color) solid;
+  flex-grow: 1;
+  box-sizing: border-box;
+  border: 1px var(--highlight-color) solid;
   box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
-  outline: var(--elements-border) var(--shadow-color) solid;
-  border-radius: 8px;
-  background-color: var(--accent-color-red);
+  content: "";
 }

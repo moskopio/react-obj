@@ -1,11 +1,11 @@
 import { useContext, useEffect, useRef, useState } from "react"
-import { AppContext } from "../state/context"
-import { ObjContext } from "../state/obj"
-import { Program } from "../types"
-import { createGridDrawer } from "./grid/grid"
-import { createMeshDrawer } from "./mesh/mesh"
-import { createOutlineDrawer } from "./outline/outline"
-import { createWireframeDrawer } from "./wireframe/wireframe"
+import { AppContext } from "../../state/context"
+import { ObjContext } from "../../state/obj"
+import { Program } from "../../types"
+import { createGridDrawer } from "../grid/grid"
+import { createMeshDrawer } from "../mesh/mesh"
+import { createOutlineDrawer } from "../outline/outline"
+import { createWireframeDrawer } from "../wireframe/wireframe"
 
 interface Props {
   gl:         WebGLRenderingContext | null
@@ -43,26 +43,21 @@ export function usePrograms(props: Props): void {
     cameraDispatch({ type: 'setAspectRatio', aspectRatio: resolution.width / resolution.height })
   }, [gl, resolution])
   
-  useEffect(() => { 
+  useEffect(() => {
     programs.forEach(p => p.updateObj && p.updateObj(obj))
   }, [gl, obj, programs])
   
-  useEffect(() => { 
+  useEffect(() => {
     programs.forEach(p => p.updateCamera && p.updateCamera(camera))
   }, [gl, programs, camera])
   
-  useEffect(() => { 
-    programs.forEach(p => p.updateSettings && p.updateSettings(settings))
-  }, [gl, programs, settings])
+  useEffect(() => programs.forEach(p => p.updateSettings && p.updateSettings(settings)) ,[gl, programs, settings])
+  
+  useEffect(() => programs.forEach(p => p.updateLight && p.updateLight(light))
+, [gl, programs, light])
   
   useEffect(() => {
-    programs.forEach(p => p.updateLight && p.updateLight(light))
-  }, [gl, programs, light])
-  
-  useEffect(() => {
-    return () => {
-      programs.forEach(p => p.cleanup())
-    }
+    return () => programs.forEach(p => p.cleanup())
   }, [])
   
   useEffect(() => {
@@ -79,4 +74,3 @@ export function usePrograms(props: Props): void {
     requestId.current = requestAnimationFrame(draw)
   }
 }
-

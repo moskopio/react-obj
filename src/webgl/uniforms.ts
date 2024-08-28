@@ -1,5 +1,5 @@
 import { Dict } from "../types"
-import { prepareName } from "./name"
+import { Color, vec3ToShaderColor } from "../utils/color"
 
 interface Uniform {
   loc:  WebGLUniformLocation | null
@@ -27,7 +27,7 @@ export function getUniforms(gl: WebGLRenderingContext, program: WebGLProgram): U
 }
 
 
-type Values = Dict<number[] >
+type Values = Dict<number[]>
 
 interface UpdateArgs {
   gl:       WebGLRenderingContext
@@ -64,3 +64,29 @@ export function updateUniforms(args: UpdateArgs): void {
     }
   })
 }
+
+function prepareName(name: string): string {
+  const noPrefix = name[0] === 'u' || name[0] === 'a' ? name.slice(1) : name
+  const noUppercase = noPrefix[0].toLowerCase() + noPrefix.slice(1)
+  return noUppercase
+}
+
+export function prepareValues(values: Dict<number | number[] | boolean>): Values {
+  const prepared: Values = {}
+  const valuesNames = Object.keys(values)
+  
+  valuesNames.forEach(name => {
+    const value = values[name]
+    if (typeof value == 'number') {
+      prepared[name] = [value] as number[]
+    } else if (typeof value == 'boolean') {
+      prepared[name] = [value ? 1 : 0]
+    } else if (name.includes('color')) {
+      prepared[name] = vec3ToShaderColor(value as Color)
+    } else {
+      prepared[name] = value as number[]
+    }
+  })
+  
+  return prepared
+} 

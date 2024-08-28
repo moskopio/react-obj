@@ -7,8 +7,8 @@ import { Slider } from "../components/Slider"
 import { AppContext } from "../state/context"
 import { createPallette, PASTEL_COLORS } from "../utils/color"
 import { Vec3 } from "../utils/math/v3"
-import { ColorPortal } from "./color/ColorPortal"
-import { LightControls } from "./light/LightControls"
+import { ColorPortal } from "./colors/ColorPortal"
+import { LightControls } from "./lights/LightControls"
 import './LightPanel.css'
 
 export function LightPanel(): ReactElement {

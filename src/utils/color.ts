@@ -1,6 +1,8 @@
 import { Vec3 } from "./math/v3"
 import { Vec4 } from "./math/v4"
 
+export type Color = [r: number, g: number, b: number]
+
 export function colorToVec3(color: number): Vec3 {
   const r = (color >>> 16) / 255
   const g = (color >>> 8 & 0xFF) / 255
@@ -20,7 +22,7 @@ export function vec3ToCSSColor(color: Vec3): string {
   return '#' + color.map(p => p.toString(16).toLocaleUpperCase()).map(p => p.length < 2 ? `0${p}` : p).join('')
 }
 
-export function vec3ToShaderColor(color: Vec3): Vec3 {
+export function vec3ToShaderColor(color: Color): Vec3 {
   return color.map(p => p / 255) as Vec3
 }
 
@@ -40,7 +42,7 @@ export const PASTEL_COLORS = {
   lynch:    '#628090',
  } as const
 
-interface Pallette {
+export interface Pallette {
   getNextColor: () => string
 }
 

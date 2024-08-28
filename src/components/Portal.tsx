@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useMemo, useState } from "react"
 import './Portal.css'
 
 interface Props {
-  children: ReactElement | ReactElement[] | string
+  children: ReactElement | ReactElement[] | string | null
   label:    string
   onClose:  () => void
   position: [x: number, y: number]

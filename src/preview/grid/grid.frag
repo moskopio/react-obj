@@ -3,6 +3,7 @@ precision mediump float;
 uniform float uTime;
 uniform vec3 uColorA;
 uniform vec3 uColorB;
+uniform float uDivisions;
 uniform vec3 uCameraPosition;
 
 varying vec3 vNormal;

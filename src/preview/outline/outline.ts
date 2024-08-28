@@ -2,18 +2,13 @@ import { Camera } from '../../state/camera'
 import { createEmptyObj, Obj } from '../../state/obj'
 import { createDefaultSettings, Settings } from '../../state/settings'
 import { Program } from '../../types'
-import { colorToVec3 } from '../../utils/color'
 import { setupAttributes, updateAttributes } from '../../webgl/attributes'
 import { getLookAtMatrices } from '../../webgl/camera'
 import { getModelMatrix } from '../../webgl/model'
 import { createShaderProgram } from '../../webgl/program'
-import { getUniforms, updateUniforms } from '../../webgl/uniforms'
+import { getUniforms, prepareValues, updateUniforms } from '../../webgl/uniforms'
 import fragmentShaderSource from './outline.frag'
 import vertexShaderSource from './outline.vert'
-
-const BLACK_OUTLINE = [0x000000, 0x111111]
-const ACCENT_OUTLINE = [0xB2C99E, 0x628090]
-
 
 export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefined {
   const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
@@ -51,7 +46,7 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
     updateModel()
-    updateColors()
+    updateOutline()
     updateGeometry()
   }
   
@@ -64,15 +59,14 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
   }
   
   function draw(time: number): void {
-    if (settings.showOutline || settings.showReverseOutline) {
+    const { outline } = settings
+    if (outline.enabled) {
       gl.useProgram(program!)
       setupAttributes({ gl, attributes })
       
       updateUniforms({ gl, uniforms, values: { time: [time] } })
       gl.drawArrays(gl.TRIANGLES, 0, obj.flat.vertices.length)
-      
-      const shouldCleanDepth = settings.showOutline && !settings.showReverseOutline
-      shouldCleanDepth && gl?.clear(gl.DEPTH_BUFFER_BIT)
+      !outline.useReverse && gl?.clear(gl.DEPTH_BUFFER_BIT)
     }
   }
   
@@ -101,16 +95,11 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
     updateUniforms({ gl, uniforms, values: { model } })
   }
   
-  function updateColors(): void {
-    const colorA = settings.showReverseOutline 
-      ? colorToVec3(BLACK_OUTLINE[0]) 
-      : colorToVec3(ACCENT_OUTLINE[0])
-    
-    const colorB = settings.showReverseOutline 
-      ? colorToVec3(BLACK_OUTLINE[1])
-      : colorToVec3(ACCENT_OUTLINE[1])
+  function updateOutline(): void {
+    const { outline } = settings
+    const values = prepareValues(outline)
     
     gl.useProgram(program!)
-    updateUniforms({ gl, uniforms, values: { colorA, colorB }})
+    updateUniforms({ gl, uniforms, values })
   }
 }
