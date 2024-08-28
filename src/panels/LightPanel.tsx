@@ -7,14 +7,11 @@ import { Slider } from "../components/Slider"
 import { AppContext } from "../state/context"
 import { createPallette, PASTEL_COLORS } from "../utils/color"
 import { Vec3 } from "../utils/math/v3"
-import './LightPanel.css'
 import { ColorPortal } from "./color/ColorPortal"
 import { LightControls } from "./light/LightControls"
 import './LightPanel.css'
 
 export function LightPanel(): ReactElement {
-  const pallette = createPallette()
-  
   return (
     <Panel icon='light' color={PASTEL_COLORS.mojo}>
       

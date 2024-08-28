@@ -61,14 +61,14 @@ export function SettingsPanel(): ReactElement {
 
       <Divider label="Outline" />
       
-      <Checkbox 
+      <Checkbox
         label="Show Outline"
         value={settings.showOutline}
         onChange={(showOutline: boolean) => settingsDispatch({ showOutline })}
-        color='#707e7d'
+        color={pallette.getNextColor()}
       />
       
-      <Checkbox 
+      <Checkbox
         label="Show Reversed"
         value={settings.showReverseOutline}
         onChange={(showReverseOutline: boolean) => settingsDispatch({ showReverseOutline })}

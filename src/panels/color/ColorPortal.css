@@ -2,12 +2,12 @@
   display: flex;
   border: var(--elements-border) var(--highlight-color) solid;
   outline: var(--elements-border) var(--shadow-color) solid;
-  box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
-  border-radius: 45px;
-  height: 45px;
-  width: 45px;
+  box-shadow: inset 0px 0px 0px 2px var(--shadow-color);
+  border-radius: 15px;
+  height: 55px;
+  width: 55px;
   
-  font-size: 8px;
+  font-size: 10px;
   align-items: center;
   justify-content: center;
   
