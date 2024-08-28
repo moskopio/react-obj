@@ -36,8 +36,8 @@ export function CameraPanel(): ReactElement {
       
       <Slider
         label={`Theta: ${Math.floor(camera.rotation.theta)}°`}
-        min={-360}
-        max={360}
+        min={-180}
+        max={180}
         onChange={setThetaRotation}
         value={camera.rotation.theta}
         defaultValue={0}
@@ -45,8 +45,8 @@ export function CameraPanel(): ReactElement {
       />
       <Slider
         label={`Phi: ${Math.floor(camera.rotation.phi)}°`}
-        min={-360} 
-        max={360} 
+        min={-180}
+        max={180}
         onChange={setPhiRotation}
         value={camera.rotation.phi}
         defaultValue={0}

@@ -1,8 +1,12 @@
 .panels {
+  position: absolute;
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
   gap: 5px;
   font-size: 11px;
   color: var(--highlight-color);
   font-family: monospace;
+  width: auto;
+  overflow: visible;
 }

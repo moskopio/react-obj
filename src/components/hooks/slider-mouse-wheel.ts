@@ -16,8 +16,7 @@ export function useSliderMouseWheel(props: Props): void {
   const { sliderRef, onChange, min, max, value, vertical } = props
   
   const updateOnWheel = useCallback((event: WheelEvent) => {
-    const delta = vertical ? event.deltaY : event.deltaY
-    const change = (delta > 0 ? WHEEL_STEP : -WHEEL_STEP)
+    const change = (event.deltaY > 0 ? WHEEL_STEP : -WHEEL_STEP)
     // Note: Slider could have reverse order! This will result in min > max
     const newValue = constrain(value + change * (max - min), Math.min(min, max), Math.max(min, max))
     onChange(newValue)
