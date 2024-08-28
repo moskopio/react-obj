@@ -101,7 +101,7 @@ export function useCameraControls(): void {
         cameraDispatch({ type: 'updateRotation', rotation: { theta: -yDelta, phi: xDelta } } )
       }
       
-      position.current  = [event.clientX, event.clientY]
+      position.current = [event.clientX, event.clientY]
     }
   
   },[cameraDispatch])

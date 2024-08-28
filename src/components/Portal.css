@@ -1,0 +1,67 @@
+.portal {
+  position: fixed;
+  padding: 5px;
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+  
+  top: 0;
+  left: 0;
+  width: 200px;
+  border: var(--elements-border) var(--highlight-color) solid;
+  outline: var(--elements-border) var(--shadow-color) solid;
+  box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
+  border-radius: var(--elements-radius);
+  background-color: var(--bg-color);
+  background-image:
+    linear-gradient(var(--line-color-3) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-color-3) 1px, transparent 1px);
+    border-radius: var(--elements-radius);
+}
+
+.portal-bar {
+  display: flex;
+  flex-direction: row;
+}
+
+.portal-label {
+  flex: 10;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  color: var(--highlight-color);
+  font-family: monospace;
+  user-select: none;
+  text-shadow: var(--text-shadow);
+}
+
+.portal-label::before {
+  margin-left: 10px;
+}
+
+.portal-label::after {
+  margin-right: 10px;
+}
+
+.portal-label::before, .portal-label::after {
+    flex-grow: 1;
+    box-sizing: border-box;
+    border: 1px var(--highlight-color) solid;
+    box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
+    content: "";
+}
+
+
+.portal-close {
+  display: flex;
+  width: 12px;
+  height: 12px;
+  text-align: center;
+  align-items: center;
+  border: var(--elements-border) var(--highlight-color) solid;
+  box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
+  outline: var(--elements-border) var(--shadow-color) solid;
+  border-radius: 8px;
+  background-color: var(--accent-color-red);
+}

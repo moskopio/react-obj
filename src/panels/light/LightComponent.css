@@ -1,4 +1,4 @@
-.light-controller-canvas {
+.light-component {
   border: var(--elements-border) var(--highlight-color) solid;
   outline: var(--elements-border) var(--shadow-color) solid;
   box-shadow: inset 0px 0px 0px 1px var(--shadow-color);

@@ -1,9 +1,9 @@
-import { Light } from "../../state/light"
-import { degToRad } from "../../utils/math/angles"
-import { M4, Matrix4 } from "../../utils/math/m4"
-import { perspective } from "../../utils/math/projections"
-import { Q } from "../../utils/math/quaternion"
-import { V3 } from "../../utils/math/v3"
+import { Light } from "../../../state/light"
+import { degToRad } from "../../../utils/math/angles"
+import { M4, Matrix4 } from "../../../utils/math/m4"
+import { perspective } from "../../../utils/math/projections"
+import { Q } from "../../../utils/math/quaternion"
+import { V3 } from "../../../utils/math/v3"
 
 interface LightMatrices {
   projection: Matrix4

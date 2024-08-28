@@ -1,12 +1,12 @@
-import { Light } from "../../state/light"
-import { Program } from "../../types"
-import { colorToVec3 } from "../../utils/color"
-import { M4 } from "../../utils/math/m4"
-import { Vec3 } from "../../utils/math/v3"
-import { setupAttributes, updateAttributes } from "../../webgl/attributes"
-import { createCone, createSphere } from "../../webgl/primitives"
-import { createShaderProgram } from "../../webgl/program"
-import { getUniforms, updateUniforms } from "../../webgl/uniforms"
+import { Light } from "../../../state/light"
+import { Program } from "../../../types"
+import { colorToVec3, vec3ToShaderColor } from "../../../utils/color"
+import { M4 } from "../../../utils/math/m4"
+import { Vec3 } from "../../../utils/math/v3"
+import { setupAttributes, updateAttributes } from "../../../webgl/attributes"
+import { createCone, createSphere } from "../../../webgl/primitives"
+import { createShaderProgram } from "../../../webgl/program"
+import { getUniforms, updateUniforms } from "../../../webgl/uniforms"
 import { getLightMatrices } from "./light-matrices"
 import fragmentShaderSource from './light.frag'
 import vertexShaderSource from './light.vert'
@@ -37,12 +37,16 @@ export function createLightDrawer(gl: WebGLRenderingContext): Program | undefine
   return { updateLight, draw, cleanup }
   
   function updateLight(light: Light): void {
-    const { specular } = light
+    const { specular, ambient, diffuse } = light
     const { ...matrices } = getLightMatrices(light)
+    
+    const ambientColor = vec3ToShaderColor(ambient.color)
+    const diffuseColor = vec3ToShaderColor(diffuse.color)
+    const specularColor = vec3ToShaderColor(specular.color)
     
     const specularIntensity = [2000 - specular.intensity]
     const specularEnabled = [specular.enabled ? 1 : 0]
-    const values = { ...matrices, specularIntensity, specularEnabled} 
+    const values = { ...matrices, specularIntensity, specularEnabled, ambientColor, diffuseColor, specularColor} 
     
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values})

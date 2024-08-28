@@ -1,10 +1,10 @@
 import { ReactElement, useRef } from "react"
 import { useWebGLContext } from "../../webgl/use-context"
-import { useLightControls } from "./light-controls"
-import { useLightPreviewProgram } from "./light-program"
-import './LightController.css'
+import { useLightControls } from "./hooks/light-controls"
+import { useLightPreviewProgram } from "./hooks/light-program"
+import './LightComponent.css'
 
-export function LightController(): ReactElement {
+export function LightComponent(): ReactElement {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   
   const gl = useWebGLContext({ canvasRef })
@@ -13,7 +13,7 @@ export function LightController(): ReactElement {
   
   return (
     <canvas
-      className='light-controller-canvas'
+      className='light-component'
       ref={canvasRef}
       width={200}
       height={200}

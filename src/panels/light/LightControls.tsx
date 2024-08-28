@@ -1,7 +1,7 @@
 import { ReactElement, useCallback, useContext } from "react"
 import { HorizontalPreciseSlider, VerticalPreciseSlider } from "../../components/PrecisionSlider"
 import { AppContext } from "../../state/context"
-import { LightController } from "./LightController"
+import { LightComponent } from "./LightComponent"
 import "./LightControls.css"
 
 export function LightControls(): ReactElement {
@@ -18,7 +18,7 @@ export function LightControls(): ReactElement {
   return (
     <div className='light-controls'>
       <div className='light-controls-vertical'> 
-        <LightController />
+        <LightComponent />
         <VerticalPreciseSlider
           value={light.rotation.theta}
           min={180}

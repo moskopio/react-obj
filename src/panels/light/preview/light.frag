@@ -4,6 +4,10 @@ uniform vec3 uColorA;
 uniform vec3 uColorB;
 uniform vec3 uColorC;
 
+uniform vec3 uAmbientColor;
+uniform vec3 uDiffuseColor;
+uniform vec3 uSpecularColor;
+
 varying vec3 vNormal;
 
 uniform float uSpecularIntensity;
@@ -13,14 +17,14 @@ uniform bool uUseOutline;
 uniform bool uSpecularEnabled;
 
 vec3 lightShading(in float toCameraNormal, in float viewAngleNormal) {
-  vec3 ambient = vec3(0.1);
+  vec3 ambient = uAmbientColor;
   
   float diffuseStep = smoothstep(0.70, 0.71, toCameraNormal);
   float specularStep = smoothstep(0.00, 0.01, pow(viewAngleNormal, uSpecularIntensity / 5.0)) * float(uSpecularEnabled);
   
   vec3 color = ambient;
-  color = mix(color, uColorB, diffuseStep);
-  color = mix(color, uColorA, specularStep);
+  color = mix(color, uDiffuseColor, diffuseStep);
+  color = mix(color, uSpecularColor, specularStep);
   
   return color;
 }
