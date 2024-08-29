@@ -34,7 +34,7 @@ export function getLookAtMatrices(camera: Camera): CameraOutput {
   cameraToWorld[14] = cameraPosition[2]
   
   
-  const projection = perspective(fov, aspectRatio, zNear, zFar)
+  const projection = perspective(degToRad(fov), aspectRatio, zNear, zFar)
   const view = M4.inverse(cameraToWorld)
   
   return { projection, view, cameraPosition }

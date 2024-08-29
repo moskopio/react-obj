@@ -10,23 +10,27 @@ export function CameraPanel(): ReactElement {
   const pallette = createPallette()
   
   const setThetaRotation = useCallback((a: number) => { 
-    cameraDispatch({ type: 'setThetaRotation', rotation: { theta: a, phi: 0 }})
+    cameraDispatch({ type: 'set', rotation: { theta: a }})
   }, [cameraDispatch])
   
   const setPhiRotation = useCallback((a: number) => { 
-    cameraDispatch({ type: 'setPhiRotation', rotation: { theta: 0, phi: a }})
+    cameraDispatch({ type: 'set', rotation: { phi: a }})
   }, [cameraDispatch])
   
   const updateXTrack = useCallback((v: number) => {
-    cameraDispatch({ type: 'setXTrack', track: { x: v, y: 0 } })
+    cameraDispatch({ type: 'set', track: { x: v } })
   }, [cameraDispatch])
   
   const updateYTrack = useCallback((v: number) => {
-    cameraDispatch({ type: 'setYTrack', track: { x: 0, y: v } })
+    cameraDispatch({ type: 'set', track: { y: v } })
   }, [cameraDispatch])
   
   const setDolly = useCallback((dolly: number) => {
-    cameraDispatch({ type: 'setDolly', dolly })
+    cameraDispatch({ type: 'set', dolly })
+  }, [cameraDispatch])
+  
+  const setFOV = useCallback((fov: number) => {
+    cameraDispatch({ type: 'set', fov: Math.floor(fov) })
   }, [cameraDispatch])
   
   return (
@@ -80,6 +84,17 @@ export function CameraPanel(): ReactElement {
         onChange={setDolly}
         defaultValue={2.5}
         value={camera.dolly}
+        color={pallette.getNextColor()}
+      />
+      
+      <Divider label='Settings' />
+      <Slider
+        label={`FOV ${Math.floor(camera.fov)}`} 
+        min={1}
+        max={180}
+        onChange={setFOV}
+        defaultValue={60}
+        value={camera.fov}
         color={pallette.getNextColor()}
       />
       

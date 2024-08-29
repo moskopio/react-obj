@@ -1,6 +1,7 @@
 import { flipConstrain } from "../components/utils/common"
-import { degToRad } from "../utils/math/angles"
+import { DeepPartial } from "../types"
 import { Vec3 } from "../utils/math/v3"
+import { mergeSet, mergeUpdate } from "../utils/merge"
 
 export interface Camera { 
   aspectRatio: number
@@ -16,7 +17,7 @@ export interface Camera {
 export function createDefaultCamera(): Camera {
   return {
     aspectRatio: 3 / 2,
-    fov:         degToRad(60),
+    fov:         60,
     zNear:       0,
     zFar:        50,
     target:      [0, 0, 0] as Vec3,
@@ -26,71 +27,18 @@ export function createDefaultCamera(): Camera {
   }
 }
 
-const CAMERA_ACTIONS = [
-  'setDolly',
-  'setPhiRotation',
-  'setThetaRotation',
-  'setAspectRatio',
-  'setXTrack',
-  'setYTrack',
-  'updateDolly',
-  'updateRotation',
-  'updateTrack',
-  'update',
-  'set',
-] as const
+const CAMERA_ACTIONS = ['update','set'] as const
 
-export interface CameraAction extends Partial<Camera> {
+export interface CameraAction extends DeepPartial<Camera> {
   type: typeof CAMERA_ACTIONS[number]
 }
 
 export function cameraReducer(state: Camera, action: CameraAction): Camera {
-  const newState = { ...state }
+  const { type, ...actionState } = action
   
-  switch (action.type) {
-    
-    case 'updateRotation': 
-      newState.rotation = { 
-        theta: newState.rotation.theta + action.rotation!.theta, 
-        phi: newState.rotation.phi + action.rotation!.phi
-      }
-      break
-      
-    case 'setThetaRotation': 
-      newState.rotation = { ...newState.rotation, theta: action.rotation!.theta }
-      break
-    
-    case 'setPhiRotation': 
-      newState.rotation = { ...newState.rotation, phi: action.rotation!.phi }
-      break
-      
-    case 'setAspectRatio': 
-      newState.aspectRatio = action.aspectRatio ?? newState.aspectRatio
-    break
-  
-    case 'updateTrack': 
-      newState.track = { 
-        x: newState.track.x + action.track!.x, 
-        y: newState.track.y + action.track!.y 
-      }
-      break
-    
-    case 'setXTrack':
-      newState.track = { ...newState.track, x: action.track!.x }
-      break
-    
-    case 'setYTrack':
-      newState.track = { ...newState.track, y: action.track!.y }
-      break
-    
-    case 'updateDolly':
-      newState.dolly += action.dolly!
-    break
-      
-    case 'setDolly':
-      newState.dolly = action.dolly!
-      break
-  }
+  const newState = type === 'update'
+    ? mergeUpdate<Camera>(state, actionState)
+    : mergeSet<Camera>(state, actionState)
   
   newState.rotation.phi = flipConstrain(newState.rotation.phi, -180, 180)
   newState.rotation.theta = flipConstrain(newState.rotation.theta, -180, 180)

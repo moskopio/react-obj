@@ -67,7 +67,7 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
   }
   
   function updateGrid(): void {
-    const { grid } = settings    
+    const { grid } = settings
     const values = prepareValues({...grid})
     
     gl.useProgram(program!)
@@ -85,7 +85,7 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
     setupAttributes({ gl, attributes })
     
     updateUniforms({ gl, uniforms, values: { time: [time] } })
-    settings.showGrid && gl.drawArrays(gl.TRIANGLES, 0, 6)
+    settings.grid.enabled && gl.drawArrays(gl.TRIANGLES, 0, 6)
   }
   
   function cleanup(): void {

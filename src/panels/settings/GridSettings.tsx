@@ -82,7 +82,6 @@ function VariantAControls(props: Props): ReactElement {
   const { grid } = settings
   const { useTwoValues, colorA, weightA } = grid
   
-  
   const setWeight = useCallback(
     (weightA: number) => settingsDispatch({ grid: { weightA } }),
     [settingsDispatch]) 
@@ -90,21 +89,21 @@ function VariantAControls(props: Props): ReactElement {
     (colorA: Color) => settingsDispatch({ grid: { colorA } }), 
     [settingsDispatch])
     
-    return (
-      <Fragment>
-        <Divider label={`Line ${useTwoValues ? 'A' : ''}`} />
-        <ColorPicker value={colorA} onChange={setColor} />
-        <Slider
-          label={`Weight: ${weightA.toFixed(3)}`}
-          min={0.01}
-          max={1}
-          onChange={setWeight}
-          value={weightA}
-          defaultValue={0.01}
-          color={pallette.getNextColor()}
-        />
-      </Fragment>
-    )
+  return (
+    <Fragment>
+      <Divider label={`Line ${useTwoValues ? 'A' : ''}`} />
+      <ColorPicker value={colorA} onChange={setColor} />
+      <Slider
+        label={`Weight: ${weightA.toFixed(3)}`}
+        min={0.01}
+        max={1}
+        onChange={setWeight}
+        value={weightA}
+        defaultValue={0.01}
+        color={pallette.getNextColor()}
+      />
+    </Fragment>
+  )
 }
 
 function VariantBControls(props: Props): ReactElement | null {
@@ -120,19 +119,19 @@ function VariantBControls(props: Props): ReactElement | null {
     (colorB: Color) => settingsDispatch({ grid: { colorB } }), 
     [settingsDispatch])
     
-    return useTwoValues ? (
-      <Fragment>
-        <Divider label={`Line B`} />
-        <ColorPicker value={colorB} onChange={setColor} />
-        <Slider
-          label={`Weight: ${weightB.toFixed(2)}`}
-          min={0.01}
-          max={1}
-          onChange={setWeight}
-          value={weightB}
-          defaultValue={0.01}
-          color={pallette.getNextColor()}
-        />
-      </Fragment>
-    ) : null
+  return useTwoValues ? (
+    <Fragment>
+      <Divider label={`Line B`} />
+      <ColorPicker value={colorB} onChange={setColor} />
+      <Slider
+        label={`Weight: ${weightB.toFixed(2)}`}
+        min={0.01}
+        max={1}
+        onChange={setWeight}
+        value={weightB}
+        defaultValue={0.01}
+        color={pallette.getNextColor()}
+      />
+    </Fragment>
+  ) : null
 }

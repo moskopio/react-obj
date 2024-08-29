@@ -83,7 +83,7 @@ export function useCameraControls(): void {
     
     function updateDistance(event: WheelEvent): void {
       const delta = (event.deltaY > 0 ? WHEEL_STEP : -WHEEL_STEP)
-      cameraDispatch({ type: 'updateDolly', dolly: delta } )
+      cameraDispatch({ type: 'update', dolly: delta } )
     }
     
     function updateRotation(event: MouseEvent): void {
@@ -95,9 +95,9 @@ export function useCameraControls(): void {
       
       if (shift.current) {
         // sensitivity should be based on distance!
-        cameraDispatch({ type: 'updateTrack', track: { x: xDelta / 50, y: -yDelta / 50 } })
+        cameraDispatch({ type: 'update', track: { x: xDelta / 50, y: -yDelta / 50 } })
       } else {
-        cameraDispatch({ type: 'updateRotation', rotation: { theta: -yDelta, phi: xDelta } } )
+        cameraDispatch({ type: 'update', rotation: { theta: -yDelta, phi: xDelta } } )
       }
       
       position.current = [event.clientX, event.clientY]

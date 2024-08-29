@@ -1,9 +1,8 @@
 import { DeepPartial } from "../types"
 import { Color } from "../utils/color"
-import { merge } from "../utils/merge"
+import { mergeSet } from "../utils/merge"
 
 export interface Settings {
-  showGrid:      boolean
   showMesh:      boolean
   showNormals:   boolean
   showWireframe: boolean
@@ -36,13 +35,12 @@ interface GridSettings {
 
 export function createDefaultSettings(): Settings {
   return {
-    showGrid:           true,
-    showMesh:           true,
-    showNormals:        false,
-    showWireframe:      false,
-    swapYZ:             false,
-    cellShading:        false,
-    flatNormals:        false,
+    showMesh:      true,
+    showNormals:   false,
+    showWireframe: false,
+    swapYZ:        false,
+    cellShading:   false,
+    flatNormals:   false,
     grid: {
       enabled:      true,
       useTwoValues: true,
@@ -67,5 +65,5 @@ export function createDefaultSettings(): Settings {
 export type SettingsAction = DeepPartial<Settings>
 
 export function settingsReducer(state: Settings, action: SettingsAction): Settings {
-  return merge<Settings>(state, action)
+  return mergeSet<Settings>(state, action)
 }

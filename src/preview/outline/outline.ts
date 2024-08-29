@@ -1,7 +1,7 @@
 import { Camera } from '../../state/camera'
 import { createEmptyObj, Obj } from '../../state/obj'
 import { createDefaultSettings, Settings } from '../../state/settings'
-import { Dict, Program } from '../../types'
+import { Program } from '../../types'
 import { setupAttributes, updateAttributes } from '../../webgl/attributes'
 import { getLookAtMatrices } from '../../webgl/camera'
 import { getModelMatrix } from '../../webgl/model'
@@ -35,9 +35,9 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
       ...newObj,
       flat: {
         vertices:       [...newObj.flat.vertices].reverse(),
-        flatNormals:    [...newObj.flat.flatNormals].reverse(),
+        flatNormals:    [],
         smoothNormals:  [...newObj.flat.smoothNormals].reverse(),
-        definedNormals: [...newObj.flat.definedNormals].reverse(),
+        definedNormals: [],
       }
     }
     updateGeometry()
@@ -79,7 +79,7 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
     const { flat } = obj
     
     const vertices = flat.vertices
-    const normals  = settings.flatNormals ? flat.flatNormals : flat.smoothNormals
+    const normals  = flat.smoothNormals
     
     const values = {
       position: vertices.flatMap(v => v),
