@@ -2,17 +2,18 @@ import { Fragment, ReactElement, useCallback, useContext } from "react"
 import { Checkbox } from "../../components/Checkbox"
 import { ColorPicker } from "../../components/ColorPicker"
 import { Divider } from "../../components/Divider"
+import { SettingsPortal } from "../../components/SettingsPortal"
 import { Slider } from "../../components/Slider"
 import { AppContext } from "../../state/context"
 import { Color, createPallette, Pallette } from "../../utils/color"
-import { SettingsPortal } from "../settings/SettingsPortal"
+
 
 export function OutlineSettings(): ReactElement {
   const { settings, settingsDispatch } = useContext(AppContext)
   const { outline } = settings
   const { enabled } = outline
   
-  const pallette = createPallette()
+  const pallette = createPallette(7)
   
   const toggleEnabled = useCallback(
     () => settingsDispatch({ outline: { enabled: !enabled} }), 

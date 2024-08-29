@@ -5,100 +5,131 @@ import { Divider } from "../components/Divider"
 import { Panel } from "../components/Panel"
 import { Slider } from "../components/Slider"
 import { AppContext } from "../state/context"
-import { createPallette, PASTEL_COLORS } from "../utils/color"
-import { Vec3 } from "../utils/math/v3"
+import { Color, createPallette, Pallette, PASTEL_COLORS } from "../utils/color"
 import { ColorPortal } from "./colors/ColorPortal"
+import "./LightPanel.css"
 import { LightControls } from "./lights/LightControls"
-import './LightPanel.css'
 
 export function LightPanel(): ReactElement {
+  const pallette = createPallette()
+  
   return (
-    <Panel icon='light' color={PASTEL_COLORS.mojo}>
+    <Panel icon="light" color={PASTEL_COLORS.mojo}>
       
       <LightControls />
       
-      <Divider label='Colors' />
-      <div className='light-panel-colors'>
-        <AmbientColor />
-        <DiffuseColor />
-        <SpecularColor />
-      </div>
+      <Divider label="Colors" />
+      <AmbientLight  pallette={pallette} />
+      <DiffuseLight  pallette={pallette} />
+      <SpecularLight pallette={pallette} />
 
     </Panel>
   )
 }
 
-function AmbientColor(): ReactElement {
+interface Props {
+  pallette: Pallette
+}
+
+function AmbientLight(props: Props): ReactElement {
+  const { pallette } = props
   const { light, lightDispatch } = useContext(AppContext)
 
-  const onChange = useCallback((v: Vec3) => {
-    lightDispatch({ type: 'updateAmbientColor', ambient: { color: v } })
+  const toggleAmbient = useCallback((enabled: boolean) => {
+    lightDispatch({ type: "set", ambient: { enabled } })
+  },[lightDispatch])
+  
+  const setAmbientColor = useCallback((color: Color) => {
+    lightDispatch({ type: "set", ambient: { color } })
   },[lightDispatch])
   
   return (
-    <ColorPortal label='Ambient' color={light.ambient.color}>
-      <ColorPicker
-        value={light.ambient.color}
-        onChange={onChange}
-      />
-    </ColorPortal>
-  )
-}
-
-function DiffuseColor(): ReactElement {
-  const { light, lightDispatch } = useContext(AppContext)
-
-  const onChange = useCallback((v: Vec3) => {
-    lightDispatch({ type: 'updateDiffuseColor', diffuse: { color: v } })
-  },[lightDispatch])
-  
-  return (
-    <ColorPortal label='Diffuse' color={light.diffuse.color}>
-      <ColorPicker
-        value={light.diffuse.color}
-        onChange={onChange}
-      />
-    </ColorPortal>
-  )
-}
-
-function SpecularColor(): ReactElement {
-  const { light, lightDispatch } = useContext(AppContext)
-  const pallette = createPallette()
-  
-  const setSpecularColor = useCallback((v: Vec3) => {
-    lightDispatch({ type: 'updateSpecularColorColor', specular: { color: v } })
-  }, [lightDispatch])
-  
-  const setSpecularIntensity = useCallback((v: number) => { 
-    lightDispatch({ type: 'setSpecularIntensity', specular: { intensity: v } })
-  }, [lightDispatch])
-  
-  const toggleSpecular = useCallback((v: boolean) => { 
-    lightDispatch({ type: 'toggleSpecular', specular: { enabled: v } })
-  }, [lightDispatch])
-
-  return (
-    <ColorPortal label='Specular' color={light.specular.color}>
+    <div className="horizontal-color-setting">
       <Checkbox 
-        label="Enabled"
+        label="Ambient Light"
+        value={light.ambient.enabled}
+        onChange={toggleAmbient}
+        color={pallette.getNextColor()}
+      />
+      <ColorPortal label="Ambient Light" color={light.ambient.color}>
+        <ColorPicker
+          value={light.ambient.color}
+          onChange={setAmbientColor}
+        />
+      </ColorPortal>
+    </div>
+  )
+}
+
+function DiffuseLight(props: Props): ReactElement {
+  const { pallette } = props
+  const { light, lightDispatch } = useContext(AppContext)
+
+  const toggleDiffuse = useCallback((enabled: boolean) => {
+    lightDispatch({ type: "set", diffuse: { enabled } })
+  },[lightDispatch])
+  
+  const setDiffuseColor = useCallback((color: Color) => {
+    lightDispatch({ type: "set", diffuse: { color } })
+  },[lightDispatch])
+  
+  return (
+    <div className="horizontal-color-setting">
+      <Checkbox 
+        label="Diffuse Light"
+        value={light.diffuse.enabled}
+        onChange={toggleDiffuse}
+        color={pallette.getNextColor()}
+      />
+      <ColorPortal label="Ambient" color={light.diffuse.color}>
+        <ColorPicker
+          value={light.diffuse.color}
+          onChange={setDiffuseColor}
+        />
+      </ColorPortal>
+    </div>
+  )
+}
+
+function SpecularLight(props: Props): ReactElement {
+  const { pallette } = props
+  const { light, lightDispatch } = useContext(AppContext)
+  
+  const toggleSpecular = useCallback((enabled: boolean) => { 
+    lightDispatch({ type: "set", specular: { enabled } })
+  }, [lightDispatch])
+  
+  const setSpecularColor = useCallback((color: Color) => {
+    lightDispatch({ type: "set", specular: { color } })
+  }, [lightDispatch])
+  
+  const setSpecularIntensity = useCallback((intensity: number) => { 
+    lightDispatch({ type: "set", specular: { intensity } })
+  }, [lightDispatch])
+  
+  return (
+    <div className="horizontal-color-setting">
+      <Checkbox 
+        label="Specular Light"
         value={light.specular.enabled}
         onChange={toggleSpecular}
         color={pallette.getNextColor()}
       />
-      <ColorPicker
-        value={light.specular.color}
-        onChange={setSpecularColor}
-      />
-      <Slider
-        label={`Intensity: ${Math.floor(light.specular.intensity)}`}
-        min={1}
-        max={2000}
-        onChange={setSpecularIntensity}
-        value={light.specular.intensity}
-        defaultValue={1000}
-        color={pallette.getNextColor()}
-      />
-    </ColorPortal>
+      <ColorPortal label="Specular" color={light.specular.color}>
+        <ColorPicker
+          value={light.specular.color}
+          onChange={setSpecularColor}
+        />
+        <Slider
+          label={`Intensity: ${Math.floor(light.specular.intensity)}`}
+          min={1}
+          max={2000}
+          onChange={setSpecularIntensity}
+          value={light.specular.intensity}
+          defaultValue={1000}
+          color={pallette.getNextColor()}
+        />
+      </ColorPortal>
+    </div>
   )
 }

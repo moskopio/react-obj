@@ -41,7 +41,7 @@ function scale(v: Vec3, s: number): Vec3 {
 }
 
 function normalize(v: Vec3): Vec3 {
-  let vectorLength = length(v)
+  const vectorLength = length(v)
   
   return vectorLength > 0
     ? scale(v, 1 / vectorLength)

@@ -1,7 +1,6 @@
 import { ReactElement, useCallback, useRef, useState } from "react"
-import { IconSettings } from "../../components/Icon"
-import { Portal } from "../../components/Portal"
-import './SettingsPortal.css'
+import { IconSettings } from "./Icon"
+import { Portal } from "./Portal"
 
 interface Props {
   children: ReactElement | ReactElement[] | string | null

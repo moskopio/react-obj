@@ -26,7 +26,6 @@ export function getUniforms(gl: WebGLRenderingContext, program: WebGLProgram): U
   return uniforms
 }
 
-
 type Values = Dict<number[]>
 
 interface UpdateArgs {
@@ -81,7 +80,7 @@ export function prepareValues(values: Dict<number | number[] | boolean>): Values
       prepared[name] = [value] as number[]
     } else if (typeof value == 'boolean') {
       prepared[name] = [value ? 1 : 0]
-    } else if (name.includes('color')) {
+    } else if (name.toLocaleLowerCase().includes('color')) {
       prepared[name] = vec3ToShaderColor(value as Color)
     } else {
       prepared[name] = value as number[]

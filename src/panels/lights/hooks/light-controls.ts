@@ -63,7 +63,7 @@ export function useLightControls(props: Props): void {
       const xDelta = (mouseX - prevX) * SENSITIVITY
       const yDelta = (mouseY - prevY) * SENSITIVITY
     
-      lightDispatch({ type: 'updateRotation', rotation: { theta: -yDelta, phi: xDelta } } )
+      lightDispatch({ type: 'update', rotation: { theta: -yDelta, phi: xDelta } } )
       
       position.current = [event.clientX, event.clientY]
     }

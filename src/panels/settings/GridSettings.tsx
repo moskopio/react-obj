@@ -5,14 +5,14 @@ import { Divider } from "../../components/Divider"
 import { Slider } from "../../components/Slider"
 import { AppContext } from "../../state/context"
 import { Color, createPallette, Pallette } from "../../utils/color"
-import { SettingsPortal } from "../settings/SettingsPortal"
+import { SettingsPortal } from "../../components/SettingsPortal"
 
 export function GridSettings(): ReactElement {
   const { settings, settingsDispatch } = useContext(AppContext)
   const { grid } = settings
   const { enabled } = grid
   
-  const pallette = createPallette()
+  const pallette = createPallette(8)
   
   const toggleEnabled = useCallback(
     () => settingsDispatch({ grid: { enabled: !enabled} }), 
@@ -20,7 +20,7 @@ export function GridSettings(): ReactElement {
     
   return (
     <Fragment>
-      <div className='horizontal-setting'> 
+      <div className='horizontal-setting'>
         <Checkbox 
             label="Show Grid"
             value={enabled}

@@ -1,7 +1,7 @@
 import { flipConstrain } from "../components/utils/common"
 import { DeepPartial } from "../types"
 import { Vec3 } from "../utils/math/v3"
-import { mergeSet, mergeUpdate } from "../utils/merge"
+import { deepSet, deepUpdate } from "../utils/merge"
 
 export interface Camera { 
   aspectRatio: number
@@ -37,8 +37,8 @@ export function cameraReducer(state: Camera, action: CameraAction): Camera {
   const { type, ...actionState } = action
   
   const newState = type === 'update'
-    ? mergeUpdate<Camera>(state, actionState)
-    : mergeSet<Camera>(state, actionState)
+    ? deepUpdate<Camera>(state, actionState)
+    : deepSet<Camera>(state, actionState)
   
   newState.rotation.phi = flipConstrain(newState.rotation.phi, -180, 180)
   newState.rotation.theta = flipConstrain(newState.rotation.theta, -180, 180)

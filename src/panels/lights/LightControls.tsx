@@ -8,11 +8,11 @@ export function LightControls(): ReactElement {
   const { light, lightDispatch } = useContext(AppContext)
 
   const setThetaRotation = useCallback((a: number) => { 
-    lightDispatch({ type: 'setThetaRotation', rotation: { theta: a, phi: 0 }})
+    lightDispatch({ type: 'set', rotation: { theta: a }})
   }, [lightDispatch])
   
   const setPhiRotation = useCallback((a: number) => { 
-    lightDispatch({ type: 'setPhiRotation', rotation: { theta: 0, phi: a }})
+    lightDispatch({ type: 'set', rotation: { phi: a }})
   }, [lightDispatch])
   
   return (

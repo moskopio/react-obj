@@ -1,12 +1,25 @@
 precision mediump float;
 
-uniform vec3 uColorA;
-uniform vec3 uColorB;
-uniform vec3 uColorC;
+#define AA 0.01
+
+#define SPECULAR_MAX   2000.0
+#define SPECULAR_MULTI 5.0
+#define DIFFUSE_STEP   0.70
+#define SPECULAR_STEP  0.00
+
+const vec3 cameraPosition = normalize(vec3(0, 0, 2));
+const vec3 outlineColor = vec3(1.0);
+
+const vec3 lampLightColor = vec3(0.69, 0.78, 0.61);
+const vec3 lampConeColor =  vec3(0.74, 0.36, 0.21);
 
 uniform vec3 uAmbientColor;
 uniform vec3 uDiffuseColor;
 uniform vec3 uSpecularColor;
+
+uniform bool uAmbientEnabled;
+uniform bool uDiffuseEnabled;
+uniform bool uSpecularEnabled;
 
 varying vec3 vNormal;
 
@@ -14,13 +27,15 @@ uniform float uSpecularIntensity;
 
 uniform bool uUseLight;
 uniform bool uUseOutline;
-uniform bool uSpecularEnabled;
 
 vec3 lightShading(in float toCameraNormal, in float viewAngleNormal) {
-  vec3 ambient = uAmbientColor;
+  vec3 ambient = float(uAmbientEnabled) * uAmbientColor;
   
-  float diffuseStep = smoothstep(0.70, 0.71, toCameraNormal);
-  float specularStep = smoothstep(0.00, 0.01, pow(viewAngleNormal, uSpecularIntensity / 5.0)) * float(uSpecularEnabled);
+  float adjustedIntensity = max(1.0, SPECULAR_MAX - uSpecularIntensity);
+  float specularShade = pow(viewAngleNormal, adjustedIntensity / SPECULAR_MULTI);
+  
+  float diffuseStep = smoothstep(DIFFUSE_STEP, DIFFUSE_STEP + AA, toCameraNormal) * float(uDiffuseEnabled);
+  float specularStep = smoothstep(SPECULAR_STEP, SPECULAR_STEP + AA, specularShade) * float(uSpecularEnabled);
   
   vec3 color = ambient;
   color = mix(color, uDiffuseColor, diffuseStep);
@@ -31,13 +46,11 @@ vec3 lightShading(in float toCameraNormal, in float viewAngleNormal) {
 
 void main() {
   vec3 normal = normalize(vNormal);
-  vec3 cameraPosition = normalize(vec3(0, 0, 2));
   float toCameraNormal = dot(cameraPosition, normal);
   float viewAngleNormal = max(0.0, dot(cameraPosition, normal));
   
   vec3 lightColor = lightShading(toCameraNormal, viewAngleNormal);
-  vec3 flatColor = gl_FrontFacing ? uColorC : uColorA;
-  vec3 outlineColor = vec3(1.0);
+  vec3 flatColor = gl_FrontFacing ? lampConeColor : lampLightColor;
   
   vec3 color = mix(flatColor, lightColor, float(uUseLight));
   color = mix(color, outlineColor, float(uUseOutline));

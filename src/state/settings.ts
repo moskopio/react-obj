@@ -1,6 +1,6 @@
 import { DeepPartial } from "../types"
 import { Color } from "../utils/color"
-import { mergeSet } from "../utils/merge"
+import { deepSet } from "../utils/merge"
 
 export interface Settings {
   showMesh:      boolean
@@ -65,5 +65,5 @@ export function createDefaultSettings(): Settings {
 export type SettingsAction = DeepPartial<Settings>
 
 export function settingsReducer(state: Settings, action: SettingsAction): Settings {
-  return mergeSet<Settings>(state, action)
+  return deepSet<Settings>(state, action)
 }

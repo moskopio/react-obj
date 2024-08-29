@@ -47,7 +47,6 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
     settings = newSettings
     updateModel()
     updateOutline()
-    updateGeometry()
   }
   
   function updateCamera(camera: Camera): void {
@@ -77,13 +76,11 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
   
   function updateGeometry(): void {
     const { flat } = obj
-    
-    const vertices = flat.vertices
-    const normals  = flat.smoothNormals
+    const { vertices, smoothNormals } = flat
     
     const values = {
       position: vertices.flatMap(v => v),
-      normal:   normals.flatMap(n => n)
+      normal:   smoothNormals.flatMap(n => n)
     }
     updateAttributes({ gl, attributes, values })
     updateModel()

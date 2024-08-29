@@ -46,8 +46,8 @@ export interface Pallette {
   getNextColor: () => string
 }
 
-export function createPallette(): Pallette {
-  let counter = 0
+export function createPallette(index: number = 0): Pallette {
+  let counter = index
   const colors = Object.values(PASTEL_COLORS)
   
   return { getNextColor }
