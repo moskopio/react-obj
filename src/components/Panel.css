@@ -14,7 +14,6 @@
     linear-gradient(90deg, var(--line-color-3) 1px, transparent 1px);
   background-position: -1px -1px, -1px -1px;
   background-size: 10px 10px, 10px 10px;
-  z-index: 1;
 }
 
 .panel-bar {

@@ -1,7 +1,7 @@
 import { Camera } from '../../state/camera'
 import { createEmptyObj, Obj } from '../../state/obj'
 import { createDefaultSettings, Settings } from '../../state/settings'
-import { Program } from '../../types'
+import { Dict, Program } from '../../types'
 import { setupAttributes, updateAttributes } from '../../webgl/attributes'
 import { getLookAtMatrices } from '../../webgl/camera'
 import { getModelMatrix } from '../../webgl/model'
@@ -97,7 +97,7 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
   
   function updateOutline(): void {
     const { outline } = settings
-    const values = prepareValues(outline)
+    const values = prepareValues({...outline})
     
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values })

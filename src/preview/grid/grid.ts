@@ -1,12 +1,11 @@
 import { Camera } from '../../state/camera'
 import { createDefaultSettings, Settings } from '../../state/settings'
 import { Program } from '../../types'
-import { colorToVec3 } from '../../utils/color'
 import { M4 } from '../../utils/math/m4'
 import { setupAttributes, updateAttributes } from '../../webgl/attributes'
 import { getLookAtMatrices } from '../../webgl/camera'
 import { createShaderProgram } from '../../webgl/program'
-import { getUniforms, updateUniforms } from '../../webgl/uniforms'
+import { getUniforms, prepareValues, updateUniforms } from '../../webgl/uniforms'
 import fragmentShaderSource from './grid.frag'
 import vertexShaderSource from './grid.vert'
 
@@ -58,7 +57,7 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
   
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
-    updateColors()
+    updateGrid()
   }
   
   function updateModel(): void {
@@ -67,12 +66,11 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
     updateUniforms({ gl, uniforms, values: { model } })
   }
   
-  function updateColors(): void {
-    const colorA = colorToVec3(0xB2C99E)
-    const colorB = colorToVec3(0x628090)
+  function updateGrid(): void {
+    const { grid } = settings    
+    const values = prepareValues({...grid})
     
     gl.useProgram(program!)
-    const values = { colorA, colorB }
     updateUniforms({ gl, uniforms, values})
   }
   

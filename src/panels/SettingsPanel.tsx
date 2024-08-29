@@ -6,6 +6,7 @@ import { AppContext } from "../state/context"
 import { createPallette, PASTEL_COLORS } from "../utils/color"
 import './SettingsPanel.css'
 import { OutlineSettings } from "./settings/OutlineSettings"
+import { GridSettings } from "./settings/GridSettings"
 
 export function SettingsPanel(): ReactElement {
   const { settings, settingsDispatch } = useContext(AppContext)
@@ -63,12 +64,14 @@ export function SettingsPanel(): ReactElement {
       
       <Divider label="Stage" />
       
-      <Checkbox 
+      <GridSettings />
+      
+      {/* <Checkbox 
         label="Show Grid"
         value={settings.showGrid}
         onChange={(showGrid: boolean) => settingsDispatch({ showGrid })}
         color={pallette.getNextColor()}
-      />
+      /> */}
       
       
     </Panel>

@@ -10,14 +10,24 @@ export interface Settings {
   swapYZ:        boolean
   cellShading:   boolean
   flatNormals:   boolean
+  grid:          GridSettings
   outline:       OutlineSettings
 }
-
 
 interface OutlineSettings {
   enabled:      boolean
   useReverse:   boolean
   useTwoValues: boolean
+  colorA:       Color
+  colorB:       Color
+  weightA:      number
+  weightB:      number
+}
+
+interface GridSettings {
+  enabled:      boolean
+  useTwoValues: boolean
+  divisions:    number
   colorA:       Color
   colorB:       Color
   weightA:      number
@@ -33,6 +43,15 @@ export function createDefaultSettings(): Settings {
     swapYZ:             false,
     cellShading:        false,
     flatNormals:        false,
+    grid: {
+      enabled:      true,
+      useTwoValues: true,
+      divisions:    4,
+      colorA:       [176, 201, 158],
+      colorB:       [98, 128, 144],
+      weightA:      0.1,
+      weightB:      0.03,
+    },
     outline: {
       enabled:     true,
       useReverse:  false,
