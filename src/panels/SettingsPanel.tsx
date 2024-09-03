@@ -7,6 +7,7 @@ import { createPallette, PASTEL_COLORS } from "../utils/color"
 import './SettingsPanel.css'
 import { GridSettings } from "./settings/GridSettings"
 import { OutlineSettings } from "./settings/OutlineSettings"
+import { CellShadingSettings } from "./settings/CellShadingSettings"
 
 export function SettingsPanel(): ReactElement {
   const { settings, settingsDispatch } = useContext(AppContext)
@@ -30,12 +31,7 @@ export function SettingsPanel(): ReactElement {
         color={pallette.getNextColor()}
       />
       
-      <Checkbox 
-        label="Use Cell Shading"
-        value={settings.cellShading}
-        onChange={(cellShading: boolean) => settingsDispatch({ cellShading })}
-        color={pallette.getNextColor()}
-      />
+      <CellShadingSettings />
       
       <Checkbox 
         label="Show Wireframe"

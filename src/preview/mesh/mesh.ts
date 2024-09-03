@@ -39,11 +39,16 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
 
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
+    const { shading } = settings
+    const { cell } = shading
+    
     
     gl.useProgram(program!)
     const values = prepareValues({
-      showNormals: settings.showNormals,
-      cellShading: settings.cellShading,
+      showNormals:    settings.showNormals,
+      useCellShading: cell.enabled,
+      cellSegments:   cell.segments,
+      cellAA:         cell.aa,
     })
     updateUniforms({ gl, uniforms, values })
     updateModel()

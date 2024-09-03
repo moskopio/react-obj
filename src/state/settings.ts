@@ -7,10 +7,10 @@ export interface Settings {
   showNormals:   boolean
   showWireframe: boolean
   swapYZ:        boolean
-  cellShading:   boolean
   grid:          GridSettings
   outline:       OutlineSettings
   normals:       NormalsSettings
+  shading:       ShadingSettings
 }
 
 interface OutlineSettings {
@@ -39,7 +39,7 @@ interface NormalsSettings {
 }
 
 interface ShadingSettings {
-  cellShading: {
+  cell: {
     enabled:  boolean
     segments: number
     aa:       number
@@ -52,10 +52,10 @@ export function createDefaultSettings(): Settings {
     showNormals:   false,
     showWireframe: false,
     swapYZ:        false,
-    cellShading:   false,
     grid:          createDefaultGrid(),
     outline:       createDefaultOutline(),
     normals:       createDefaultNormalsSettings(),
+    shading:       createDefaultShadingSettings(),
   }
 }
 
@@ -87,6 +87,16 @@ function createDefaultNormalsSettings(): NormalsSettings {
   return {
     useFlat:    false,
     useDefined: false,
+  }
+}
+
+function createDefaultShadingSettings(): ShadingSettings {
+  return {
+    cell: {
+      enabled:  false,
+      segments: 5,
+      aa:       0.01
+    }
   }
 }
 

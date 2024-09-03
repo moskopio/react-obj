@@ -197,7 +197,7 @@ function determinate(m: Matrix4): number {
   const part2 = m[2] * M3.determinate(getSubMatrix(m, 2, 0))
   const part3 = m[3] * M3.determinate(getSubMatrix(m, 3, 0))
 
-  return part0 - part1 + part2 - part3;
+  return part0 - part1 + part2 - part3
 }
 
 function inverse(m: Matrix4): Matrix4 {

@@ -17,12 +17,12 @@ function fromAngle(angles: Vec3): Vec4 {
   const pitch = degToRad(angles[1])
   const yaw = degToRad(angles[2])
   
-  const cr = Math.cos(roll * 0.5);
-  const sr = Math.sin(roll * 0.5);
-  const cp = Math.cos(pitch * 0.5);
-  const sp = Math.sin(pitch * 0.5);
-  const cy = Math.cos(yaw * 0.5);
-  const sy = Math.sin(yaw * 0.5);
+  const cr = Math.cos(roll * 0.5)
+  const sr = Math.sin(roll * 0.5)
+  const cp = Math.cos(pitch * 0.5)
+  const sp = Math.sin(pitch * 0.5)
+  const cy = Math.cos(yaw * 0.5)
+  const sy = Math.sin(yaw * 0.5)
   
   return [
   sr * cp * cy - cr * sp * sy,

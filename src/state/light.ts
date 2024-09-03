@@ -17,7 +17,7 @@ interface LightColor {
 }
 
 interface SpecularColor extends LightColor {
-  intensity: number;
+  intensity: number
 }
 
 export function createDefaultLight(): Light {

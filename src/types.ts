@@ -6,7 +6,7 @@ import { Settings } from "./state/settings"
 export type FileContent = string | ArrayBuffer | null | undefined
 
 export interface Dict<T> {
-  [key: string]: T | undefined;
+  [key: string]: T | undefined
 }
 
 export type DeepPartial<T> = {

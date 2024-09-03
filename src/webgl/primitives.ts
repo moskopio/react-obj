@@ -78,9 +78,9 @@ export function createSphere(numLatitudeLines: number, numLongitudeLines: number
   const rowLength = numLongitudeLines +1
   for (let latitude = 0; latitude < numLatitudeLines - 1; latitude++) {
     // Plus one for the pole.
-    const rowStart = latitude * rowLength + 1;
+    const rowStart = latitude * rowLength + 1
     for (let longitude = 0; longitude < numLongitudeLines; longitude++) {
-        const firstCorner = rowStart + longitude;
+        const firstCorner = rowStart + longitude
 
         // First triangle of quad: Top-Left, Bottom-Left, Bottom-Right
         vertices.push(points[firstCorner])

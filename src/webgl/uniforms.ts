@@ -12,7 +12,7 @@ export function getUniforms(gl: WebGLRenderingContext, program: WebGLProgram): U
   const uniforms: Uniforms = {}
   
   const uniformsCount = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS)
-  for (let i=0; i < uniformsCount; i++) {
+  for (let i = 0; i < uniformsCount; i++) {
     const uniform = gl.getActiveUniform(program, i)
     if (uniform) {
       const name = prepareName(uniform.name)
