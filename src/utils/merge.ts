@@ -1,6 +1,5 @@
 import { DeepPartial } from "../types"
-
-
+import { isDefined, isObject } from "./util"
 
 export function deepSet<T>(target: T, source: T | DeepPartial<T>): T {
   return deepMerge(target, source, false)
@@ -28,10 +27,3 @@ function deepMerge<T>(target: T, source: T | DeepPartial<T>, isAdditive = false)
   return result
 }
 
-function isObject<T>(item: T | null | undefined): item is T {
-  return isDefined(item) && typeof item === 'object' && !Array.isArray(item)
-}
-
-function isDefined<T>(obj: T | null | undefined): obj is NonNullable<T> {
-  return obj !== undefined && obj !== null
-}

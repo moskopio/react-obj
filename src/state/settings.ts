@@ -4,7 +4,6 @@ import { deepSet } from "../utils/merge"
 
 export interface Settings {
   showMesh:      boolean
-  showNormals:   boolean
   showWireframe: boolean
   swapYZ:        boolean
   grid:          GridSettings
@@ -44,12 +43,18 @@ interface ShadingSettings {
     segments: number
     aa:       number
   }
+  gooch: {
+    enabled: boolean
+  },
+  normal: {
+    enabled: boolean
+    useAbs:  boolean
+  }
 }
 
 export function createDefaultSettings(): Settings {
   return {
     showMesh:      true,
-    showNormals:   false,
     showWireframe: false,
     swapYZ:        false,
     grid:          createDefaultGrid(),
@@ -96,6 +101,13 @@ function createDefaultShadingSettings(): ShadingSettings {
       enabled:  false,
       segments: 5,
       aa:       0.01
+    },
+    gooch: {
+      enabled: false,
+    },
+    normal: {
+      enabled: false,
+      useAbs:  true,
     }
   }
 }

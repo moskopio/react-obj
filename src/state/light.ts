@@ -5,10 +5,11 @@ import { deepSet, deepUpdate } from "../utils/merge"
 
 export interface Light {
   distance: number
-  rotation: { theta: number, phi: number }
-  ambient:  LightColor,
-  diffuse:  LightColor,
-  specular: SpecularColor
+  rotation:     { theta: number, phi: number }
+  ambient:      LightColor,
+  diffuse:      LightColor,
+  specular:     SpecularColor
+  followsCamera: boolean
 }
 
 interface LightColor {
@@ -22,11 +23,12 @@ interface SpecularColor extends LightColor {
 
 export function createDefaultLight(): Light {
   return {
-    distance: 2.5,
-    rotation: { theta: 45, phi: 0 },
-    ambient:  { enabled: true, color: [25, 25, 25] },
-    diffuse:  { enabled: true, color: [128, 128, 128] },
-    specular: { enabled: true, color: [255, 255, 255], intensity: 1000 }
+    distance:     2.5,
+    rotation:     { theta: 45, phi: 0 },
+    ambient:      { enabled: true, color: [25, 25, 25] },
+    diffuse:      { enabled: true, color: [128, 128, 128] },
+    specular:     { enabled: true, color: [255, 255, 255], intensity: 1000 },
+    followsCamera: false
   }
 }
 

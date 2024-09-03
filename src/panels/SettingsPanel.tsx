@@ -32,6 +32,12 @@ export function SettingsPanel(): ReactElement {
       />
       
       <CellShadingSettings />
+      <Checkbox 
+        label="Use Gooch Shading"
+        value={settings.shading.gooch.enabled}
+        onChange={(enabled: boolean) => settingsDispatch({ shading: { gooch: { enabled } }})}
+        color={pallette.getNextColor()}
+      />
       
       <Checkbox 
         label="Show Wireframe"
@@ -44,8 +50,15 @@ export function SettingsPanel(): ReactElement {
       
       <Checkbox 
         label="Show Normals"
-        value={settings.showNormals}
-        onChange={(showNormals: boolean) => settingsDispatch({ showNormals })}
+        value={settings.shading.normal.enabled}
+        onChange={(enabled: boolean) => settingsDispatch({ shading: { normal: { enabled } } })}
+        color={pallette.getNextColor()}
+      />
+      
+      <Checkbox 
+        label="Use Abs"
+        value={settings.shading.normal.useAbs}
+        onChange={(useAbs: boolean) => settingsDispatch({ shading: { normal: { useAbs } } })}
         color={pallette.getNextColor()}
       />
       

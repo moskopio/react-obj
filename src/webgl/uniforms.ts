@@ -1,5 +1,6 @@
 import { Dict } from "../types"
 import { Color, vec3ToShaderColor } from "../utils/color"
+import { isObject } from "../utils/util"
 
 interface Uniform {
   loc:  WebGLUniformLocation | null
@@ -70,9 +71,14 @@ function prepareName(name: string): string {
   return noUppercase
 }
 
+// should flatten objects!
 export function prepareValues(values: Dict<number | number[] | boolean>): Values {
   const prepared: Values = {}
   const valuesNames = Object.keys(values)
+  
+  // flatten content!
+  
+  
   
   valuesNames.forEach(name => {
     const value = values[name]
@@ -89,3 +95,24 @@ export function prepareValues(values: Dict<number | number[] | boolean>): Values
   
   return prepared
 } 
+
+
+export function flattenValues(values: Dict<any>): Dict<number | number[] | boolean> {
+  const flatValues: Dict<number | number[] | boolean> = {}
+
+  for (const key in values) {
+    if (isObject(values[key])) {
+      const flatObject = flattenValues(values[key])
+      for (const key2 in flatObject) {
+        flatValues[key + '.' + key2] = flatObject[key2]
+      }
+    } else {
+      flatValues[key] = values[key]
+    }
+  }
+  return flatValues
+}
+
+export function flattenAndPrepare(values: Dict<any>): Values {
+  return prepareValues(flattenValues(values))
+}

@@ -8,7 +8,7 @@ import { getLookAtMatrices } from '../../webgl/camera'
 import { getLightPosition } from '../../webgl/light'
 import { getModelMatrix } from '../../webgl/model'
 import { createShaderProgram } from '../../webgl/program'
-import { getUniforms, prepareValues, updateUniforms } from '../../webgl/uniforms'
+import { flattenAndPrepare, getUniforms, updateUniforms } from '../../webgl/uniforms'
 import fragmentShaderSource from './mesh.frag'
 import vertexShaderSource from './mesh.vert'
 
@@ -40,16 +40,9 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
     const { shading } = settings
-    const { cell } = shading
-    
+    const values = flattenAndPrepare({ shading })
     
     gl.useProgram(program!)
-    const values = prepareValues({
-      showNormals:    settings.showNormals,
-      useCellShading: cell.enabled,
-      cellSegments:   cell.segments,
-      cellAA:         cell.aa,
-    })
     updateUniforms({ gl, uniforms, values })
     updateModel()
     updateGeometry()
@@ -62,26 +55,24 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
   }
   
   function updateLight(light: Light): void {
-    const { specular, ambient, diffuse } = light
+    const { specular, ambient, diffuse, followsCamera } = light
     const lightPosition = getLightPosition(light)
     
-    const values = prepareValues({
-      lightPosition,
-      ambientColor:      ambient.color,
-      ambientEnabled:    ambient.enabled,
-      diffuseColor:      diffuse.color,
-      diffuseEnabled:    diffuse.enabled,
-      specularColor:     specular.color,
-      specularIntensity: specular.intensity,
-      specularEnabled:   specular.enabled
-    })
+    const lightValues = {
+      diffuse, 
+      followsCamera,
+      intensity: specular.intensity, 
+      position: lightPosition,
+      specular, 
+    }
+    const values = flattenAndPrepare({ light: lightValues, ambient })
     
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values })
   }
   
   function draw(time: number): void {
-    if (settings.showMesh || settings.showNormals) {
+    if (settings.showMesh) {
       gl.useProgram(program!)
       setupAttributes({ gl, attributes })
       

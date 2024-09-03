@@ -12,12 +12,18 @@ import { LightControls } from "./lights/LightControls"
 
 export function LightPanel(): ReactElement {
   const pallette = createPallette()
+  const { light, lightDispatch } = useContext(AppContext)
   
   return (
     <Panel icon="light" color={PASTEL_COLORS.mojo}>
       
       <LightControls />
-      
+      <Checkbox 
+        label='Follows Camera' 
+        value={light.followsCamera}
+        onChange={(followsCamera: boolean) => lightDispatch({ type: 'set', followsCamera } )}
+        color={pallette.getNextColor()}
+      />
       <Divider label="Colors" />
       <AmbientLight  pallette={pallette} />
       <DiffuseLight  pallette={pallette} />
