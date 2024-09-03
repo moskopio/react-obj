@@ -28,7 +28,7 @@ export function CellShadingSettings(): ReactElement {
     <Fragment>
       <div className="horizontal-setting">
         <Checkbox 
-            label="Use Cell Shading"
+            label="Cell Shading"
             value={cell.enabled}
             onChange={toggleEnabled}
             color={pallette.getNextColor()}

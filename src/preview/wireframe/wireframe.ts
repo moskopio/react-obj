@@ -6,7 +6,7 @@ import { setupAttributes, updateAttributes } from '../../webgl/attributes'
 import { getLookAtMatrices } from '../../webgl/camera'
 import { getModelMatrix } from '../../webgl/model'
 import { createShaderProgram } from '../../webgl/program'
-import { getUniforms, updateUniforms } from '../../webgl/uniforms'
+import { flattenAndPrepare, getUniforms, updateUniforms } from '../../webgl/uniforms'
 import fragmentShaderSource from './wireframe.frag'
 import vertexShaderSource from './wireframe.vert'
 
@@ -36,6 +36,11 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
   
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
+    const { wireframe } = settings
+    const values = flattenAndPrepare({ wireframe })
+  
+    gl.useProgram(program!)
+    updateUniforms({ gl, uniforms, values })
     updateModel()
   }
   
@@ -47,7 +52,7 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
   }
   
   function draw(time: number): void {
-    if (settings.showWireframe) {
+    if (settings.wireframe.enabled) {
       gl.useProgram(program!)
       setupAttributes({ gl, attributes })
       

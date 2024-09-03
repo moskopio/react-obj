@@ -8,14 +8,16 @@ import './SettingsPanel.css'
 import { GridSettings } from "./settings/GridSettings"
 import { OutlineSettings } from "./settings/OutlineSettings"
 import { CellShadingSettings } from "./settings/CellShadingSettings"
+import { NormalShadingSettings } from "./settings/NormalShadingSettings"
+import { WireframeSettings } from "./settings/WireframeSettings"
 
 export function SettingsPanel(): ReactElement {
   const { settings, settingsDispatch } = useContext(AppContext)
   const pallette = createPallette()
 
   return (
-    <Panel icon='settings' color={PASTEL_COLORS.hai}>
-      <Divider label='Mesh' />
+    <Panel icon="settings" color={PASTEL_COLORS.hai}>
+      <Divider label="Mesh" />
       
       <Checkbox 
         label="Show Mesh"
@@ -31,46 +33,30 @@ export function SettingsPanel(): ReactElement {
         color={pallette.getNextColor()}
       />
       
+      <WireframeSettings />
+
+      <Divider label="Shading" />
+      
       <CellShadingSettings />
       <Checkbox 
-        label="Use Gooch Shading"
+        label="Gooch Shading"
         value={settings.shading.gooch.enabled}
         onChange={(enabled: boolean) => settingsDispatch({ shading: { gooch: { enabled } }})}
         color={pallette.getNextColor()}
       />
-      
-      <Checkbox 
-        label="Show Wireframe"
-        value={settings.showWireframe}
-        onChange={(showWireframe: boolean) => settingsDispatch({ showWireframe })}
-        color={pallette.getNextColor()}
-      />
+      <NormalShadingSettings />
       
       <Divider label="Normals" />
       
       <Checkbox 
-        label="Show Normals"
-        value={settings.shading.normal.enabled}
-        onChange={(enabled: boolean) => settingsDispatch({ shading: { normal: { enabled } } })}
-        color={pallette.getNextColor()}
-      />
-      
-      <Checkbox 
-        label="Use Abs"
-        value={settings.shading.normal.useAbs}
-        onChange={(useAbs: boolean) => settingsDispatch({ shading: { normal: { useAbs } } })}
-        color={pallette.getNextColor()}
-      />
-      
-      <Checkbox 
-        label="Use flat Normals"
+        label="Use flat"
         value={settings.normals.useFlat}
         onChange={(useFlat: boolean) => settingsDispatch({ normals: { useFlat } })}
         color={pallette.getNextColor()}
       />
       
       <Checkbox 
-        label="Use defined Normals"
+        label="Use defined"
         value={settings.normals.useDefined}
         onChange={(useDefined: boolean) => settingsDispatch({ normals: { useDefined } })}
         color={pallette.getNextColor()}

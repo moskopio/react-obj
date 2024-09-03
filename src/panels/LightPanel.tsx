@@ -19,7 +19,7 @@ export function LightPanel(): ReactElement {
       
       <LightControls />
       <Checkbox 
-        label='Follows Camera' 
+        label='Follows Camera'
         value={light.followsCamera}
         onChange={(followsCamera: boolean) => lightDispatch({ type: 'set', followsCamera } )}
         color={pallette.getNextColor()}

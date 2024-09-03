@@ -4,12 +4,12 @@ import { deepSet } from "../utils/merge"
 
 export interface Settings {
   showMesh:      boolean
-  showWireframe: boolean
   swapYZ:        boolean
   grid:          GridSettings
   outline:       OutlineSettings
   normals:       NormalsSettings
   shading:       ShadingSettings
+  wireframe:     WireframeSettings
 }
 
 interface OutlineSettings {
@@ -30,6 +30,12 @@ interface GridSettings {
   colorB:       Color
   weightA:      number
   weightB:      number
+}
+
+interface WireframeSettings {
+  enabled:    boolean
+  color:      Color
+  useShading: boolean
 }
 
 interface NormalsSettings {
@@ -55,12 +61,12 @@ interface ShadingSettings {
 export function createDefaultSettings(): Settings {
   return {
     showMesh:      true,
-    showWireframe: false,
     swapYZ:        false,
     grid:          createDefaultGrid(),
     outline:       createDefaultOutline(),
     normals:       createDefaultNormalsSettings(),
     shading:       createDefaultShadingSettings(),
+    wireframe:     createDefaultWireframe(),
   }
 }
 
@@ -85,6 +91,14 @@ function createDefaultOutline(): OutlineSettings {
     colorB:      [98, 128, 144],
     weightA:     0.01,
     weightB:     0.02,
+  }
+}
+
+function createDefaultWireframe(): WireframeSettings {
+  return {
+    enabled:  false,
+    color:    [255, 255, 255],
+    useShading: true,
   }
 }
 
@@ -115,5 +129,6 @@ function createDefaultShadingSettings(): ShadingSettings {
 export type SettingsAction = DeepPartial<Settings>
 
 export function settingsReducer(state: Settings, action: SettingsAction): Settings {
-  return deepSet<Settings>(state, action)
+  const newState = deepSet<Settings>(state, action)
+  return newState
 }
