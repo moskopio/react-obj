@@ -19,10 +19,10 @@ export function getNormalIndices(obj: RawObj): number[] {
   const nIndices: number[] = []
   const { groups } = obj
   groups.forEach(g => g.faces.forEach(f => {
-    const trianglesCount = f.nIndices.length - 2
+    const normalsCount = f.nIndices.length - 2
     
-    for (let i = 0; i < trianglesCount; ++i) {
-      nIndices.push(f.nIndices[i])
+    for (let i = 0; i < normalsCount; ++i) {
+      nIndices.push(f.nIndices[0])
       nIndices.push(f.nIndices[i + 1])
       nIndices.push(f.nIndices[i + 2])
     }

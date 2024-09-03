@@ -93,9 +93,16 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
   
   function updateGeometry(): void {
     const { flat } = obj
+    const { useFlat, useDefined } = settings.normals
     
     const vertices = flat.vertices
-    const normals = settings.flatNormals ? flat.flatNormals : flat.smoothNormals
+    const hasDefinedNormals = flat.definedNormals.length === vertices.length
+    
+    const normals = useFlat 
+      ? flat.flatNormals 
+      : useDefined && hasDefinedNormals 
+        ? flat.definedNormals 
+        : flat.smoothNormals
     
     const values = {
       position: vertices.flatMap(v => v),

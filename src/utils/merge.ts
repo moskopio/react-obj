@@ -1,15 +1,26 @@
 import { DeepPartial } from "../types"
 
-export function deepSet<T extends object>(target: T, source: DeepPartial<T>): T {
+
+
+export function deepSet<T>(target: T, source: T | DeepPartial<T>): T {
+  return deepMerge(target, source, false)
+}
+
+export function deepUpdate<T>(target: T, source: T | DeepPartial<T>): T {
+  return deepMerge(target, source, true)
+}
+
+function deepMerge<T>(target: T, source: T | DeepPartial<T>, isAdditive = false): T {
   //eslint-disable-next-line
   const result: any = {} // can it be typed here? 
   
   if (isObject(target) && isObject(source)) {
     for (const key in target) {
       if (isObject(source[key]) && isObject(target[key])) {
-        result[key] = deepSet(target[key], source[key])
+        result[key] = deepMerge(target[key], source[key], isAdditive)
       } else {
         result[key] = source[key] ?? target[key]
+        isDefined(source[key]) && isAdditive && (result[key] += target[key])
       }
     }
   }
@@ -17,28 +28,7 @@ export function deepSet<T extends object>(target: T, source: DeepPartial<T>): T 
   return result
 }
 
-
-export function deepUpdate<T extends object>(target: T, source: DeepPartial<T>): T {
-  //eslint-disable-next-line
-  const result: any = {}
-  
-  if (isObject(target) && isObject(source)) {
-    for (const key in target) {
-      if (isObject(source[key]) && isObject(target[key])) {
-        result[key] = deepUpdate(target[key], source[key])
-      } else {
-        result[key] = target[key]
-        if (isDefined(source[key])) {
-          result[key] += source[key]
-        }
-      }
-    }
-  }
-  
-  return result
-}
-
-function isObject<T>(item: T | null | undefined): item is NonNullable<T> {
+function isObject<T>(item: T | null | undefined): item is T {
   return isDefined(item) && typeof item === 'object' && !Array.isArray(item)
 }
 

@@ -14,22 +14,22 @@ export function getNormals(obj: RawObj): Normals {
   const vertices = getVertices(obj)
 
   const definedNormals = normalIndices.length > 0 
-    ? getIndexedNormals(obj, normalIndices)
+    ? getDefinedNormals(obj, normalIndices)
     : []
   const smoothNormals = generateSmoothNormals(vertices, verticesIndices)
   
-  return { definedNormals, smoothNormals } 
+  return { definedNormals, smoothNormals }
 }
 
-function getIndexedNormals(obj: RawObj, normalIndices: number[]): Vec3[] {
+function getDefinedNormals(obj: RawObj, normalIndices: number[]): Vec3[] {
   const allNormals: Vec3[] = []
   const indexedNormals: Vec3[] = []
   const { groups } = obj
   
-  groups.forEach(g => g.normals.forEach(v => allNormals.push(v)))
+  groups.forEach(g => g.normals.forEach(n => allNormals.push(n)))
   normalIndices.forEach(i => indexedNormals.push(allNormals[i]))
   
-  return indexedNormals
+  return indexedNormals.map(V3.normalize)
 }
 
 

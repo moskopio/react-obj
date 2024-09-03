@@ -55,8 +55,15 @@ export function SettingsPanel(): ReactElement {
       
       <Checkbox 
         label="Use flat Normals"
-        value={settings.flatNormals}
-        onChange={(flatNormals: boolean) => settingsDispatch({ flatNormals })}
+        value={settings.normals.useFlat}
+        onChange={(useFlat: boolean) => settingsDispatch({ normals: { useFlat } })}
+        color={pallette.getNextColor()}
+      />
+      
+      <Checkbox 
+        label="Use defined Normals"
+        value={settings.normals.useDefined}
+        onChange={(useDefined: boolean) => settingsDispatch({ normals: { useDefined } })}
         color={pallette.getNextColor()}
       />
       

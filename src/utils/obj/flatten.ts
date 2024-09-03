@@ -12,12 +12,10 @@ export interface FlattenObj {
 export function flattenParsedObj(obj: ParsedObj): FlattenObj {
   const { vertices, definedNormals, smoothNormals, indices } = obj
   const flattenVertices:       Vec3[] = []
-  const flattenDefinedNormals: Vec3[] = []
   const flattenSmoothNormals:  Vec3[] = []
   
   indices.forEach(i => { 
     flattenVertices.push(vertices[i])
-    definedNormals[i] && flattenDefinedNormals.push(definedNormals[i])
     smoothNormals[i] && flattenSmoothNormals.push(smoothNormals[i])
   })
   
@@ -25,7 +23,7 @@ export function flattenParsedObj(obj: ParsedObj): FlattenObj {
   
   return { 
     vertices:       flattenVertices, 
-    definedNormals: flattenDefinedNormals,
+    definedNormals,
     flatNormals,
     smoothNormals:  flattenSmoothNormals
   }

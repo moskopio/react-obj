@@ -2,12 +2,7 @@ precision mediump float;
 
 #define AA 0.01
 #define SPECULAR_MAX 2000.0
-
-#define SHADE0 0.90
-#define SHADE1 0.70
-#define SHADE2 0.50
-#define SHADE3 0.30
-#define SHADE4 0.15
+#define SPECULAR_STEP  0.01
 
 uniform vec3 uCameraPosition;
 uniform vec3 uLightPosition;
@@ -29,6 +24,10 @@ uniform float uTime;
 varying vec3 vNormal;
 varying float vCount;
 
+float smoothCeil(in float x, in float aa) {
+  return ceil(x) + float(1.0 - fract(x) < aa) * smoothstep(1.0 - aa, 1.0, fract(x));
+}
+
 vec3 lightShading(in float toLightNormal, in float viewAngleNormal) {
   float adjustedIntensity = max(1.0, SPECULAR_MAX - uSpecularIntensity);
   float diffuseShade = toLightNormal;
@@ -36,32 +35,20 @@ vec3 lightShading(in float toLightNormal, in float viewAngleNormal) {
   
   vec3 ambient = uAmbientColor * float(uAmbientEnabled);
   vec3 diffuse = uDiffuseColor * diffuseShade * float(uDiffuseEnabled);
-  vec3 specular = uSpecularColor * diffuseShade * specularShade * float(uSpecularEnabled); 
+  vec3 specular = uSpecularColor * diffuseShade * specularShade * float(uSpecularEnabled);
   
   return ambient + diffuse + specular;
 }
 
 vec3 cellShading(in float toLightNormal, in float viewAngleNormal) {
-  float shade0 = smoothstep(toLightNormal, toLightNormal + AA, SHADE0);
-  float shade1 = smoothstep(toLightNormal, toLightNormal + AA, SHADE1);
-  float shade2 = smoothstep(toLightNormal, toLightNormal + AA, SHADE2);
-  float shade3 = smoothstep(toLightNormal, toLightNormal + AA, SHADE3);
-  float shade4 = smoothstep(toLightNormal, toLightNormal + AA, SHADE4);
-  
   float adjustedIntensity = max(1.0, SPECULAR_MAX - uSpecularIntensity);
-  float specularShade = smoothstep(0.00, 0.00 + AA, pow(viewAngleNormal, adjustedIntensity));
+  float diffuseShade = max(0.0, smoothCeil(toLightNormal * 4.0, AA) / 4.0);
+  float specularShade = smoothstep(SPECULAR_STEP, SPECULAR_STEP + AA, pow(viewAngleNormal, adjustedIntensity));
   
   vec3 ambient = uAmbientColor * float(uAmbientEnabled);
-  vec3 diffuse = uDiffuseColor * float(uDiffuseEnabled);
-  vec3 specular = specularShade * uSpecularColor * float(uSpecularEnabled);
-
-  vec3 color = ambient + diffuse;
-  // this should rather gradually turn color into ambient!
-  color = mix(color, ambient + diffuse * SHADE0, shade0) + specular * SHADE1;
-  color = mix(color, ambient + diffuse * SHADE1, shade1) + specular * SHADE2;
-  color = mix(color, ambient + diffuse * SHADE2, shade2) + specular * SHADE3;
-  color = mix(color, ambient + diffuse * SHADE3, shade3) + specular * SHADE4;
-  color = mix(color, ambient, shade4);
+  vec3 diffuse = diffuseShade * uDiffuseColor * float(uDiffuseEnabled);
+  vec3 specular = diffuseShade * specularShade * uSpecularColor * float(uSpecularEnabled);
+  vec3 color = ambient + diffuse + specular;
 
   return color;
 }

@@ -18,8 +18,8 @@ varying float vFogDepth;
 
 float grid(in vec2 st, vec2 size) {
   vec2 newSize = vec2(0.5)- size * 0.5;
-  vec2 uv = smoothstep(newSize, newSize + vec2(1e-4), st);
-  uv *= smoothstep(newSize,newSize + vec2(1e-4), vec2(1.0) - st);
+  vec2 uv = smoothstep(newSize, newSize + vec2(0.01), st);
+  uv *= smoothstep(newSize,newSize + vec2(0.01), vec2(1.0) - st);
   return 1.0 - uv.x * uv.y;
 }
 

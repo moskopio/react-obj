@@ -4,7 +4,7 @@ export interface RawObj {
   groups: Group[]
 }
 
-export interface Group { 
+interface Group {
   name:     string
   faces:    Face[]
   vertices: Vec3[]
@@ -12,12 +12,11 @@ export interface Group {
   uvs:      Vec2[]
 }
 
-export interface Face {
+interface Face {
   vIndices:  number[]
   nIndices:  number[]
   uvIndices: number[]
 }
-
 
 export function readObj(data: string): RawObj {
   const groups: Group[] = [createGroup('obj')]
@@ -86,5 +85,5 @@ function parseFace(g: Group, parts: string[]): void {
     parseInt(indices[2]) && nIndices.push(parseInt(indices[2]) - 1)
   })
   
-  g.faces.push( { vIndices, nIndices, uvIndices} )
+  g.faces.push({ vIndices, nIndices, uvIndices })
 }

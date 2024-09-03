@@ -6,8 +6,6 @@ interface Attribute {
   b: WebGLBuffer
 }
 type Attributes = Dict<Attribute>
-
-
 type AttributeValue = Dict<number[]>
 
 interface UpdateArgs {

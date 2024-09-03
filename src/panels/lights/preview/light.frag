@@ -5,7 +5,7 @@ precision mediump float;
 #define SPECULAR_MAX   2000.0
 #define SPECULAR_MULTI 5.0
 #define DIFFUSE_STEP   0.70
-#define SPECULAR_STEP  0.00
+#define SPECULAR_STEP  0.01
 
 const vec3 cameraPosition = normalize(vec3(0, 0, 2));
 const vec3 outlineColor = vec3(1.0);
