@@ -1,5 +1,6 @@
 import { DeepPartial } from "../types"
 import { Color } from "../utils/color"
+import { Vec2, Vec3 } from "../utils/math/v3"
 import { deepSet } from "../utils/merge"
 
 export interface Settings {
@@ -10,6 +11,7 @@ export interface Settings {
   normals:       NormalsSettings
   shading:       ShadingSettings
   wireframe:     WireframeSettings
+  points:        PointsSettings
 }
 
 interface OutlineSettings {
@@ -51,11 +53,22 @@ interface ShadingSettings {
   }
   gooch: {
     enabled: boolean
+    coolColor:    Color
+    warmColor:    Color
   },
   normal: {
     enabled: boolean
     useAbs:  boolean
   }
+}
+
+interface PointsSettings {
+  enabled:      boolean
+  movement:     Vec3
+  size:         Vec2
+  useLight:     boolean
+  borderWeight: number
+  borderColor:  Color
 }
 
 export function createDefaultSettings(): Settings {
@@ -67,6 +80,7 @@ export function createDefaultSettings(): Settings {
     normals:       createDefaultNormalsSettings(),
     shading:       createDefaultShadingSettings(),
     wireframe:     createDefaultWireframe(),
+    points:        createDefaultPoints(),
   }
 }
 
@@ -102,6 +116,17 @@ function createDefaultWireframe(): WireframeSettings {
   }
 }
 
+function createDefaultPoints(): PointsSettings {
+  return {
+    enabled:      false,
+    movement:     [0.1, 0.1, 0.1],
+    size:         [1.0, 3.0],
+    useLight:     false,
+    borderWeight: 0,
+    borderColor: [0, 0, 0]
+  }
+}
+
 function createDefaultNormalsSettings(): NormalsSettings {
   return {
     useFlat:    false,
@@ -112,12 +137,14 @@ function createDefaultNormalsSettings(): NormalsSettings {
 function createDefaultShadingSettings(): ShadingSettings {
   return {
     cell: {
-      enabled:  false,
+    enabled:  false,
       segments: 5,
       aa:       0.01
     },
     gooch: {
-      enabled: false,
+      enabled:   false,
+      coolColor: [0, 144, 144],
+      warmColor: [180, 20, 20],
     },
     normal: {
       enabled: false,

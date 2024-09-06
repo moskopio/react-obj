@@ -6,6 +6,7 @@ import { createGridDrawer } from "../grid/grid"
 import { createMeshDrawer } from "../mesh/mesh"
 import { createOutlineDrawer } from "../outline/outline"
 import { createWireframeDrawer } from "../wireframe/wireframe"
+import { createPointsDrawer } from "../points/points"
 
 interface Props {
   gl:         WebGLRenderingContext | null
@@ -24,13 +25,16 @@ export function usePrograms(props: Props): void {
       const meshDrawer = createMeshDrawer(gl)
       const outlineDrawer = createOutlineDrawer(gl)
       const wireframeDrawer = createWireframeDrawer(gl)
+      const pointDrawer = createPointsDrawer(gl)
       const gridDrawer = createGridDrawer(gl)
 
+      
       const newPrograms = [...programs]
       gridDrawer && newPrograms.push(gridDrawer)
       outlineDrawer && newPrograms.push(outlineDrawer)
       wireframeDrawer && newPrograms.push(wireframeDrawer)
       meshDrawer && newPrograms.push(meshDrawer)
+      pointDrawer && newPrograms.push(pointDrawer)
       
       setPrograms(newPrograms)
     }

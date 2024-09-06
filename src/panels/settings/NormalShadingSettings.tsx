@@ -9,7 +9,7 @@ export function NormalShadingSettings(): ReactElement {
   const { shading } = settings
   const { normal } = shading
   
-  const pallette = createPallette(0)
+  const pallette = createPallette(6)
   
   const toggleEnabled = useCallback(
     (enabled: boolean) => settingsDispatch({ shading: { normal: { enabled } } }), 

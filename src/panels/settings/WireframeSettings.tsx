@@ -9,7 +9,7 @@ export function WireframeSettings(): ReactElement {
   const { settings, settingsDispatch } = useContext(AppContext)
   const { wireframe } = settings
   
-  const pallette = createPallette(7)
+  const pallette = createPallette(2)
   
   const toggleEnabled = useCallback(
     (enabled: boolean) => settingsDispatch({ wireframe: { enabled } }), 

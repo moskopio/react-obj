@@ -21,7 +21,6 @@ export function OutlineSettings(): ReactElement {
     
   return (
     <Fragment>
-      <Divider label="Outline" />
       <div className='horizontal-setting'> 
         <Checkbox 
             label="Show Outline"

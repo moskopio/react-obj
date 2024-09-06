@@ -10,6 +10,8 @@ import { OutlineSettings } from "./settings/OutlineSettings"
 import { CellShadingSettings } from "./settings/CellShadingSettings"
 import { NormalShadingSettings } from "./settings/NormalShadingSettings"
 import { WireframeSettings } from "./settings/WireframeSettings"
+import { PointsSettings } from "./settings/PointsSettings"
+import { GoochShadingSettings } from "./settings/GoochShadingSettings"
 
 export function SettingsPanel(): ReactElement {
   const { settings, settingsDispatch } = useContext(AppContext)
@@ -34,16 +36,12 @@ export function SettingsPanel(): ReactElement {
       />
       
       <WireframeSettings />
+      <PointsSettings />
 
       <Divider label="Shading" />
       
       <CellShadingSettings />
-      <Checkbox 
-        label="Gooch Shading"
-        value={settings.shading.gooch.enabled}
-        onChange={(enabled: boolean) => settingsDispatch({ shading: { gooch: { enabled } }})}
-        color={pallette.getNextColor()}
-      />
+      <GoochShadingSettings />
       <NormalShadingSettings />
       
       <Divider label="Normals" />
@@ -62,6 +60,7 @@ export function SettingsPanel(): ReactElement {
         color={pallette.getNextColor()}
       />
       
+      <Divider label="Outline" />
       < OutlineSettings />
       
       <Divider label="Stage" />

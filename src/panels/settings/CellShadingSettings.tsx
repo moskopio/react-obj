@@ -10,7 +10,7 @@ export function CellShadingSettings(): ReactElement {
   const { shading } = settings
   const { cell } = shading
   
-  const pallette = createPallette(0)
+  const pallette = createPallette(4)
   
   const toggleEnabled = useCallback(
     (enabled: boolean) => settingsDispatch({ shading: { cell: { enabled } } }), 
@@ -47,7 +47,7 @@ export function CellShadingSettings(): ReactElement {
             label={`AA ${cell.aa.toFixed(2)}`}
             value={cell.aa}
             min={0}
-            max={0.5}
+            max={1}
             defaultValue={0.01}
             onChange={setAA}
             color={pallette.getNextColor()}

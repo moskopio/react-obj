@@ -48,6 +48,9 @@ export function updateUniforms(args: UpdateArgs): void {
         case gl.FLOAT_MAT4: 
           gl.uniformMatrix4fv(uniform.loc, false, values[name])
           break
+        case gl.FLOAT_VEC2:
+          gl.uniform2fv(uniform.loc, values[name])
+          break
         case gl.FLOAT_VEC3:
           gl.uniform3fv(uniform.loc, values[name])
           break
