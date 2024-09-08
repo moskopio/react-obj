@@ -28,7 +28,7 @@ export function LightPanel(): ReactElement {
       <AmbientLight  pallette={pallette} />
       <DiffuseLight  pallette={pallette} />
       <SpecularLight pallette={pallette} />
-
+      <FresnelLight  pallette={pallette} />
     </Panel>
   )
 }
@@ -57,7 +57,7 @@ function AmbientLight(props: Props): ReactElement {
         onChange={toggleAmbient}
         color={pallette.getNextColor()}
       />
-      <ColorPortal label="Ambient Light" color={light.ambient.color}>
+      <ColorPortal label="Ambient" color={light.ambient.color}>
         <ColorPicker
           value={light.ambient.color}
           onChange={setAmbientColor}
@@ -87,7 +87,7 @@ function DiffuseLight(props: Props): ReactElement {
         onChange={toggleDiffuse}
         color={pallette.getNextColor()}
       />
-      <ColorPortal label="Ambient" color={light.diffuse.color}>
+      <ColorPortal label="Diffuse" color={light.diffuse.color}>
         <ColorPicker
           value={light.diffuse.color}
           onChange={setDiffuseColor}
@@ -133,6 +133,49 @@ function SpecularLight(props: Props): ReactElement {
           onChange={setSpecularIntensity}
           value={light.specular.intensity}
           defaultValue={1000}
+          color={pallette.getNextColor()}
+        />
+      </ColorPortal>
+    </div>
+  )
+}
+
+function FresnelLight(props: Props): ReactElement {
+  const { pallette } = props
+  const { light, lightDispatch } = useContext(AppContext)
+  
+  const toggleFresnel = useCallback((enabled: boolean) => { 
+    lightDispatch({ type: "set", fresnel: { enabled } })
+  }, [lightDispatch])
+  
+  const setFresnelColor = useCallback((color: Color) => {
+    lightDispatch({ type: "set", fresnel: { color } })
+  }, [lightDispatch])
+  
+  const setFresnelIntensity = useCallback((intensity: number) => { 
+    lightDispatch({ type: "set", fresnel: { intensity } })
+  }, [lightDispatch])
+  
+  return (
+    <div className="horizontal-color-setting">
+      <Checkbox 
+        label="Fresnel Effect"
+        value={light.fresnel.enabled}
+        onChange={toggleFresnel}
+        color={pallette.getNextColor()}
+      />
+      <ColorPortal label="Fresnel" color={light.fresnel.color}>
+        <ColorPicker
+          value={light.fresnel.color}
+          onChange={setFresnelColor}
+        />
+        <Slider
+          label={`Intensity: ${light.fresnel.intensity.toFixed(2)}`}
+          min={0}
+          max={1.0}
+          onChange={setFresnelIntensity}
+          value={light.fresnel.intensity}
+          defaultValue={0.5}
           color={pallette.getNextColor()}
         />
       </ColorPortal>

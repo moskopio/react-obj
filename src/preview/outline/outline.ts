@@ -65,7 +65,7 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
       
       updateUniforms({ gl, uniforms, values: { time: [time] } })
       gl.drawArrays(gl.TRIANGLES, 0, obj.flat.vertices.length)
-      !outline.useReverse && gl?.clear(gl.DEPTH_BUFFER_BIT)
+      !outline.useReverse && gl.clear(gl.DEPTH_BUFFER_BIT)
     }
   }
   

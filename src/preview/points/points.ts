@@ -9,12 +9,13 @@ import { getLightPosition } from "../../webgl/light"
 import { getModelMatrix } from "../../webgl/model"
 import { createShaderProgram } from "../../webgl/program"
 import { flattenAndPrepare, getUniforms, updateUniforms } from "../../webgl/uniforms"
+import { createLightShader } from "../common/light-shader"
 import fragmentShaderSource from './points.frag'
 import vertexShaderSource from './points.vert'
 
 export function createPointsDrawer(gl: WebGLRenderingContext): Program | undefined {
-  
-  const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
+  const fragmentShader = createLightShader(fragmentShaderSource)
+  const program = createShaderProgram(gl, vertexShaderSource, fragmentShader)
   
   if (!program) {
     console.error('Failed to create a WebGL Wireframe Program')
@@ -41,13 +42,14 @@ export function createPointsDrawer(gl: WebGLRenderingContext): Program | undefin
       
       updateUniforms({ gl, uniforms, values: { time: [time] } })
       gl.drawArrays(gl.POINTS, 0, obj.wireframe.vertices.length / 2)
+      gl.clear(gl.DEPTH_BUFFER_BIT)
     }
   }
   
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
-    const { points } = settings
-    const values = flattenAndPrepare({ points })
+    const { points, shading } = settings
+    const values = flattenAndPrepare({ points, shading })
     
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values })
@@ -67,15 +69,15 @@ export function createPointsDrawer(gl: WebGLRenderingContext): Program | undefin
   }
   
   function updateLight(light: Light): void {
-    const { specular, ambient, diffuse, followsCamera } = light
+    const { specular, ambient, diffuse, fresnel, followsCamera } = light
     const lightPosition = getLightPosition(light)
     
     const lightValues = {
       diffuse, 
       followsCamera,
-      intensity: specular.intensity, 
       position: lightPosition,
       specular, 
+      fresnel
     }
     const values = flattenAndPrepare({ light: lightValues, ambient })
     

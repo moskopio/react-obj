@@ -36,7 +36,12 @@ export function GoochShadingSettings(): ReactElement {
 function ColorControls(): ReactElement {
   const { settings, settingsDispatch } = useContext(AppContext)
   const { shading } = settings
+  const pallette = createPallette(6)
   
+  const setUseLight = useCallback(
+    (useLight: boolean) => settingsDispatch({ shading: { gooch: { useLight } }}), 
+    [settingsDispatch])
+    
   const setWarm = useCallback(
     (warmColor: Color) => settingsDispatch({ shading: { gooch: { warmColor } } }), 
     [settingsDispatch])
@@ -47,6 +52,12 @@ function ColorControls(): ReactElement {
     
   return (
     <Fragment>
+      <Checkbox 
+        label="Use Light Colors"
+        value={shading.gooch.useLight}
+        onChange={setUseLight}
+        color={pallette.getNextColor()}
+      />
       <Divider label="Warm" />
       <ColorPicker value={shading.gooch.warmColor} onChange={setWarm} />
       <Divider label="Cool" />

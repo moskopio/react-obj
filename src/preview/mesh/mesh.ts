@@ -11,9 +11,11 @@ import { createShaderProgram } from '../../webgl/program'
 import { flattenAndPrepare, getUniforms, updateUniforms } from '../../webgl/uniforms'
 import fragmentShaderSource from './mesh.frag'
 import vertexShaderSource from './mesh.vert'
+import { createLightShader } from '../common/light-shader'
 
 export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined {
-  const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
+  const fragmentShader = createLightShader(fragmentShaderSource)
+  const program = createShaderProgram(gl, vertexShaderSource, fragmentShader)
   
   if (!program) {
     console.error('Failed to create a WebGL Mesh Program')
@@ -55,15 +57,15 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
   }
   
   function updateLight(light: Light): void {
-    const { specular, ambient, diffuse, followsCamera } = light
-    const lightPosition = getLightPosition(light)
+    const { specular, ambient, fresnel, diffuse, followsCamera } = light
+    const position = getLightPosition(light)
     
     const lightValues = {
       diffuse, 
       followsCamera,
-      intensity: specular.intensity, 
-      position: lightPosition,
+      position,
       specular, 
+      fresnel,
     }
     const values = flattenAndPrepare({ light: lightValues, ambient })
     

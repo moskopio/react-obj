@@ -20,7 +20,7 @@ export function getUniforms(gl: WebGLRenderingContext, program: WebGLProgram): U
       const location = gl.getUniformLocation(program, uniform.name)
       const type = uniform.type
       
-      uniforms[name] = { loc: location, type } 
+      uniforms[name] = { loc: location, type }
     }
   }
   
@@ -74,14 +74,9 @@ function prepareName(name: string): string {
   return noUppercase
 }
 
-// should flatten objects!
 export function prepareValues(values: Dict<number | number[] | boolean>): Values {
   const prepared: Values = {}
   const valuesNames = Object.keys(values)
-  
-  // flatten content!
-  
-  
   
   valuesNames.forEach(name => {
     const value = values[name]
@@ -100,6 +95,7 @@ export function prepareValues(values: Dict<number | number[] | boolean>): Values
 } 
 
 
+  //eslint-disable-next-line
 export function flattenValues(values: Dict<any>): Dict<number | number[] | boolean> {
   const flatValues: Dict<number | number[] | boolean> = {}
 
@@ -116,6 +112,7 @@ export function flattenValues(values: Dict<any>): Dict<number | number[] | boole
   return flatValues
 }
 
+//eslint-disable-next-line
 export function flattenAndPrepare(values: Dict<any>): Values {
   return prepareValues(flattenValues(values))
 }

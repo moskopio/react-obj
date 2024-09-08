@@ -44,7 +44,7 @@ export function ColorPicker(props: Props): ReactElement {
           min={0} max={255}
           value={colorRef.current[0]}
           defaultValue={value[0]}
-          color='#BF5C38'
+          color='linear-gradient(90deg, #666, #BF5C38)'
         />
         <Slider 
           label={`G: ${colorRef.current[1]}`} 
@@ -52,7 +52,7 @@ export function ColorPicker(props: Props): ReactElement {
           min={0} max={255}
           value={colorRef.current[1]}
           defaultValue={value[1]}
-          color='#B2C99E'
+          color='linear-gradient(90deg, #666, #B2C99E)'
         />
         <Slider 
           label={`B: ${colorRef.current[2]}`} 
@@ -60,7 +60,7 @@ export function ColorPicker(props: Props): ReactElement {
           min={0} max={255}
           value={colorRef.current[2]}
           defaultValue={value[2]}
-          color='#628090'
+          color='linear-gradient(90deg, #666, #628090)'
         />
       </div>
     </div>

@@ -30,6 +30,7 @@ float random(in float seed) {
 
 void main() {
   vec4 position = uProjection * uView * uModel * vec4(aPosition, 1);
+  vec3 normal = normalize(mat3(uModel) * aNormal);
   
   float timeChange = sin(uTime / (200.0 + 500.0 * random(aCount)));
   
@@ -42,9 +43,9 @@ void main() {
   
   position.xyz += movementLimits * timeChange * randomMovement;
   
-  vNormal = aNormal;
-  vCount = aCount;
+  vNormal = normal;
   vPosition = position.xyz;
+  vCount = aCount;
   
   vec2 size = uPoints.size;
   gl_PointSize = size[0] + timeChange * size[1];

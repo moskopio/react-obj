@@ -3,20 +3,17 @@
   border: var(--elements-border) var(--highlight-color) solid;
   outline: var(--elements-border) var(--shadow-color) solid;
   box-shadow: inset 0px 0px 0px 2px var(--shadow-color);
-  border-radius: var(--elements-radius);
+  border-radius: 10px;
   height: 25px;
   width: 25px;
   justify-content: center;
   align-items: center;
 }
 
-.color-portal-preview .icon {
-  /* filter: drop-shadow(0px 0px 2px var(--shadow-color)); */
-  
+.color-portal-preview .icon {  
   filter: 
   drop-shadow( 1px  0px 0px black) 
   drop-shadow(-1px  0px 0px black)
   drop-shadow( 0px  1px 0px black) 
   drop-shadow( 0px -1px 0px black);
-  
 }

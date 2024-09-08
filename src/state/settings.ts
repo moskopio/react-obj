@@ -52,9 +52,10 @@ interface ShadingSettings {
     aa:       number
   }
   gooch: {
-    enabled: boolean
-    coolColor:    Color
-    warmColor:    Color
+    enabled:   boolean
+    useLight:  boolean 
+    coolColor: Color
+    warmColor: Color
   },
   normal: {
     enabled: boolean
@@ -98,13 +99,13 @@ function createDefaultGrid(): GridSettings {
 
 function createDefaultOutline(): OutlineSettings {
   return {
-    enabled:     true,
-    useReverse:  false,
+    enabled:      true,
+    useReverse:   false,
     useTwoValues: false,
-    colorA:      [176, 201, 158],
-    colorB:      [98, 128, 144],
-    weightA:     0.01,
-    weightB:     0.02,
+    colorA:       [176, 201, 158],
+    colorB:       [98, 128, 144],
+    weightA:      0.01,
+    weightB:      0.02,
   }
 }
 
@@ -121,7 +122,7 @@ function createDefaultPoints(): PointsSettings {
     enabled:      false,
     movement:     [0.1, 0.1, 0.1],
     size:         [1.0, 3.0],
-    useLight:     false,
+    useLight:     true,
     borderWeight: 0,
     borderColor: [0, 0, 0]
   }
@@ -143,8 +144,9 @@ function createDefaultShadingSettings(): ShadingSettings {
     },
     gooch: {
       enabled:   false,
-      coolColor: [0, 144, 144],
-      warmColor: [180, 20, 20],
+      useLight:  false,
+      coolColor: [0, 0, 200],
+      warmColor: [220, 180, 20],
     },
     normal: {
       enabled: false,

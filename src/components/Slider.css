@@ -12,6 +12,9 @@
 }
 
 .slider-handle {
+  border-right: 2px solid white;
+  box-sizing: border-box;
+  box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
   height: 12px;
   margin-top: 2px;
 }

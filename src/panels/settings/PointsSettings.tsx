@@ -3,9 +3,10 @@ import { Checkbox } from "../../components/Checkbox"
 import { SettingsPortal } from "../../components/SettingsPortal"
 import { Slider } from "../../components/Slider"
 import { AppContext } from "../../state/context"
-import { createPallette } from "../../utils/color"
+import { Color, createPallette } from "../../utils/color"
 import { Vec2, Vec3 } from "../../utils/math/v3"
 import { Divider } from "../../components/Divider"
+import { ColorPicker } from "../../components/ColorPicker"
 
 export function PointsSettings(): ReactElement {
   const { settings, settingsDispatch } = useContext(AppContext)
@@ -42,6 +43,8 @@ export function PointsSettings(): ReactElement {
           <MovementControls />
           <Divider label="Size" />
           <SizeControls />
+          <Divider label="Border" />
+          <BorderControls />
         </SettingsPortal>
       </div>
     </Fragment>
@@ -143,7 +146,7 @@ function SizeControls(): ReactElement {
       color={pallette.getNextColor()}
     />
     <Slider 
-      label={`Max ${size[1].toFixed(2)}`}
+      label={`Grow ${size[1].toFixed(2)}`}
       value={size[1]}
       min={0}
       max={20}
@@ -152,5 +155,35 @@ function SizeControls(): ReactElement {
       color={pallette.getNextColor()}
     />
   </Fragment>
+  )
+}
+
+function BorderControls(): ReactElement {
+  const { settings, settingsDispatch } = useContext(AppContext)
+  const { points } = settings
+  const { borderWeight, borderColor } = points
+  
+  const pallette = createPallette(5)
+  const setBorderWeight = useCallback((borderWeight: number) => {
+    settingsDispatch({ points: { borderWeight } })
+  },[settingsDispatch])
+  const setBorderColor = useCallback((borderColor: Color) => {
+    settingsDispatch({ points: { borderColor } })
+  },[settingsDispatch])
+  
+  
+  return (
+    <Fragment>
+      <Slider 
+        label={`Border ${borderWeight.toFixed(2)}`}
+        value={borderWeight}
+        min={0}
+        max={0.5}
+        defaultValue={0}
+        onChange={setBorderWeight}
+        color={pallette.getNextColor()}
+      />
+      <ColorPicker value={borderColor} onChange={setBorderColor} />
+    </Fragment>
   )
 }

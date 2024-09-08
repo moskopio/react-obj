@@ -2,7 +2,6 @@ import { ReactElement, useCallback, useRef, useState } from "react"
 import { Portal } from "../../components/Portal"
 import { vec3ToCSSColor } from "../../utils/color"
 import './ColorPortal.css'
-import { IconSettings } from "../../components/Icon"
 
 interface Props {
   children: ReactElement | ReactElement[] | string
@@ -28,7 +27,6 @@ export function ColorPortal(props: Props): ReactElement {
   return (
     <div ref={containerRef}>
       <div className='color-portal-preview' onClick={showPortal} style={style} >
-      <IconSettings />
       </div>
       {portalVisible ?
         <Portal 

@@ -123,8 +123,8 @@ function VariantBControls(props: Props): ReactElement | null {
         <ColorPicker value={colorB} onChange={setColor} />
         <Slider
           label={`Weight: ${weightB.toFixed(3)}`}
-          min={0.01}
-          max={0.1}
+          min={0.00}
+          max={0.25}
           onChange={setWeight}
           value={weightB}
           defaultValue={0.01}

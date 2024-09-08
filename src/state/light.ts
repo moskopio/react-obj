@@ -8,7 +8,8 @@ export interface Light {
   rotation:     { theta: number, phi: number }
   ambient:      LightColor,
   diffuse:      LightColor,
-  specular:     SpecularColor
+  specular:     LightColorAndIntense,
+  fresnel:      LightColorAndIntense,
   followsCamera: boolean
 }
 
@@ -17,7 +18,7 @@ interface LightColor {
   color:   Color
 }
 
-interface SpecularColor extends LightColor {
+interface LightColorAndIntense extends LightColor {
   intensity: number
 }
 
@@ -28,6 +29,7 @@ export function createDefaultLight(): Light {
     ambient:      { enabled: true, color: [25, 25, 25] },
     diffuse:      { enabled: true, color: [128, 128, 128] },
     specular:     { enabled: true, color: [255, 255, 255], intensity: 1000 },
+    fresnel:      { enabled: true, color: [255, 255, 255], intensity: 0.5 },
     followsCamera: false
   }
 }
