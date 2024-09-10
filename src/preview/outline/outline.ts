@@ -35,8 +35,7 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
   return { updateObj, updateCamera, updateSettings, draw, cleanup }
   
   function updateObj(obj: Obj): void {
-    const { flat, parsed } = obj
-    const { boundingBox } = parsed
+    const { flat, boundingBox } = obj
     
     const vertices = [...flat.vertices].reverse()
     const normals = [...flat.smoothNormals].reverse()

@@ -86,7 +86,10 @@ export function createLightDrawer(gl: WebGLRenderingContext): Program | undefine
     
     const position: Vec3[] = [...cone.vertices, ...sphere.vertices]
     const normal: Vec3[] = [...cone.normals, ...sphere.normals]
-    const values = { position: position.flatMap(p => p), normal: normal.flatMap(n => n) }
+    const values = { 
+      position: new Float32Array(position.flatMap(p => p)), 
+      normal: new Float32Array(normal.flatMap(n => n)) 
+    }
 
     gl.useProgram(program!)
     updateAttributes({ gl, attributes, values })

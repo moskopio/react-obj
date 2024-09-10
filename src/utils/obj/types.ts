@@ -21,7 +21,6 @@ export interface ParsedObj {
   indices:        number[]
   definedNormals: Vec3[]
   smoothNormals:  Vec3[]
-  boundingBox:    [Vec3, Vec3]
 }
 
 export interface RawObj {

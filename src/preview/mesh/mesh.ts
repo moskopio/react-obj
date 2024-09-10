@@ -44,9 +44,8 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
   return { updateObj, updateCamera, updateSettings, updateScene, draw, cleanup }
   
   function updateObj(obj: Obj): void {
-    const { flat, parsed } = obj
+    const { flat, boundingBox } = obj
     const { vertices, flatNormals, smoothNormals, definedNormals } = flat
-    const { boundingBox } = parsed
     
     geometry.vertices = new Float32Array(vertices.flatMap(v => v))
     geometry.flatNormals = new Float32Array(flatNormals.flatMap(n => n))

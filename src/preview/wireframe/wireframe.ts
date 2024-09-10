@@ -35,10 +35,8 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
   return { updateObj, updateCamera, updateSettings, draw, cleanup }
   
   function updateObj(obj: Obj): void {
-    const { wireframe, parsed } = obj
+    const { wireframe, boundingBox } = obj
     const { vertices, smoothNormals } = wireframe
-    const { boundingBox } = parsed
-    
     
     geometry.vertices = new Float32Array(vertices.flatMap(v => v))
     geometry.normals = new Float32Array(smoothNormals.flatMap(v => v))

@@ -1,5 +1,6 @@
 import { ChangeEvent, useCallback, useContext } from "react"
 import { ObjContext } from "src/state/obj"
+import { getBoundingBox } from "./obj/bounding-box"
 import { flattenParsedObj } from "./obj/flatten"
 import { parseObj } from "./obj/parse"
 import { readObj } from "./obj/read"
@@ -15,8 +16,9 @@ export function useObjLoad(): (event: ChangeEvent<HTMLInputElement>) => void {
     const flat = flattenParsedObj(parsed)
     const wireframe = wireframeFlattenObj(flat)
     const parsingTime = Date.now() - tick
+    const boundingBox = getBoundingBox(flat.vertices)
     
-    setObj({ name, raw, parsed, flat, wireframe, parsingTime })
+    setObj({ name, raw, parsed, flat, wireframe, parsingTime, boundingBox })
   }, [setObj])
   
   return useCallback((event: ChangeEvent<HTMLInputElement>) => {

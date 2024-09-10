@@ -70,8 +70,7 @@ export function createPointsDrawer(gl: WebGLRenderingContext): Program | undefin
   }
   
   function updateObj(obj: Obj): void {
-    const { wireframe, parsed } = obj
-    const { boundingBox } = parsed
+    const { wireframe, boundingBox } = obj
     
     const vertices = wireframe.vertices.filter((_, i) => i % 2)
     const normals = wireframe.smoothNormals.filter((_, i) => i % 2)
