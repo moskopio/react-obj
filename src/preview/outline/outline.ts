@@ -1,7 +1,8 @@
 import { getLookAtMatrices } from 'src/geometry/camera'
 import { getModelMatrix } from 'src/geometry/model'
+import { Vec3 } from 'src/math/v3'
 import { Camera } from 'src/state/camera'
-import { createEmptyObj, Obj } from 'src/state/obj'
+import { Obj } from 'src/state/obj'
 import { createDefaultSettings, Settings } from 'src/state/settings'
 import { Program } from 'src/types'
 import { setupAttributes, updateAttributes } from 'src/webgl/attributes'
@@ -18,7 +19,11 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
     return undefined
   }
   
-  let obj = createEmptyObj()
+  const geometry = {
+    vertices:       new Float32Array(),
+    normals:        new Float32Array(),
+    boundingBox:    [[0, 0, 0], [0, 0, 0]] as [Vec3, Vec3]
+  }
   let settings = createDefaultSettings()
   
   const attributes = {
@@ -29,17 +34,16 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
   
   return { updateObj, updateCamera, updateSettings, draw, cleanup }
   
-  function updateObj(newObj: Obj): void {
-    // Outline uses reversed geometry!
-    obj = {
-      ...newObj,
-      flat: {
-        vertices:       [...newObj.flat.vertices].reverse(),
-        flatNormals:    [],
-        smoothNormals:  [...newObj.flat.smoothNormals].reverse(),
-        definedNormals: [],
-      }
-    }
+  function updateObj(obj: Obj): void {
+    const { flat, parsed } = obj
+    const { boundingBox } = parsed
+    
+    const vertices = [...flat.vertices].reverse()
+    const normals = [...flat.smoothNormals].reverse()
+    geometry.vertices = new Float32Array(vertices.flatMap(v => v))
+    geometry.normals = new Float32Array(normals.flatMap(n => n))
+    geometry.boundingBox = boundingBox
+    
     updateGeometry()
   }
   
@@ -64,7 +68,7 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
       setupAttributes({ gl, attributes })
       
       updateUniforms({ gl, uniforms, values: { time: [time] } })
-      gl.drawArrays(gl.TRIANGLES, 0, obj.flat.vertices.length)
+      gl.drawArrays(gl.TRIANGLES, 0, geometry.vertices.length / 3)
       !outline.useReverse && gl.clear(gl.DEPTH_BUFFER_BIT)
     }
   }
@@ -75,19 +79,18 @@ export function createOutlineDrawer(gl: WebGLRenderingContext): Program | undefi
   }
   
   function updateGeometry(): void {
-    const { flat } = obj
-    const { vertices, smoothNormals } = flat
-    
+    const { vertices, normals } = geometry
     const values = {
-      position: vertices.flatMap(v => v),
-      normal:   smoothNormals.flatMap(n => n)
+      position: vertices,
+      normal:   normals
     }
     updateAttributes({ gl, attributes, values })
     updateModel()
   }
   
   function updateModel(): void {
-    const model = getModelMatrix(obj, settings)
+    const { boundingBox } = geometry
+    const model = getModelMatrix(boundingBox, settings)
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values: { model } })
   }

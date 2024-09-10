@@ -1,7 +1,8 @@
 import { getLookAtMatrices } from 'src/geometry/camera'
 import { getModelMatrix } from 'src/geometry/model'
+import { Vec3 } from 'src/math/v3'
 import { Camera } from 'src/state/camera'
-import { createEmptyObj, Obj } from 'src/state/obj'
+import { Obj } from 'src/state/obj'
 import { createDefaultSettings, Settings } from 'src/state/settings'
 import { Program } from 'src/types'
 import { setupAttributes, updateAttributes } from 'src/webgl/attributes'
@@ -18,7 +19,11 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
     return undefined
   }
   
-  let obj = createEmptyObj()
+  const geometry = {
+    vertices:    new Float32Array(),
+    normals:     new Float32Array(),
+    boundingBox: [[0, 0, 0], [0, 0, 0]] as [Vec3, Vec3]
+  }
   let settings = createDefaultSettings()
   
   const attributes = {
@@ -29,8 +34,15 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
   
   return { updateObj, updateCamera, updateSettings, draw, cleanup }
   
-  function updateObj(newObj: Obj): void {
-    obj = newObj 
+  function updateObj(obj: Obj): void {
+    const { wireframe, parsed } = obj
+    const { vertices, smoothNormals } = wireframe
+    const { boundingBox } = parsed
+    
+    
+    geometry.vertices = new Float32Array(vertices.flatMap(v => v))
+    geometry.normals = new Float32Array(smoothNormals.flatMap(v => v))
+    geometry.boundingBox = boundingBox
     updateGeometry()
   }
   
@@ -57,7 +69,7 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
       setupAttributes({ gl, attributes })
       
       updateUniforms({ gl, uniforms, values: { time: [time] } })
-      gl.drawArrays(gl.LINES, 0, obj.wireframe.vertices.length)
+      gl.drawArrays(gl.LINES, 0, geometry.vertices.length / 2)
     }
   }
   
@@ -67,17 +79,19 @@ export function createWireframeDrawer(gl: WebGLRenderingContext): Program | unde
   }
   
   function updateGeometry(): void {
-    const { wireframe } = obj
+    const { vertices, normals } = geometry
     const values = {
-      position: wireframe.vertices.flatMap(v => v),
-      normal:   wireframe.smoothNormals.flatMap(n => n)
+      position: vertices,
+      normal:   normals
     }
     updateAttributes({ gl, attributes, values })
     updateModel()
   }
   
   function updateModel(): void {
-    const model = getModelMatrix(obj, settings)
+    const { boundingBox } = geometry
+    const model = getModelMatrix(boundingBox, settings)
+    
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values: { model } })
   }

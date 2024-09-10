@@ -23,7 +23,7 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
   // attributes
   const attributes = {
     position: { p: gl.getAttribLocation(program, 'aPosition'), s: 3, b: gl.createBuffer()! },
-    normal: { p: gl.getAttribLocation(program, 'aNormal'), s: 3, b: gl.createBuffer()! },
+    normal:   { p: gl.getAttribLocation(program, 'aNormal'), s: 3, b: gl.createBuffer()! },
   }  
   const uniforms = getUniforms(gl, program)
   
@@ -32,23 +32,23 @@ export function createGridDrawer(gl: WebGLRenderingContext): Program | undefined
   return { updateCamera, updateSettings, draw, cleanup }
   
   function createGeometry(): void {
-    const position = [
+    const position = new Float32Array([
        2, -1,  2,
        2, -1, -2,
       -2, -1, -2,
       -2, -1, -2,
       -2, -1,  2,
        2, -1,  2,
-    ]
+    ])
     
-    const normal = [
+    const normal = new Float32Array([
       0, 1, 0,
       0, 1, 0,
       0, 1, 0,
       0, 1, 0,
       0, 1, 0,
       0, 1, 0,
-    ]
+    ])
     
     const values = { position, normal }
     updateAttributes({ gl, attributes, values })

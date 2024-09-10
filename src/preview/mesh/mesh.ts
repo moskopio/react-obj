@@ -1,8 +1,9 @@
 import { getLookAtMatrices } from 'src/geometry/camera'
 import { getLightPosition } from 'src/geometry/light'
 import { getModelMatrix } from 'src/geometry/model'
+import { Vec3 } from 'src/math/v3'
 import { Camera } from 'src/state/camera'
-import { createEmptyObj, Obj } from 'src/state/obj'
+import { Obj } from 'src/state/obj'
 import { Scene } from 'src/state/scene'
 import { createDefaultSettings, Settings } from 'src/state/settings'
 import { Program } from 'src/types'
@@ -22,7 +23,15 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
     return undefined
   }
   
-  let obj = createEmptyObj()
+  const geometry = {
+    vertices:       new Float32Array(),
+    flatNormals:    new Float32Array(),
+    definedNormals: new Float32Array(),
+    smoothNormals:  new Float32Array(),
+    count:          new Float32Array(),
+    boundingBox:    [[0, 0, 0], [0, 0, 0]] as [Vec3, Vec3]
+  }
+  
   let settings = createDefaultSettings()
   
   const attributes = {
@@ -34,8 +43,18 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
   
   return { updateObj, updateCamera, updateSettings, updateScene, draw, cleanup }
   
-  function updateObj(newObj: Obj): void {
-    obj = newObj 
+  function updateObj(obj: Obj): void {
+    const { flat, parsed } = obj
+    const { vertices, flatNormals, smoothNormals, definedNormals } = flat
+    const { boundingBox } = parsed
+    
+    geometry.vertices = new Float32Array(vertices.flatMap(v => v))
+    geometry.flatNormals = new Float32Array(flatNormals.flatMap(n => n))
+    geometry.smoothNormals = new Float32Array(smoothNormals.flatMap(n => n))
+    geometry.definedNormals = new Float32Array(definedNormals.flatMap(n => n))
+    geometry.count = new Float32Array(vertices.map((_, i) => i))
+    geometry.boundingBox = boundingBox
+    
     updateGeometry()
   }
 
@@ -71,7 +90,7 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
       setupAttributes({ gl, attributes })
       
       updateUniforms({ gl, uniforms, values: { time: [time] } })
-      gl.drawArrays(gl.TRIANGLES, 0, obj.flat.vertices.length)
+      gl.drawArrays(gl.TRIANGLES, 0, geometry.count.length)
     }
   }
   
@@ -80,33 +99,30 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
     program && gl.deleteProgram(program)
   }
   
-  
   function updateGeometry(): void {
-    const { flat } = obj
     const { useFlat, useDefined } = settings.normals
+    const { vertices, smoothNormals, definedNormals, flatNormals, count } = geometry
     
-    const vertices = flat.vertices
-    const hasDefinedNormals = flat.definedNormals.length === vertices.length
+    const hasDefinedNormals = geometry.definedNormals.length === vertices.length
     
     const normals = useFlat 
-      ? flat.flatNormals 
+      ? flatNormals 
       : useDefined && hasDefinedNormals 
-        ? flat.definedNormals 
-        : flat.smoothNormals
+        ? definedNormals 
+        : smoothNormals
     
     const values = {
-      position: vertices.flatMap(v => v),
-      normal:   normals.flatMap(n => n),
-      count:    vertices.map((_, i) => i)
+      position: vertices,
+      normal:   normals,
+      count
     }
     
     updateAttributes({ gl, attributes, values })
     updateModel()
   }
   
-    
   function updateModel(): void {
-    const model = getModelMatrix(obj, settings)
+    const model = getModelMatrix(geometry.boundingBox, settings)
     
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values: { model } })

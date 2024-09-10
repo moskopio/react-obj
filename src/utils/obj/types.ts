@@ -1,5 +1,14 @@
 import { Vec2, Vec3 } from "src/math/v3"
 
+export interface Obj {
+  raw:         RawObj
+  parsed:      ParsedObj
+  flat:        FlattenObj
+  wireframe:   FlattenObj
+  parsingTime: number
+  name:        string
+}
+
 export interface FlattenObj {
   vertices:       Vec3[]
   definedNormals: Vec3[]

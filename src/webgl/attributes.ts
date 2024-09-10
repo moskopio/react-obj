@@ -6,7 +6,7 @@ interface Attribute {
   b: WebGLBuffer
 }
 type Attributes = Dict<Attribute>
-type AttributeValue = Dict<number[]>
+type AttributeValue = Dict<Float32Array>
 
 interface UpdateArgs {
   attributes: Attributes
@@ -23,7 +23,7 @@ export function updateAttributes(args: UpdateArgs): void {
     const value = values[name]
     if (attribute && value) {
       gl.bindBuffer(gl.ARRAY_BUFFER, attribute.b)
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(value), gl.STATIC_DRAW)
+      gl.bufferData(gl.ARRAY_BUFFER, value, gl.STATIC_DRAW)
     }
   })
 }

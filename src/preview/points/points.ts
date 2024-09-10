@@ -1,8 +1,9 @@
 import { getLookAtMatrices } from "src/geometry/camera"
 import { getLightPosition } from "src/geometry/light"
 import { getModelMatrix } from "src/geometry/model"
+import { Vec3 } from "src/math/v3"
 import { Camera } from "src/state/camera"
-import { createEmptyObj, Obj } from "src/state/obj"
+import { Obj } from "src/state/obj"
 import { Scene } from "src/state/scene"
 import { createDefaultSettings, Settings } from "src/state/settings"
 import { Program } from "src/types"
@@ -21,8 +22,13 @@ export function createPointsDrawer(gl: WebGLRenderingContext): Program | undefin
     console.error('Failed to create a WebGL Wireframe Program')
     return undefined
   }
+  const geometry = {
+    vertices:    new Float32Array(),
+    normals:     new Float32Array(),
+    count:       new Float32Array(),
+    boundingBox: [[0, 0, 0], [0, 0, 0]] as [Vec3, Vec3]
+  }
   
-  let obj = createEmptyObj()
   let settings = createDefaultSettings()
   
   const attributes = {
@@ -41,7 +47,7 @@ export function createPointsDrawer(gl: WebGLRenderingContext): Program | undefin
       setupAttributes({ gl, attributes })
       
       updateUniforms({ gl, uniforms, values: { time: [time] } })
-      gl.drawArrays(gl.POINTS, 0, obj.wireframe.vertices.length / 2)
+      gl.drawArrays(gl.POINTS, 0, geometry.count.length)
       gl.clear(gl.DEPTH_BUFFER_BIT)
     }
   }
@@ -63,8 +69,18 @@ export function createPointsDrawer(gl: WebGLRenderingContext): Program | undefin
     updateUniforms({ gl, uniforms, values })
   }
   
-  function updateObj(newObj: Obj): void {
-    obj = newObj 
+  function updateObj(obj: Obj): void {
+    const { wireframe, parsed } = obj
+    const { boundingBox } = parsed
+    
+    const vertices = wireframe.vertices.filter((_, i) => i % 2)
+    const normals = wireframe.smoothNormals.filter((_, i) => i % 2)
+    
+    geometry.vertices = new Float32Array(vertices.flatMap(v => v))
+    geometry.normals = new Float32Array(normals.flatMap(v => v))
+    geometry.count = new Float32Array(vertices.map((_, i) => i))
+    geometry.boundingBox = boundingBox
+    
     updateGeometry()
   }
   
@@ -78,17 +94,12 @@ export function createPointsDrawer(gl: WebGLRenderingContext): Program | undefin
   }
   
   function updateGeometry(): void {
-    const { wireframe } = obj
-    
-    const vertices = wireframe.vertices.filter((_, i) => i % 2)
-    const normals = wireframe.smoothNormals.filter((_, i) => i % 2)
-    
-    const size = wireframe.vertices.length / 2
+    const { vertices, normals, count } = geometry
     
     const values = {
-      position: vertices.flatMap(v => v),
-      normal:   normals.flatMap(n => n),
-      count:    vertices.map((_, i) => i / size)
+      position: vertices,
+      normal:   normals,
+      count
     }
     
     updateAttributes({ gl, attributes, values })
@@ -96,7 +107,8 @@ export function createPointsDrawer(gl: WebGLRenderingContext): Program | undefin
   }
   
   function updateModel(): void {
-    const model = getModelMatrix(obj, settings)
+    const { boundingBox } = geometry
+    const model = getModelMatrix(boundingBox, settings)
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values: { model } })
   }

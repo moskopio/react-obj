@@ -1,10 +1,10 @@
 import { M4, Matrix4 } from "src/math/m4"
-import { V3 } from "src/math/v3"
-import { Obj } from "src/state/obj"
+import { V3, Vec3 } from "src/math/v3"
 import { Settings } from "src/state/settings"
 
-export function getModelMatrix(obj: Obj, settings: Settings): Matrix4 {
-  const { boundingBox } = obj.parsed
+type BoundingBox = [min: Vec3, max: Vec3]
+
+export function getModelMatrix(boundingBox: BoundingBox, settings: Settings): Matrix4 {
   const [min, max] = boundingBox
   
   // Swapping YZ
