@@ -23,9 +23,10 @@ struct Shading {
 };
 
 struct ShadingCommon {
-  vec3       normal;
-  vec3       position;
-  vec3       cameraPosition;
-  LightColor ambient;
+  vec3         normal;
+  vec3         position;
+  vec3         cameraPosition;
+  LightColor   ambient;
+  LightIntense fresnel;
 };
 

@@ -8,17 +8,16 @@ struct LightColor {
   vec3 color;
 };
 
-struct LightColorItensity {
-  bool enabled;
-  vec3 color;
+struct LightIntense {
+  bool  enabled;
+  vec3  color;
   float intensity;
 };
 
 struct Light {
-  vec3               position;
-  LightColor         diffuse;
-  LightColorItensity specular;
-  LightColorItensity fresnel;
-  bool               followsCamera;
+  vec3         position;
+  LightColor   diffuse;
+  LightIntense specular;
+  bool         followsCamera;
 };
 

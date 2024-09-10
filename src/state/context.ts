@@ -1,15 +1,15 @@
 import { createContext, Dispatch, Reducer, useMemo, useReducer } from "react"
 import { Camera, CameraAction, cameraReducer, createDefaultCamera } from "./camera"
+import { createDefaultScene, Scene, SceneAction, sceneReducer } from "./scene"
 import { createDefaultSettings, Settings, SettingsAction, settingsReducer } from "./settings"
-import { createDefaultLight, Light, LightAction, lightReducer } from "./light"
 
 interface AppState {
   camera:           Camera,
   cameraDispatch:   Dispatch<CameraAction>
   settings:         Settings,
   settingsDispatch: Dispatch<SettingsAction>,
-  light:            Light,
-  lightDispatch:    Dispatch<LightAction>,
+  scene:            Scene,
+  sceneDispatch:    Dispatch<SceneAction>,
 }
 
 export const AppContext = createContext<AppState>({
@@ -17,19 +17,19 @@ export const AppContext = createContext<AppState>({
   cameraDispatch:   () => {},
   settings:         createDefaultSettings(),
   settingsDispatch: () => {},
-  light:            createDefaultLight(),
-  lightDispatch:    () => {},
+  scene:            createDefaultScene(),
+  sceneDispatch:    () => {},
 })
 
 export function useAppState(): AppState {
 
   const [camera, cameraDispatch] = useReducer<Reducer<Camera, CameraAction>>(cameraReducer, createDefaultCamera())
   const [settings, settingsDispatch] = useReducer<Reducer<Settings, SettingsAction>>(settingsReducer, createDefaultSettings())
-  const [light, lightDispatch] = useReducer<Reducer<Light, LightAction>>(lightReducer, createDefaultLight())
+  const [scene, sceneDispatch] = useReducer<Reducer<Scene, SceneAction>>(sceneReducer, createDefaultScene())
   
   return useMemo(() => ({
     camera, cameraDispatch,
     settings, settingsDispatch,
-    light, lightDispatch
-  }),[camera, cameraDispatch, settings, settingsDispatch, light, lightDispatch])
+    scene, sceneDispatch
+  }),[camera, cameraDispatch, settings, settingsDispatch, scene, sceneDispatch])
 }

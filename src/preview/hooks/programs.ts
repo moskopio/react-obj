@@ -17,7 +17,7 @@ export function usePrograms(props: Props): void {
   const { gl, resolution } = props
   const [programs, setPrograms] = useState<Program[]>([])
   const requestId = useRef<number>()
-  const { camera, settings, light, cameraDispatch } = useContext(AppContext)
+  const { camera, settings, scene, cameraDispatch } = useContext(AppContext)
   const { obj } = useContext(ObjContext)
   
   useEffect(() => {
@@ -57,8 +57,8 @@ export function usePrograms(props: Props): void {
   
   useEffect(() => programs.forEach(p => p.updateSettings && p.updateSettings(settings)) ,[gl, programs, settings])
   
-  useEffect(() => programs.forEach(p => p.updateLight && p.updateLight(light))
-, [gl, programs, light])
+  useEffect(() => programs.forEach(p => p.updateScene && p.updateScene(scene))
+, [gl, programs, scene])
   
   useEffect(() => {
     return () => programs.forEach(p => p.cleanup())

@@ -1,4 +1,4 @@
-import { Light } from "src/state/light"
+import { Light } from "src/state/scene"
 import { degToRad } from "src/math/angles"
 import { M4, Matrix4 } from "src/math/m4"
 import { perspective } from "src/math/projections"

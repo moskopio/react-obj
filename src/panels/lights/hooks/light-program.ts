@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from "react"
-import { Program } from "../../../types"
+import { AppContext } from "src/state/context"
+import { Program } from "src/types"
 import { createLightDrawer } from "../preview/light-drawer"
-import { AppContext } from "../../../state/context"
 
 interface Props {
   gl:         WebGLRenderingContext | null
@@ -12,7 +12,7 @@ export function useLightPreviewProgram(props: Props): void {
   const { gl, resolution } = props
   const [programs, setPrograms] = useState<Program[]>([])
   const requestId = useRef<number>()
-  const { light } = useContext(AppContext)
+  const { scene } = useContext(AppContext)
   
   useEffect(() => {
     if (gl) {
@@ -29,8 +29,8 @@ export function useLightPreviewProgram(props: Props): void {
   }, [gl, resolution])
   
   useEffect(() => {
-    programs.forEach(p => p.updateLight && p.updateLight(light))
-  }, [gl, programs, light])
+    programs.forEach(p => p.updateScene && p.updateScene(scene))
+  }, [gl, programs, scene])
   
   useEffect(() => {
     return () => {

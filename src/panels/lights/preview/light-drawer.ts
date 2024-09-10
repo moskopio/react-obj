@@ -2,7 +2,7 @@ import { createCone } from "src/geometry/primitives/cone"
 import { createSphere } from "src/geometry/primitives/sphere"
 import { M4 } from "src/math/m4"
 import { Vec3 } from "src/math/v3"
-import { Light } from "src/state/light"
+import { Scene } from "src/state/scene"
 import { Program } from "src/types"
 import { setupAttributes, updateAttributes } from "src/webgl/attributes"
 import { createShaderProgram } from "src/webgl/program"
@@ -29,10 +29,11 @@ export function createLightDrawer(gl: WebGLRenderingContext): Program | undefine
   const uniforms = getUniforms(gl, program)
   buildGeometry()
   
-  return { updateLight, draw, cleanup }
+  return { updateScene, draw, cleanup }
   
-  function updateLight(light: Light): void {
-    const { specular, ambient, diffuse } = light
+  function updateScene(scene: Scene): void {
+    const { ambient, light } = scene
+    const { specular, diffuse } = light
     const { ...matrices } = getLightMatrices(light)
     
     const preparedValues = prepareValues({

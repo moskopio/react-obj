@@ -9,7 +9,7 @@ interface Props {
 
 export function useLightControls(props: Props): void {
   const { canvasRef } = props
-  const { lightDispatch } = useContext(AppContext)
+  const { sceneDispatch } = useContext(AppContext)
   const position = useRef([0, 0])
   
   useEffect(() => {
@@ -63,10 +63,10 @@ export function useLightControls(props: Props): void {
       const xDelta = (mouseX - prevX) * SENSITIVITY
       const yDelta = (mouseY - prevY) * SENSITIVITY
     
-      lightDispatch({ type: 'update', rotation: { theta: -yDelta, phi: xDelta } } )
+      sceneDispatch({ type: 'update', light: { rotation: { theta: -yDelta, phi: xDelta } } })
       
       position.current = [event.clientX, event.clientY]
     }
   
-  },[lightDispatch])
+  },[sceneDispatch])
 }

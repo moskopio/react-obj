@@ -2,8 +2,8 @@ import { getLookAtMatrices } from "src/geometry/camera"
 import { getLightPosition } from "src/geometry/light"
 import { getModelMatrix } from "src/geometry/model"
 import { Camera } from "src/state/camera"
-import { Light } from "src/state/light"
 import { createEmptyObj, Obj } from "src/state/obj"
+import { Scene } from "src/state/scene"
 import { createDefaultSettings, Settings } from "src/state/settings"
 import { Program } from "src/types"
 import { setupAttributes, updateAttributes } from "src/webgl/attributes"
@@ -32,7 +32,7 @@ export function createPointsDrawer(gl: WebGLRenderingContext): Program | undefin
   }
   const uniforms = getUniforms(gl, program)
   
-  return { draw, updateObj, updateSettings, updateCamera, updateLight, cleanup } 
+  return { draw, updateObj, updateSettings, updateCamera, updateScene, cleanup } 
   
   
   function draw(time: number): void {
@@ -68,18 +68,10 @@ export function createPointsDrawer(gl: WebGLRenderingContext): Program | undefin
     updateGeometry()
   }
   
-  function updateLight(light: Light): void {
-    const { specular, ambient, diffuse, fresnel, followsCamera } = light
-    const lightPosition = getLightPosition(light)
-    
-    const lightValues = {
-      diffuse, 
-      followsCamera,
-      position: lightPosition,
-      specular, 
-      fresnel
-    }
-    const values = flattenAndPrepare({ light: lightValues, ambient })
+  function updateScene(scene: Scene): void {
+    const { light, ambient, fresnel } = scene
+    const position = getLightPosition(light)
+    const values = flattenAndPrepare({ light: {...light, position }, ambient, fresnel })
     
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values })

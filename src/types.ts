@@ -1,6 +1,6 @@
 import { Camera } from "src/state/camera"
-import { Light } from "src/state/light"
 import { Obj } from "src/state/obj"
+import { Scene } from "src/state/scene"
 import { Settings } from "src/state/settings"
 
 export type FileContent = string | ArrayBuffer | null | undefined
@@ -18,6 +18,6 @@ export interface Program {
   draw:            (time: number) => void
   updateObj?:      (obj: Obj) => void
   updateCamera?:   (camera: Camera) => void
-  updateLight?:    (light: Light) => void
+  updateScene?:    (scene: Scene) => void
   updateSettings?: (settings: Settings) => void
 }

@@ -12,7 +12,7 @@ import { LightControls } from "./lights/LightControls"
 
 export function LightPanel(): ReactElement {
   const pallette = createPallette()
-  const { light, lightDispatch } = useContext(AppContext)
+  const { scene, sceneDispatch } = useContext(AppContext)
   
   return (
     <Panel icon="light" color={PASTEL_COLORS.mojo}>
@@ -20,8 +20,8 @@ export function LightPanel(): ReactElement {
       <LightControls />
       <Checkbox 
         label="Follows Camera"
-        value={light.followsCamera}
-        onChange={(followsCamera: boolean) => lightDispatch({ type: "set", followsCamera } )}
+        value={scene.light.followsCamera}
+        onChange={(followsCamera: boolean) => sceneDispatch({ type: "set", light: { followsCamera }} )}
         color={pallette.getNextColor()}
       />
       <Divider label="Colors" />
@@ -39,15 +39,15 @@ interface Props {
 
 function AmbientLight(props: Props): ReactElement {
   const { pallette } = props
-  const { light, lightDispatch } = useContext(AppContext)
+  const { scene: light, sceneDispatch } = useContext(AppContext)
 
   const toggleAmbient = useCallback((enabled: boolean) => {
-    lightDispatch({ type: "set", ambient: { enabled } })
-  },[lightDispatch])
+    sceneDispatch({ type: "set", ambient: { enabled } })
+  },[sceneDispatch])
   
   const setAmbientColor = useCallback((color: Color) => {
-    lightDispatch({ type: "set", ambient: { color } })
-  },[lightDispatch])
+    sceneDispatch({ type: "set", ambient: { color } })
+  },[sceneDispatch])
   
   return (
     <div className="horizontal-color-setting">
@@ -69,27 +69,27 @@ function AmbientLight(props: Props): ReactElement {
 
 function DiffuseLight(props: Props): ReactElement {
   const { pallette } = props
-  const { light, lightDispatch } = useContext(AppContext)
+  const { scene, sceneDispatch } = useContext(AppContext)
 
   const toggleDiffuse = useCallback((enabled: boolean) => {
-    lightDispatch({ type: "set", diffuse: { enabled } })
-  },[lightDispatch])
+    sceneDispatch({ type: "set",light: {diffuse: { enabled } }})
+  },[sceneDispatch])
   
   const setDiffuseColor = useCallback((color: Color) => {
-    lightDispatch({ type: "set", diffuse: { color } })
-  },[lightDispatch])
+    sceneDispatch({ type: "set", light: { diffuse: { color } }})
+  },[sceneDispatch])
   
   return (
     <div className="horizontal-color-setting">
       <Checkbox 
         label="Diffuse Light"
-        value={light.diffuse.enabled}
+        value={scene.light.diffuse.enabled}
         onChange={toggleDiffuse}
         color={pallette.getNextColor()}
       />
-      <ColorPortal label="Diffuse" color={light.diffuse.color}>
+      <ColorPortal label="Diffuse" color={scene.light.diffuse.color}>
         <ColorPicker
-          value={light.diffuse.color}
+          value={scene.light.diffuse.color}
           onChange={setDiffuseColor}
         />
       </ColorPortal>
@@ -99,39 +99,39 @@ function DiffuseLight(props: Props): ReactElement {
 
 function SpecularLight(props: Props): ReactElement {
   const { pallette } = props
-  const { light, lightDispatch } = useContext(AppContext)
+  const { scene, sceneDispatch } = useContext(AppContext)
   
   const toggleSpecular = useCallback((enabled: boolean) => { 
-    lightDispatch({ type: "set", specular: { enabled } })
-  }, [lightDispatch])
+    sceneDispatch({ type: "set", light: { specular: { enabled } } })
+  }, [sceneDispatch])
   
   const setSpecularColor = useCallback((color: Color) => {
-    lightDispatch({ type: "set", specular: { color } })
-  }, [lightDispatch])
+    sceneDispatch({ type: "set", light: { specular: { color } } })
+  }, [sceneDispatch])
   
   const setSpecularIntensity = useCallback((intensity: number) => { 
-    lightDispatch({ type: "set", specular: { intensity } })
-  }, [lightDispatch])
+    sceneDispatch({ type: "set", light: { specular: { intensity } } })
+  }, [sceneDispatch])
   
   return (
     <div className="horizontal-color-setting">
       <Checkbox 
         label="Specular Light"
-        value={light.specular.enabled}
+        value={scene.light.specular.enabled}
         onChange={toggleSpecular}
         color={pallette.getNextColor()}
       />
-      <ColorPortal label="Specular" color={light.specular.color}>
+      <ColorPortal label="Specular" color={scene.light.specular.color}>
         <ColorPicker
-          value={light.specular.color}
+          value={scene.light.specular.color}
           onChange={setSpecularColor}
         />
         <Slider
-          label={`Intensity: ${Math.floor(light.specular.intensity)}`}
+          label={`Intensity: ${Math.floor(scene.light.specular.intensity)}`}
           min={1}
           max={2000}
           onChange={setSpecularIntensity}
-          value={light.specular.intensity}
+          value={scene.light.specular.intensity}
           defaultValue={1000}
           color={pallette.getNextColor()}
         />
@@ -142,39 +142,39 @@ function SpecularLight(props: Props): ReactElement {
 
 function FresnelLight(props: Props): ReactElement {
   const { pallette } = props
-  const { light, lightDispatch } = useContext(AppContext)
+  const { scene, sceneDispatch } = useContext(AppContext)
   
   const toggleFresnel = useCallback((enabled: boolean) => { 
-    lightDispatch({ type: "set", fresnel: { enabled } })
-  }, [lightDispatch])
+    sceneDispatch({ type: "set", fresnel: { enabled } })
+  }, [sceneDispatch])
   
   const setFresnelColor = useCallback((color: Color) => {
-    lightDispatch({ type: "set", fresnel: { color } })
-  }, [lightDispatch])
+    sceneDispatch({ type: "set", fresnel: { color } })
+  }, [sceneDispatch])
   
   const setFresnelIntensity = useCallback((intensity: number) => { 
-    lightDispatch({ type: "set", fresnel: { intensity } })
-  }, [lightDispatch])
+    sceneDispatch({ type: "set", fresnel: { intensity } })
+  }, [sceneDispatch])
   
   return (
     <div className="horizontal-color-setting">
       <Checkbox 
         label="Fresnel Effect"
-        value={light.fresnel.enabled}
+        value={scene.fresnel.enabled}
         onChange={toggleFresnel}
         color={pallette.getNextColor()}
       />
-      <ColorPortal label="Fresnel" color={light.fresnel.color}>
+      <ColorPortal label="Fresnel" color={scene.fresnel.color}>
         <ColorPicker
-          value={light.fresnel.color}
+          value={scene.fresnel.color}
           onChange={setFresnelColor}
         />
         <Slider
-          label={`Intensity: ${light.fresnel.intensity.toFixed(2)}`}
+          label={`Intensity: ${scene.fresnel.intensity.toFixed(2)}`}
           min={0}
           max={1.0}
           onChange={setFresnelIntensity}
-          value={light.fresnel.intensity}
+          value={scene.fresnel.intensity}
           defaultValue={0.5}
           color={pallette.getNextColor()}
         />

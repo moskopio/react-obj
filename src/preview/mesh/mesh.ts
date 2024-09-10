@@ -2,8 +2,8 @@ import { getLookAtMatrices } from 'src/geometry/camera'
 import { getLightPosition } from 'src/geometry/light'
 import { getModelMatrix } from 'src/geometry/model'
 import { Camera } from 'src/state/camera'
-import { Light } from 'src/state/light'
 import { createEmptyObj, Obj } from 'src/state/obj'
+import { Scene } from 'src/state/scene'
 import { createDefaultSettings, Settings } from 'src/state/settings'
 import { Program } from 'src/types'
 import { setupAttributes, updateAttributes } from 'src/webgl/attributes'
@@ -32,7 +32,7 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
   }
   const uniforms = getUniforms(gl, program)
   
-  return { updateObj, updateCamera, updateSettings, updateLight, draw, cleanup }
+  return { updateObj, updateCamera, updateSettings, updateScene, draw, cleanup }
   
   function updateObj(newObj: Obj): void {
     obj = newObj 
@@ -56,18 +56,10 @@ export function createMeshDrawer(gl: WebGLRenderingContext): Program | undefined
     updateUniforms({ gl, uniforms, values })
   }
   
-  function updateLight(light: Light): void {
-    const { specular, ambient, fresnel, diffuse, followsCamera } = light
+  function updateScene(scene: Scene): void {
+    const { ambient, fresnel, light } = scene
     const position = getLightPosition(light)
-    
-    const lightValues = {
-      diffuse, 
-      followsCamera,
-      position,
-      specular, 
-      fresnel,
-    }
-    const values = flattenAndPrepare({ light: lightValues, ambient })
+    const values = flattenAndPrepare({ light: { ...light, position }, ambient, fresnel })
     
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values })

@@ -2,7 +2,7 @@ import { degToRad } from "src/math/angles"
 import { M4 } from "src/math/m4"
 import { Q } from "src/math/quaternion"
 import { V3, Vec3 } from "src/math/v3"
-import { Light } from "src/state/light"
+import { Light } from "src/state/scene"
 
 export function getLightPosition(light: Light): Vec3 {
   const { rotation, distance } = light 

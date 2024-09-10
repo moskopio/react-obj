@@ -6,12 +6,13 @@ struct Points {
   vec3  borderColor;
 };
 
-uniform Points     uPoints;
-uniform Light      uLight;
-uniform LightColor uAmbient;
-uniform Shading    uShading;
-uniform vec3       uCameraPosition;
-uniform float      uTime;
+uniform Points       uPoints;
+uniform Light        uLight;
+uniform LightColor   uAmbient;
+uniform LightIntense uFresnel;
+uniform Shading      uShading;
+uniform vec3         uCameraPosition;
+uniform float        uTime;
 
 varying vec3  vNormal;
 varying vec3  vPosition;
@@ -23,7 +24,7 @@ vec3 getLightColor() {
     ? normalize(uCameraPosition)
     : normalize(uLight.position);
   vec3 cameraPosition = normalize(uCameraPosition);
-  ShadingCommon common = ShadingCommon(normal, vPosition, cameraPosition, uAmbient);
+  ShadingCommon common = ShadingCommon(normal, vPosition, cameraPosition, uAmbient, uFresnel);
   
   return getLightShading(common, uShading, uLight);
 }
