@@ -1,14 +1,14 @@
 import { ReactElement, useEffect, useMemo, useRef, useState } from "react"
-import { constrain } from "../components/utils/common"
+import { constrain } from "src/utils/util"
 import { CameraPanel } from "./CameraPanel"
 import { FileInputControls } from "./FileInput"
 import { LightPanel } from "./LightPanel"
 import { ObjPanel } from "./ObjPanel"
-import './Panels.css'
+import "./Panels.css"
 import { SettingsPanel } from "./SettingsPanel"
 
 const MARGIN = 8
-const SCROLL_SPEED = 5
+const SCROLL_SPEED = 20
 
 export function Panels(): ReactElement {
   const panelsRef = useRef<HTMLDivElement | null>(null)
@@ -21,8 +21,8 @@ export function Panels(): ReactElement {
   
   useEffect(() => {
     const panels = panelsRef.current
-    panels?.addEventListener('wheel', onWheel)
-    return () => panels?.removeEventListener('wheel', onWheel)
+    panels?.addEventListener("wheel", onWheel)
+    return () => panels?.removeEventListener("wheel", onWheel)
     
     function onWheel(event: WheelEvent): void {
       event.preventDefault()

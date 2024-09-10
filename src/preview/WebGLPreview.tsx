@@ -1,8 +1,8 @@
 import { ReactElement, useLayoutEffect, useRef, useState } from "react"
+import { useWebGLContext } from "src/webgl/hooks/use-context"
 import './WebGLPreview.css'
 import { useCameraControls } from "./hooks/camera-controls"
 import { usePrograms } from "./hooks/programs"
-import { useWebGLContext } from "../webgl/hooks/use-context"
 
 export function WebGLPreview(): ReactElement {
   const canvasRef = useRef<HTMLCanvasElement>(null)

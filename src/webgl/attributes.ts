@@ -1,4 +1,4 @@
-import { Dict } from "../types"
+import { Dict } from "src/types"
 
 interface Attribute {
   p: GLint,
@@ -16,7 +16,6 @@ interface UpdateArgs {
 
 export function updateAttributes(args: UpdateArgs): void {
   const { attributes, gl, values } = args
-  
   const attributeNames = Object.keys(values)
   
   attributeNames.forEach(name => {
@@ -36,9 +35,7 @@ interface SetupArgs {
 
 export function setupAttributes(args: SetupArgs): void {
   const { attributes, gl } = args
-  
   const attributeNames = Object.keys(attributes)
-  
   
   attributeNames.forEach(name => {
     const attribute = attributes[name]

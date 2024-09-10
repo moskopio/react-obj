@@ -1,12 +1,12 @@
 import { Fragment, ReactElement, useCallback, useContext, useRef } from "react"
-import { Checkbox } from "../../components/Checkbox"
-import { SettingsPortal } from "../../components/SettingsPortal"
-import { Slider } from "../../components/Slider"
-import { AppContext } from "../../state/context"
-import { Color, createPallette } from "../../utils/color"
-import { Vec2, Vec3 } from "../../utils/math/v3"
-import { Divider } from "../../components/Divider"
-import { ColorPicker } from "../../components/ColorPicker"
+import { Checkbox } from "src/components/Checkbox"
+import { SettingsPortal } from "src/components/SettingsPortal"
+import { Slider } from "src/components/Slider"
+import { AppContext } from "src/state/context"
+import { Color, createPallette } from "src/utils/color"
+import { Vec2, Vec3 } from "src/math/v3"
+import { Divider } from "src/components/Divider"
+import { ColorPicker } from "src/components/ColorPicker"
 
 export function PointsSettings(): ReactElement {
   const { settings, settingsDispatch } = useContext(AppContext)

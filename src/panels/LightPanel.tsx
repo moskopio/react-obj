@@ -1,11 +1,11 @@
 import { ReactElement, useCallback, useContext } from "react"
-import { Checkbox } from "../components/Checkbox"
-import { ColorPicker } from "../components/ColorPicker"
-import { Divider } from "../components/Divider"
-import { Panel } from "../components/Panel"
-import { Slider } from "../components/Slider"
-import { AppContext } from "../state/context"
-import { Color, createPallette, Pallette, PASTEL_COLORS } from "../utils/color"
+import { Checkbox } from "src/components/Checkbox"
+import { ColorPicker } from "src/components/ColorPicker"
+import { Divider } from "src/components/Divider"
+import { Panel } from "src/components/Panel"
+import { Slider } from "src/components/Slider"
+import { AppContext } from "src/state/context"
+import { Color, createPallette, Pallette, PASTEL_COLORS } from "src/utils/color"
 import { ColorPortal } from "./colors/ColorPortal"
 import "./LightPanel.css"
 import { LightControls } from "./lights/LightControls"
@@ -19,9 +19,9 @@ export function LightPanel(): ReactElement {
       
       <LightControls />
       <Checkbox 
-        label='Follows Camera'
+        label="Follows Camera"
         value={light.followsCamera}
-        onChange={(followsCamera: boolean) => lightDispatch({ type: 'set', followsCamera } )}
+        onChange={(followsCamera: boolean) => lightDispatch({ type: "set", followsCamera } )}
         color={pallette.getNextColor()}
       />
       <Divider label="Colors" />

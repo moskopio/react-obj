@@ -1,7 +1,7 @@
-import { flipConstrain } from "../components/utils/common"
-import { DeepPartial } from "../types"
-import { Vec3 } from "../utils/math/v3"
-import { deepSet, deepUpdate } from "../utils/merge"
+import { flipConstrain } from "src/utils/util"
+import { DeepPartial } from "src/types"
+import { Vec3 } from "src/math/v3"
+import { deepSet, deepUpdate } from "src/utils/merge"
 
 export interface Camera { 
   aspectRatio: number
@@ -27,10 +27,8 @@ export function createDefaultCamera(): Camera {
   }
 }
 
-const CAMERA_ACTIONS = ['update','set'] as const
-
 export interface CameraAction extends DeepPartial<Camera> {
-  type: typeof CAMERA_ACTIONS[number]
+  type: 'update' | 'set'
 }
 
 export function cameraReducer(state: Camera, action: CameraAction): Camera {

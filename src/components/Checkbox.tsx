@@ -1,6 +1,6 @@
 import { ReactElement, useEffect, useMemo, useRef } from "react"
-import { PASTEL_COLORS } from "../utils/color"
-import './Checkbox.css'
+import { PASTEL_COLORS } from "src/utils/color"
+import "./Checkbox.css"
 
 interface Props {
   color?:    string
@@ -16,8 +16,8 @@ export function Checkbox(props: Props): ReactElement {
   
   useEffect(() => {
     const checkbox = checkboxRef.current
-    checkbox?.addEventListener('mousedown', onClick)
-    return () => checkbox?.removeEventListener('mousedown', onClick)
+    checkbox?.addEventListener("mousedown", onClick)
+    return () => checkbox?.removeEventListener("mousedown", onClick)
     
     function onClick(event: MouseEvent): void {
       event.preventDefault()
@@ -27,12 +27,12 @@ export function Checkbox(props: Props): ReactElement {
   },[onChange, checkboxRef, value])
     
   const style = useMemo(() => ({
-    background: `${value ? color : 'transparent'}`
+    background: `${value ? color : "transparent"}`
   }), [value, color])
 
   return (
     <div className="checkbox" ref={checkboxRef} >
-      <div className='checkbox-box' style={style} />
+      <div className="checkbox-box" style={style} />
       <div className="checkbox-label">{label}</div>
     </div>
   )

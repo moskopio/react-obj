@@ -1,7 +1,7 @@
-import { DeepPartial } from "../types"
-import { Color } from "../utils/color"
-import { Vec2, Vec3 } from "../utils/math/v3"
-import { deepSet } from "../utils/merge"
+import { Vec2, Vec3 } from "src/math/v3"
+import { DeepPartial } from "src/types"
+import { Color } from "src/utils/color"
+import { deepSet } from "src/utils/merge"
 
 export interface Settings {
   showMesh:      boolean

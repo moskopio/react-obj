@@ -1,7 +1,7 @@
-import { flipConstrain } from "../components/utils/common"
-import { DeepPartial } from "../types"
-import { Color } from "../utils/color"
-import { deepSet, deepUpdate } from "../utils/merge"
+import { DeepPartial } from "src/types"
+import { Color } from "src/utils/color"
+import { deepSet, deepUpdate } from "src/utils/merge"
+import { flipConstrain } from "src/utils/util"
 
 export interface Light {
   distance: number
@@ -34,10 +34,8 @@ export function createDefaultLight(): Light {
   }
 }
 
-const LIGHT_ACTIONS = ['set', 'update']
-
 export interface LightAction extends DeepPartial<Light> {
-  type: typeof LIGHT_ACTIONS[number]
+  type: 'update' | 'set'
 }
 
 export function lightReducer(state: Light, action: LightAction): Light {

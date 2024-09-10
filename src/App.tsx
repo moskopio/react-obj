@@ -1,8 +1,8 @@
 import { ReactNode } from "react"
-import { WebGLPreview } from "./preview/WebGLPreview"
-import { AppContext, useAppState } from "./state/context"
-import { ObjContext, useObjState } from "./state/obj"
-import { Panels } from "./panels/Panels"
+import { WebGLPreview } from "src/preview/WebGLPreview"
+import { AppContext, useAppState } from "src/state/context"
+import { ObjContext, useObjState } from "src/state/obj"
+import { Panels } from "src/panels/Panels"
 
 
 export function App(): ReactNode {

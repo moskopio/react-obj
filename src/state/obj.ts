@@ -1,7 +1,5 @@
 import { createContext, Dispatch, SetStateAction, useMemo, useState } from "react"
-import { RawObj } from "../utils/obj/read"
-import { ParsedObj } from "../utils/obj/parse"
-import { FlattenObj } from "../utils/obj/flatten"
+import { FlattenObj, ParsedObj, RawObj } from "src/utils/obj/types"
 
 export function createEmptyObj(): Obj {
   return {

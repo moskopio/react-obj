@@ -1,12 +1,11 @@
-import { Dict } from "../types"
-import { Color, vec3ToShaderColor } from "../utils/color"
-import { isObject } from "../utils/util"
+import { Dict } from "src/types"
+import { Color, vec3ToShaderColor } from "src/utils/color"
+import { isObject } from "src/utils/util"
 
 interface Uniform {
   loc:  WebGLUniformLocation | null
   type: GLenum
 }
-
 type Uniforms = Dict<Uniform>
 
 export function getUniforms(gl: WebGLRenderingContext, program: WebGLProgram): Uniforms {
@@ -27,17 +26,15 @@ export function getUniforms(gl: WebGLRenderingContext, program: WebGLProgram): U
   return uniforms
 }
 
-type Values = Dict<number[]>
-
 interface UpdateArgs {
   gl:       WebGLRenderingContext
   uniforms: Uniforms
   values:   Values
 }
+type Values = Dict<number[]>
 
 export function updateUniforms(args: UpdateArgs): void {
   const { gl, uniforms, values } = args
-  
   const uniformNames = Object.keys(values)
   
   uniformNames.forEach(name => {
@@ -94,8 +91,7 @@ export function prepareValues(values: Dict<number | number[] | boolean>): Values
   return prepared
 } 
 
-
-  //eslint-disable-next-line
+//eslint-disable-next-line
 export function flattenValues(values: Dict<any>): Dict<number | number[] | boolean> {
   const flatValues: Dict<number | number[] | boolean> = {}
 

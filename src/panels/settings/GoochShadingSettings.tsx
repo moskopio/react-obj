@@ -1,10 +1,10 @@
 import { Fragment, ReactElement, useCallback, useContext } from "react"
-import { Checkbox } from "../../components/Checkbox"
-import { ColorPicker } from "../../components/ColorPicker"
-import { Divider } from "../../components/Divider"
-import { SettingsPortal } from "../../components/SettingsPortal"
-import { AppContext } from "../../state/context"
-import { Color, createPallette } from "../../utils/color"
+import { Checkbox } from "src/components/Checkbox"
+import { ColorPicker } from "src/components/ColorPicker"
+import { Divider } from "src/components/Divider"
+import { SettingsPortal } from "src/components/SettingsPortal"
+import { AppContext } from "src/state/context"
+import { Color, createPallette } from "src/utils/color"
 
 
 export function GoochShadingSettings(): ReactElement {
@@ -18,14 +18,14 @@ export function GoochShadingSettings(): ReactElement {
     
   return (
     <Fragment>
-      <div className='horizontal-setting'> 
+      <div className="horizontal-setting">
         <Checkbox 
           label="Gooch Shading"
           value={shading.gooch.enabled}
           onChange={setEnabled}
           color={pallette.getNextColor()}
         />
-        <SettingsPortal label='Gooch Shading'>
+        <SettingsPortal label="Gooch Shading">
           <ColorControls />
         </SettingsPortal>
       </div>

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef } from "react"
-import { AppContext } from "../../state/context"
+import { AppContext } from "src/state/context"
 
 const SENSITIVITY = 0.3
 const WHEEL_STEP = 0.05

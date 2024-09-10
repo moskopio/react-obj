@@ -1,5 +1,5 @@
 import { MutableRefObject, useCallback, useEffect } from "react"
-import { constrain } from "../utils/common"
+import { constrain } from "src/utils/util"
 
 const WHEEL_STEP = 0.01
 

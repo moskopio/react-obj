@@ -1,13 +1,6 @@
-import { Vec3 } from "../math/v3"
+import { Vec3 } from "src/math/v3"
 import { generateFlatNormals } from "./normals"
-import { ParsedObj } from "./parse"
-
-export interface FlattenObj {
-  vertices:       Vec3[]
-  definedNormals: Vec3[]
-  flatNormals:    Vec3[]
-  smoothNormals:  Vec3[]
-}
+import { FlattenObj, ParsedObj } from "./types"
 
 export function flattenParsedObj(obj: ParsedObj): FlattenObj {
   const { vertices, definedNormals, smoothNormals, indices } = obj

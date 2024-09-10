@@ -16,7 +16,7 @@ vec3 getLambertShading(in ShadingCommon common, in Light light) {
   vec3 ambient = common.ambient.color * float(common.ambient.enabled);
   vec3 diffuse = light.diffuse.color * diffuseShade * float(light.diffuse.enabled);
   vec3 specular = light.specular.color * diffuseShade * specularShade * float(light.specular.enabled);
-  vec3 fresnel = light.fresnel.color * fresnelShade * float(light.fresnel.enabled);
+  vec3 fresnel = light.fresnel.color * fresnelShade * float(light.fresnel.enabled) * (1.0 - diffuseShade);
   
   return ambient + diffuse + specular + fresnel;
 }

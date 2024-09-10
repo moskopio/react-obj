@@ -1,15 +1,8 @@
-import { Vec3 } from "../math/v3"
+import { Vec3 } from "src/math/v3"
 import { getVerticesIndices } from "./indices"
 import { getNormals } from "./normals"
-import { RawObj } from "./read"
+import { RawObj, ParsedObj } from "./types"
 
-export interface ParsedObj {
-  vertices:       Vec3[]
-  indices:        number[]
-  definedNormals: Vec3[]
-  smoothNormals:  Vec3[]
-  boundingBox:    [Vec3, Vec3]
-}
 
 export function parseObj(obj: RawObj): ParsedObj {
   const vertices: Vec3[] = getAllVertices(obj)

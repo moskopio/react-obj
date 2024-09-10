@@ -17,7 +17,6 @@ export function lookAt(cameraPosition: Vec3, target: Vec3, up: Vec3): Matrix4 {
 export function perspective(fov: number, aspect: number, near: number, far: number): Matrix4 {
   const f = Math.tan(Math.PI * 0.5 - 0.5 * fov)
   const rangeInv = 1.0 / (near - far)
-  
   const d = (near + far) * rangeInv
   
   return [
@@ -46,7 +45,6 @@ export function orthographic(left: number, right: number, bottom: number, top: n
 }
 
 export function frustum(left: number, right: number, bottom: number, top: number, near: number, far: number): Matrix4 {
-
   const dx = right - left
   const dy = top - bottom
   const dz = far - near

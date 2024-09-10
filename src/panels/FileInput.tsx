@@ -1,7 +1,7 @@
 import { ReactElement, useCallback, useRef } from "react"
-import { IconFile } from "../components/Icon"
-import { useObjLoad } from "../utils/obj-load"
-import './FileInput.css'
+import { IconFile } from "src/components/Icon"
+import { useObjLoad } from "src/utils/obj-load"
+import "./FileInput.css"
 
 export function FileInputControls(): ReactElement {
   const onFile = useObjLoad()
@@ -12,7 +12,7 @@ export function FileInputControls(): ReactElement {
   }, [])
 
   return (
-  <div className='file-input'>
+  <div className="file-input">
     <IconFile onClick={onClick} />
     <input ref={inputRef} type="file" onChange={onFile} accept=".obj" />
   </div>

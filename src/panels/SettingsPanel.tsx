@@ -1,17 +1,17 @@
 import { ReactElement, useContext } from "react"
-import { Checkbox } from "../components/Checkbox"
-import { Divider } from "../components/Divider"
-import { Panel } from "../components/Panel"
-import { AppContext } from "../state/context"
-import { createPallette, PASTEL_COLORS } from "../utils/color"
-import './SettingsPanel.css'
-import { GridSettings } from "./settings/GridSettings"
-import { OutlineSettings } from "./settings/OutlineSettings"
+import { Checkbox } from "src/components/Checkbox"
+import { Divider } from "src/components/Divider"
+import { Panel } from "src/components/Panel"
+import { AppContext } from "src/state/context"
+import { createPallette, PASTEL_COLORS } from "src/utils/color"
+import "./SettingsPanel.css"
 import { CellShadingSettings } from "./settings/CellShadingSettings"
-import { NormalShadingSettings } from "./settings/NormalShadingSettings"
-import { WireframeSettings } from "./settings/WireframeSettings"
-import { PointsSettings } from "./settings/PointsSettings"
 import { GoochShadingSettings } from "./settings/GoochShadingSettings"
+import { GridSettings } from "./settings/GridSettings"
+import { NormalShadingSettings } from "./settings/NormalShadingSettings"
+import { OutlineSettings } from "./settings/OutlineSettings"
+import { PointsSettings } from "./settings/PointsSettings"
+import { WireframeSettings } from "./settings/WireframeSettings"
 
 export function SettingsPanel(): ReactElement {
   const { settings, settingsDispatch } = useContext(AppContext)

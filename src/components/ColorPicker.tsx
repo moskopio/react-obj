@@ -1,7 +1,7 @@
 import { ReactElement, useCallback, useRef } from "react"
-import { vec3ToCSSColor } from "../utils/color"
-import { Vec3 } from "../utils/math/v3"
-import './ColorPicker.css'
+import { Vec3 } from "src/math/v3"
+import { vec3ToCSSColor } from "src/utils/color"
+import "./ColorPicker.css"
 import { Slider } from "./Slider"
 
 interface Props {
@@ -32,19 +32,19 @@ export function ColorPicker(props: Props): ReactElement {
   },[onChange, colorRef])
   
   return (
-    <div className='color-picker'>
-      <div className='color-picker-preview'>
-        <div className='color-picker-display' style={ { backgroundColor: `${vec3ToCSSColor(colorRef.current)}` } } />
-        <div className='color-picker-label'>{vec3ToCSSColor(colorRef.current)}</div>
+    <div className="color-picker">
+      <div className="color-picker-preview">
+        <div className="color-picker-display" style={ { backgroundColor: `${vec3ToCSSColor(colorRef.current)}` } } />
+        <div className="color-picker-label">{vec3ToCSSColor(colorRef.current)}</div>
       </div>
-      <div className='color-picker-controls'>
+      <div className="color-picker-controls">
         <Slider 
           label={`R: ${colorRef.current[0]}`} 
           onChange={onRChange}
           min={0} max={255}
           value={colorRef.current[0]}
           defaultValue={value[0]}
-          color='linear-gradient(90deg, #666, #BF5C38)'
+          color="linear-gradient(90deg, #666, #BF5C38)"
         />
         <Slider 
           label={`G: ${colorRef.current[1]}`} 
@@ -52,7 +52,7 @@ export function ColorPicker(props: Props): ReactElement {
           min={0} max={255}
           value={colorRef.current[1]}
           defaultValue={value[1]}
-          color='linear-gradient(90deg, #666, #B2C99E)'
+          color="linear-gradient(90deg, #666, #B2C99E)"
         />
         <Slider 
           label={`B: ${colorRef.current[2]}`} 
@@ -60,7 +60,7 @@ export function ColorPicker(props: Props): ReactElement {
           min={0} max={255}
           value={colorRef.current[2]}
           defaultValue={value[2]}
-          color='linear-gradient(90deg, #666, #628090)'
+          color="linear-gradient(90deg, #666, #628090)"
         />
       </div>
     </div>

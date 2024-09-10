@@ -1,11 +1,11 @@
 import { ReactElement, useCallback, useContext, useRef } from "react"
-import { Divider } from "../components/Divider"
-import { IconFile } from "../components/Icon"
-import { Panel } from "../components/Panel"
-import { ObjContext } from "../state/obj"
-import { useObjLoad } from "../utils/obj-load"
-import './ObjPanel.css'
-import { PASTEL_COLORS } from "../utils/color"
+import { Divider } from "src/components/Divider"
+import { IconFile } from "src/components/Icon"
+import { Panel } from "src/components/Panel"
+import { ObjContext } from "src/state/obj"
+import { PASTEL_COLORS } from "src/utils/color"
+import { useObjLoad } from "src/utils/obj-load"
+import "./ObjPanel.css"
 
 
 export function ObjPanel(): ReactElement {
@@ -19,17 +19,17 @@ export function ObjPanel(): ReactElement {
   const parsingTime = obj.parsingTime
 
   return (
-    <Panel icon='info' color={PASTEL_COLORS.rainee}>
+    <Panel icon="info" color={PASTEL_COLORS.rainee}>
       <File />
       <Divider />
-      <Stat label='Groups' value={groupsCount} />
-      <Stat label='Vertices (defined)' value={trianglesCount} />
-      <Stat label='Vertices (displayed)' value={flatTrianglesCount} />
-      <Stat label='Triangles' value={flatTrianglesCount / 3} />
-      <Stat label='Defined Normals' value={definedNormalsCount} />
-      <Stat label='Indices' value={indicesCount} />
+      <Stat label="Groups" value={groupsCount} />
+      <Stat label="Vertices (defined)" value={trianglesCount} />
+      <Stat label="Vertices (displayed)" value={flatTrianglesCount} />
+      <Stat label="Triangles" value={flatTrianglesCount / 3} />
+      <Stat label="Defined Normals" value={definedNormalsCount} />
+      <Stat label="Indices" value={indicesCount} />
       <Divider />
-      <Stat label='Parsing Time' value={`${parsingTime}ms`} />
+      <Stat label="Parsing Time" value={`${parsingTime}ms`} />
     </Panel>
   )
 }

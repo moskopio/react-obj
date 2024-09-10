@@ -1,9 +1,9 @@
 import { ChangeEvent, useCallback, useContext } from "react"
-import { ObjContext } from "../state/obj"
-import { flattenParsedObj } from "../utils/obj/flatten"
-import { parseObj } from "../utils/obj/parse"
-import { readObj } from "../utils/obj/read"
-import { wireframeFlattenObj } from "../utils/obj/wireframe"
+import { ObjContext } from "src/state/obj"
+import { flattenParsedObj } from "./obj/flatten"
+import { parseObj } from "./obj/parse"
+import { readObj } from "./obj/read"
+import { wireframeFlattenObj } from "./obj/wireframe"
 
 export function useObjLoad(): (event: ChangeEvent<HTMLInputElement>) => void {
   const { setObj } = useContext(ObjContext)

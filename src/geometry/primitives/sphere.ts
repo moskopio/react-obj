@@ -1,11 +1,5 @@
-import { V3, Vec2, Vec3 } from "../utils/math/v3"
-
-
-export interface Primitive {
-  vertices: Vec3[]
-  normals:  Vec3[]
-  uvs:      Vec2[]
-}
+import { Primitive } from "./types"
+import { V3, Vec2, Vec3 } from "src/math/v3"
 
 // One vertex at every latitude-longitude intersection,
 // plus one for the north pole and one for the south.
@@ -55,8 +49,8 @@ export function createSphere(numLatitudeLines: number, numLongitudeLines: number
   
   
   const vertices:        Vec3[] = []
-  const verticesUVs:     Vec2[] = []
-  const verticesNormals: Vec3[] = []
+  const uvs:     Vec2[] = []
+  const normals: Vec3[] = []
   
   // Triangle at North Pole
   for (let i = 0; i < numLongitudeLines; i++) {
@@ -64,13 +58,13 @@ export function createSphere(numLatitudeLines: number, numLongitudeLines: number
     vertices.push(points[i + 2])
     vertices.push(points[i + 1])
     
-    verticesUVs.push(pointsUVs[0])
-    verticesUVs.push(pointsUVs[i + 2])
-    verticesUVs.push(pointsUVs[i + 1])
+    uvs.push(pointsUVs[0])
+    uvs.push(pointsUVs[i + 2])
+    uvs.push(pointsUVs[i + 1])
     
-    verticesNormals.push(pointsNormals[0])
-    verticesNormals.push(pointsNormals[i + 2])
-    verticesNormals.push(pointsNormals[i + 1])
+    normals.push(pointsNormals[0])
+    normals.push(pointsNormals[i + 2])
+    normals.push(pointsNormals[i + 1])
   }
   
   // Each row has one more unique vertex than there are lines of longitude,
@@ -87,26 +81,26 @@ export function createSphere(numLatitudeLines: number, numLongitudeLines: number
         vertices.push(points[firstCorner + rowLength + 1])
         vertices.push(points[firstCorner + rowLength])
         
-        verticesUVs.push(pointsUVs[firstCorner])
-        verticesUVs.push(pointsUVs[firstCorner + rowLength + 1])
-        verticesUVs.push(pointsUVs[firstCorner + rowLength])
+        uvs.push(pointsUVs[firstCorner])
+        uvs.push(pointsUVs[firstCorner + rowLength + 1])
+        uvs.push(pointsUVs[firstCorner + rowLength])
         
-        verticesNormals.push(pointsNormals[firstCorner])
-        verticesNormals.push(pointsNormals[firstCorner + rowLength + 1])
-        verticesNormals.push(pointsNormals[firstCorner + rowLength])
+        normals.push(pointsNormals[firstCorner])
+        normals.push(pointsNormals[firstCorner + rowLength + 1])
+        normals.push(pointsNormals[firstCorner + rowLength])
 
         // Second triangle of quad: Top-Left, Bottom-Right, Top-Right
         vertices.push(points[firstCorner])
         vertices.push(points[firstCorner + 1])
         vertices.push(points[firstCorner + rowLength + 1])
         
-        verticesUVs.push(pointsUVs[firstCorner])
-        verticesUVs.push(pointsUVs[firstCorner + 1])
-        verticesUVs.push(pointsUVs[firstCorner + rowLength + 1])
+        uvs.push(pointsUVs[firstCorner])
+        uvs.push(pointsUVs[firstCorner + 1])
+        uvs.push(pointsUVs[firstCorner + rowLength + 1])
         
-        verticesNormals.push(pointsNormals[firstCorner])
-        verticesNormals.push(pointsNormals[firstCorner + 1])
-        verticesNormals.push(pointsNormals[firstCorner + rowLength + 1])
+        normals.push(pointsNormals[firstCorner])
+        normals.push(pointsNormals[firstCorner + 1])
+        normals.push(pointsNormals[firstCorner + rowLength + 1])
     }
   }
   
@@ -118,41 +112,13 @@ export function createSphere(numLatitudeLines: number, numLongitudeLines: number
       vertices.push(points[bottomRow + i])
       vertices.push(points[bottomRow + i + 1])
       
-      verticesUVs.push(pointsUVs[southPole])
-      verticesUVs.push(pointsUVs[bottomRow + i])
-      verticesUVs.push(pointsUVs[bottomRow + i + 1])
+      uvs.push(pointsUVs[southPole])
+      uvs.push(pointsUVs[bottomRow + i])
+      uvs.push(pointsUVs[bottomRow + i + 1])
       
-      verticesNormals.push(pointsNormals[southPole])
-      verticesNormals.push(pointsNormals[bottomRow + i])
-      verticesNormals.push(pointsNormals[bottomRow + i + 1])
-  }
-  
-  return { vertices, normals: verticesNormals, uvs: verticesUVs }
-}
-
-export function createCone(segments: number): Primitive {
-  const vertices: Vec3[] = []
-  const normals: Vec3[] = []
-  const uvs: Vec2[] = []
-  
-  for (let i = 0; i <= segments; i++ ) {
-    const a0 = 2 * Math.PI * i / segments
-    const a1 = 2 * Math.PI * (i + 1) / segments
-    const x0 = Math.cos(a0)
-    const y0 = Math.sin(a0)
-    const x1 = Math.cos(a1)
-    const y1 = Math.sin(a1)
-    
-    vertices.push([x1, y1, -1])
-    vertices.push([ 0,  0,  1])
-    vertices.push([x0, y0, -1])
-    
-    normals.push(V3.normalize([x1, y1, 0]))
-    normals.push(V3.normalize([ 0,  0, 1]))
-    normals.push(V3.normalize([x0, y0, 0]))
-    
-    uvs.push([i / segments, 0])
-    uvs.push([i / segments, 1])
+      normals.push(pointsNormals[southPole])
+      normals.push(pointsNormals[bottomRow + i])
+      normals.push(pointsNormals[bottomRow + i + 1])
   }
   
   return { vertices, normals, uvs }

@@ -1,9 +1,9 @@
 import { ReactElement, useMemo, useRef } from "react"
-import { PASTEL_COLORS } from "../utils/color"
-import './Slider.css'
-import { getPercentage } from "./utils/common"
+import { PASTEL_COLORS } from "src/utils/color"
+import { getPercentage } from "src/utils/util"
 import { useSliderMouseDrag } from "./hooks/slider-mouse-drag"
 import { useSliderMouseWheel } from "./hooks/slider-mouse-wheel"
+import "./Slider.css"
 
 interface Props {
   label:         string
@@ -29,7 +29,7 @@ export function Slider(props: Props): ReactElement {
   }), [value, color])
   
   return (
-    <div className='slider' ref={sliderRef}>
+    <div className="slider" ref={sliderRef}>
       <div className="slider-handle" style={handleStyle} />
       <div className="slider-track" />
       <div className="slider-label">{label}</div>

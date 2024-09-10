@@ -1,7 +1,7 @@
 import { ReactElement, useCallback, useState } from "react"
+import { PASTEL_COLORS } from "src/utils/color"
 import { IconCamera, IconFile, IconInfo, IconLight, IconSettings } from "./Icon"
 import "./Panel.css"
-import { PASTEL_COLORS } from "../utils/color"
 
 interface Props {
   children: ReactElement | ReactElement[] | string
@@ -37,11 +37,11 @@ function PanelIcon(props: ClickableProps): ReactElement {
   const { icon, onClick } = props
   
   switch (icon) {
-    case 'camera':   return <IconCamera onClick={onClick} />
-    case 'file'  :   return <IconFile onClick={onClick} />
-    case 'info'  :   return <IconInfo onClick={onClick} />
-    case 'light' :   return <IconLight onClick={onClick} />
-    case 'settings': return <IconSettings onClick={onClick} />
+    case "camera":   return <IconCamera onClick={onClick} />
+    case "file"  :   return <IconFile onClick={onClick} />
+    case "info"  :   return <IconInfo onClick={onClick} />
+    case "light" :   return <IconLight onClick={onClick} />
+    case "settings": return <IconSettings onClick={onClick} />
     default:         return <IconInfo onClick={onClick} />
   }
   

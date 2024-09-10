@@ -1,5 +1,5 @@
-import { Vec3 } from "./math/v3"
-import { Vec4 } from "./math/v4"
+import { Vec3 } from "src/math/v3"
+import { Vec4 } from "src/math/v4"
 
 export type Color = [r: number, g: number, b: number]
 

@@ -1,6 +1,6 @@
-import { V3, Vec3 } from "../math/v3"
+import { V3, Vec3 } from "src/math/v3"
 import { getNormalIndices, getVerticesIndices } from "./indices"
-import { RawObj } from "./read"
+import { RawObj } from "./types"
 
 
 interface Normals {

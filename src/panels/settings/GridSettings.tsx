@@ -1,11 +1,11 @@
 import { Fragment, ReactElement, useCallback, useContext } from "react"
-import { Checkbox } from "../../components/Checkbox"
-import { ColorPicker } from "../../components/ColorPicker"
-import { Divider } from "../../components/Divider"
-import { Slider } from "../../components/Slider"
-import { AppContext } from "../../state/context"
-import { Color, createPallette, Pallette } from "../../utils/color"
-import { SettingsPortal } from "../../components/SettingsPortal"
+import { Checkbox } from "src/components/Checkbox"
+import { ColorPicker } from "src/components/ColorPicker"
+import { Divider } from "src/components/Divider"
+import { SettingsPortal } from "src/components/SettingsPortal"
+import { Slider } from "src/components/Slider"
+import { AppContext } from "src/state/context"
+import { Color, createPallette, Pallette } from "src/utils/color"
 
 export function GridSettings(): ReactElement {
   const { settings, settingsDispatch } = useContext(AppContext)
@@ -20,14 +20,14 @@ export function GridSettings(): ReactElement {
     
   return (
     <Fragment>
-      <div className='horizontal-setting'>
+      <div className="horizontal-setting">
         <Checkbox 
             label="Show Grid"
             value={enabled}
             onChange={toggleEnabled}
             color={pallette.getNextColor()}
           />
-        <SettingsPortal label='Grid'>
+        <SettingsPortal label="Grid">
           <CommonControls pallette={pallette} />
           <VariantAControls pallette={pallette} />
           <VariantBControls pallette={pallette} />
@@ -91,7 +91,7 @@ function VariantAControls(props: Props): ReactElement {
     
   return (
     <Fragment>
-      <Divider label={`Line ${useTwoValues ? 'A' : ''}`} />
+      <Divider label={`Line ${useTwoValues ? "A" : ""}`} />
       <ColorPicker value={colorA} onChange={setColor} />
       <Slider
         label={`Weight: ${weightA.toFixed(3)}`}
@@ -121,7 +121,7 @@ function VariantBControls(props: Props): ReactElement | null {
     
   return useTwoValues ? (
     <Fragment>
-      <Divider label={`Line B`} />
+      <Divider label="Line B" />
       <ColorPicker value={colorB} onChange={setColor} />
       <Slider
         label={`Weight: ${weightB.toFixed(2)}`}

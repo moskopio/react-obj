@@ -1,22 +1,6 @@
-import { Vec2, Vec3 } from "../math/v3"
+import { Vec2, Vec3 } from "src/math/v3"
+import { Face, Group, RawObj } from "./types"
 
-export interface RawObj {
-  groups: Group[]
-}
-
-interface Group {
-  name:     string
-  faces:    Face[]
-  vertices: Vec3[]
-  normals:  Vec3[]
-  uvs:      Vec2[]
-}
-
-interface Face {
-  vIndices:  number[]
-  nIndices:  number[]
-  uvIndices: number[]
-}
 
 export function readObj(data: string): RawObj {
   const groups: Group[] = [createGroup('obj')]

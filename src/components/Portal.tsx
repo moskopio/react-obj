@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useMemo, useState } from "react"
-import './Portal.css'
+import "./Portal.css"
 
 interface Props {
   children: ReactElement | ReactElement[] | string | null
@@ -32,9 +32,9 @@ export function Portal(props: Props): ReactElement {
   }, [position, portal])
   
   useEffect(() => {
-    document.addEventListener('mousedown', onMouseDown)
+    document.addEventListener("mousedown", onMouseDown)
     
-    return () => document.removeEventListener('mousedown', onMouseDown)
+    return () => document.removeEventListener("mousedown", onMouseDown)
     
     function onMouseDown(event: MouseEvent): void {
       event.preventDefault()
@@ -44,9 +44,9 @@ export function Portal(props: Props): ReactElement {
   }, [onClose])
   
   return (
-    <div className='portal' style={style} ref={setPortal}>
-      <div className='portal-bar' onClick={onClose}>
-        <div className='portal-label'>{label}</div>
+    <div className="portal" style={style} ref={setPortal}>
+      <div className="portal-bar" onClick={onClose}>
+        <div className="portal-label">{label}</div>
       </div>
       {children}
     </div>

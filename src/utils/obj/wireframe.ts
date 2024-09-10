@@ -1,4 +1,4 @@
-import { Vec3 } from "../math/v3"
+import { Vec3 } from "src/math/v3"
 import { FlattenObj } from "./flatten"
 
 

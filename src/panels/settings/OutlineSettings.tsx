@@ -1,11 +1,11 @@
 import { Fragment, ReactElement, useCallback, useContext } from "react"
-import { Checkbox } from "../../components/Checkbox"
-import { ColorPicker } from "../../components/ColorPicker"
-import { Divider } from "../../components/Divider"
-import { SettingsPortal } from "../../components/SettingsPortal"
-import { Slider } from "../../components/Slider"
-import { AppContext } from "../../state/context"
-import { Color, createPallette, Pallette } from "../../utils/color"
+import { Checkbox } from "src/components/Checkbox"
+import { ColorPicker } from "src/components/ColorPicker"
+import { Divider } from "src/components/Divider"
+import { SettingsPortal } from "src/components/SettingsPortal"
+import { Slider } from "src/components/Slider"
+import { AppContext } from "src/state/context"
+import { Color, createPallette, Pallette } from "src/utils/color"
 
 
 export function OutlineSettings(): ReactElement {
@@ -21,14 +21,14 @@ export function OutlineSettings(): ReactElement {
     
   return (
     <Fragment>
-      <div className='horizontal-setting'> 
+      <div className="horizontal-setting"> 
         <Checkbox 
             label="Show Outline"
             value={enabled}
             onChange={toggleEnabled}
             color={pallette.getNextColor()}
           />
-        <SettingsPortal label='Outline'>
+        <SettingsPortal label="Outline">
           <ToggleControls pallette={pallette} />
           <VariantAControls pallette={pallette} />
           <VariantBControls pallette={pallette} />
@@ -89,7 +89,7 @@ function VariantAControls(props: Props): ReactElement {
     
     return (
       <Fragment>
-        <Divider label={`Setting ${useTwoValues ? 'A' : ''}`} />
+        <Divider label={`Setting ${useTwoValues ? "A" : ""}`} />
         <ColorPicker value={colorA} onChange={setColor} />
         <Slider
           label={`Weight: ${weightA.toFixed(3)}`}
@@ -119,7 +119,7 @@ function VariantBControls(props: Props): ReactElement | null {
     
     return useTwoValues ? (
       <Fragment>
-        <Divider label={`Setting B`} />
+        <Divider label="Setting B" />
         <ColorPicker value={colorB} onChange={setColor} />
         <Slider
           label={`Weight: ${weightB.toFixed(3)}`}

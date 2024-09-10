@@ -1,7 +1,7 @@
-import { Camera } from "./state/camera"
-import { Light } from "./state/light"
-import { Obj } from "./state/obj"
-import { Settings } from "./state/settings"
+import { Camera } from "src/state/camera"
+import { Light } from "src/state/light"
+import { Obj } from "src/state/obj"
+import { Settings } from "src/state/settings"
 
 export type FileContent = string | ArrayBuffer | null | undefined
 

@@ -1,7 +1,7 @@
-import { Obj } from "../state/obj"
-import { Settings } from "../state/settings"
-import { M4, Matrix4 } from "../utils/math/m4"
-import { V3 } from "../utils/math/v3"
+import { M4, Matrix4 } from "src/math/m4"
+import { V3 } from "src/math/v3"
+import { Obj } from "src/state/obj"
+import { Settings } from "src/state/settings"
 
 export function getModelMatrix(obj: Obj, settings: Settings): Matrix4 {
   const { boundingBox } = obj.parsed

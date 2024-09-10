@@ -1,12 +1,12 @@
 import { useContext, useEffect, useRef, useState } from "react"
-import { AppContext } from "../../state/context"
-import { ObjContext } from "../../state/obj"
-import { Program } from "../../types"
+import { AppContext } from "src/state/context"
+import { ObjContext } from "src/state/obj"
+import { Program } from "src/types"
 import { createGridDrawer } from "../grid/grid"
 import { createMeshDrawer } from "../mesh/mesh"
 import { createOutlineDrawer } from "../outline/outline"
-import { createWireframeDrawer } from "../wireframe/wireframe"
 import { createPointsDrawer } from "../points/points"
+import { createWireframeDrawer } from "../wireframe/wireframe"
 
 interface Props {
   gl:         WebGLRenderingContext | null

@@ -1,9 +1,9 @@
-import { degToRad } from "../utils/math/angles"
-import { M4, Matrix4 } from "../utils/math/m4"
-import { perspective } from "../utils/math/projections"
-import { Q } from "../utils/math/quaternion"
-import { V3, Vec3 } from "../utils/math/v3"
-import { Camera } from "../state/camera"
+import { degToRad } from "src/math/angles"
+import { M4, Matrix4 } from "src/math/m4"
+import { perspective } from "src/math/projections"
+import { Q } from "src/math/quaternion"
+import { V3, Vec3 } from "src/math/v3"
+import { Camera } from "src/state/camera"
 
 interface CameraOutput {
   projection:     Matrix4
@@ -32,7 +32,6 @@ export function getLookAtMatrices(camera: Camera): CameraOutput {
   cameraToWorld[12] = cameraPosition[0]
   cameraToWorld[13] = cameraPosition[1]
   cameraToWorld[14] = cameraPosition[2]
-  
   
   const projection = perspective(degToRad(fov), aspectRatio, zNear, zFar)
   const view = M4.inverse(cameraToWorld)

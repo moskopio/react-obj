@@ -1,8 +1,8 @@
-import { Light } from "../state/light"
-import { degToRad } from "../utils/math/angles"
-import { M4 } from "../utils/math/m4"
-import { Q } from "../utils/math/quaternion"
-import { V3, Vec3 } from "../utils/math/v3"
+import { degToRad } from "src/math/angles"
+import { M4 } from "src/math/m4"
+import { Q } from "src/math/quaternion"
+import { V3, Vec3 } from "src/math/v3"
+import { Light } from "src/state/light"
 
 export function getLightPosition(light: Light): Vec3 {
   const { rotation, distance } = light 

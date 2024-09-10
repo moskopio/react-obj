@@ -1,4 +1,4 @@
-import { DeepPartial } from "../types"
+import { DeepPartial } from "src/types"
 import { isDefined, isObject } from "./util"
 
 export function deepSet<T>(target: T, source: T | DeepPartial<T>): T {
@@ -26,4 +26,3 @@ function deepMerge<T>(target: T, source: T | DeepPartial<T>, isAdditive = false)
   
   return result
 }
-
