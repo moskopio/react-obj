@@ -1,67 +1,80 @@
 import { useContext, useEffect, useRef, useState } from "react"
+import { getLookAtMatrices } from "src/geometry/camera"
+import { createGridProgram } from "src/preview/programs/grid"
+import { createMeshProgram } from "src/preview/programs/mesh"
+import { createOutlineProgram } from "src/preview/programs/outline"
+import { createPointsProgram } from "src/preview/programs/points"
+import { createWireframeProgram } from "src/preview/programs/wireframe"
 import { AppContext } from "src/state/context"
 import { ObjContext } from "src/state/obj"
-import { Program } from "src/types"
-import { createGridDrawer } from "../grid/grid"
-import { createMeshDrawer } from "../mesh/mesh"
-import { createOutlineDrawer } from "../outline/outline"
-import { createPointsDrawer } from "../points/points"
-import { createWireframeDrawer } from "../wireframe/wireframe"
+import { Program, Object3D } from "src/types"
+import { createGridObject } from "src/preview/objects/grid"
+import { createMeshObject } from "src/preview/objects/mesh"
+import { createPointsObject } from "src/preview/objects/points"
+import { createWireframeObject } from "src/preview/objects/wireframe"
 
 interface Props {
-  gl:         WebGLRenderingContext | null
-  resolution: { width: number, height: number }
+  gl: WebGLRenderingContext | null
+}
+
+interface Programs {
+  mesh?:      Program
+  outline?:   Program 
+  grid?:      Program
+  wireframe?: Program
+  points?:    Program
 }
 
 export function usePrograms(props: Props): void {
-  const { gl, resolution } = props
-  const [programs, setPrograms] = useState<Program[]>([])
+  const { gl } = props
+  
+  const [programs, setPrograms] = useState<Programs>({})
+  const [objects, setObjects] = useState<Object3D[]>([])
+  
   const requestId = useRef<number>()
-  const { camera, settings, scene, cameraDispatch } = useContext(AppContext)
+  const { camera, settings, scene } = useContext(AppContext)
   const { obj } = useContext(ObjContext)
   
   useEffect(() => {
     if (gl) {
-      const meshDrawer = createMeshDrawer(gl)
-      const outlineDrawer = createOutlineDrawer(gl)
-      const wireframeDrawer = createWireframeDrawer(gl)
-      const pointDrawer = createPointsDrawer(gl)
-      const gridDrawer = createGridDrawer(gl)
-
+      const newObjects = [...objects]
       
-      const newPrograms = [...programs]
-      gridDrawer && newPrograms.push(gridDrawer)
-      outlineDrawer && newPrograms.push(outlineDrawer)
-      wireframeDrawer && newPrograms.push(wireframeDrawer)
-      meshDrawer && newPrograms.push(meshDrawer)
-      pointDrawer && newPrograms.push(pointDrawer)
+      const grid = createGridProgram(gl)
+      const outline = createOutlineProgram(gl)
+      const mesh = createMeshProgram(gl)
+      const wireframe = createWireframeProgram(gl)
+      const points = createPointsProgram(gl)
+    
+      grid && newObjects.push(createGridObject(grid))
+      outline && newObjects.push(createMeshObject(outline))
+      mesh && newObjects.push(createMeshObject(mesh))
+      wireframe && newObjects.push(createWireframeObject(wireframe))
+      points && newObjects.push(createPointsObject(points))
       
-      setPrograms(newPrograms)
+      setPrograms({ mesh, outline, grid, wireframe, points })
+      setObjects(newObjects)
     }
   }, [gl])
   
   useEffect(() => {
-    gl?.viewport(0, 0, resolution.width, resolution.height)
-    gl?.enable(gl.DEPTH_TEST)
-    gl?.enable(gl.CULL_FACE)
-    cameraDispatch({ type: 'set', aspectRatio: resolution.width / resolution.height })
-  }, [gl, resolution])
+    objects.forEach(p => p.updateObj?.(obj))
+  }, [gl, obj, objects])
   
   useEffect(() => {
-    programs.forEach(p => p.updateObj && p.updateObj(obj))
-  }, [gl, obj, programs])
-  
-  useEffect(() => {
-    programs.forEach(p => p.updateCamera && p.updateCamera(camera))
+    const cameraValues = getLookAtMatrices(camera)
+    Object.values(programs).forEach(p => p.updateCamera?.(cameraValues))
   }, [gl, programs, camera])
   
-  useEffect(() => programs.forEach(p => p.updateSettings && p.updateSettings(settings)) ,[gl, programs, settings])
-  
-  useEffect(() => programs.forEach(p => p.updateScene && p.updateScene(scene))
-, [gl, programs, scene])
+  useEffect(() => {
+    Object.values(programs).forEach(p => p.updateSettings?.(settings))
+  },[gl, programs, settings])
   
   useEffect(() => {
-    return () => programs.forEach(p => p.cleanup())
+    Object.values(programs).forEach(p => p.updateScene?.(scene))
+  },[gl, programs, scene])
+  
+  useEffect(() => {
+    Object.values(programs).forEach(p => p.cleanup())
   }, [])
   
   useEffect(() => {
@@ -74,7 +87,10 @@ export function usePrograms(props: Props): void {
   
   function draw(time: number): void {
     gl?.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-    programs.forEach(p => p.draw(time))
+    objects.forEach(o => {
+      const program = o.getProgram()
+      program.draw(time, o)
+    })
     requestId.current = requestAnimationFrame(draw)
   }
 }

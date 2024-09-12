@@ -7,6 +7,7 @@ export interface Obj {
   wireframe:   FlattenObj
   parsingTime: number
   name:        string
+  boundingBox: [Vec3, Vec3]
 }
 
 export interface FlattenObj {

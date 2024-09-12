@@ -15,7 +15,7 @@ export function getLightPosition(light: Light): Vec3 {
   const phiRotation = Q.toMatrix(qPhi)
   
   const rotationMatrix = M4.multiply(thetaRotation, phiRotation)
-    
+  
   // Distancing light
   const lightOrientation = V3.multiply([0, 0, 1], rotationMatrix)
   const lightPosition = V3.scale(lightOrientation, distance)

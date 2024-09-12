@@ -9,7 +9,7 @@
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
@@ -21,6 +21,7 @@
     "target": "es2022",
     "types": ["vite-plugin-glsl/ext"],
     "useDefineForClassFields": true,
+    "composite": true
   },
   "exclude": ["node_modules"]
 }

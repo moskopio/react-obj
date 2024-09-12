@@ -1,7 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { AppContext } from "src/state/context"
-import { Program } from "src/types"
-import { createLightDrawer } from "../preview/light-drawer"
+import { createLightDrawer, Program } from "../preview/light-drawer"
 
 interface Props {
   gl:         WebGLRenderingContext | null

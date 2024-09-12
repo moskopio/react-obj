@@ -1,17 +1,12 @@
 import { degToRad } from "src/math/angles"
-import { M4, Matrix4 } from "src/math/m4"
+import { M4 } from "src/math/m4"
 import { perspective } from "src/math/projections"
 import { Q } from "src/math/quaternion"
-import { V3, Vec3 } from "src/math/v3"
+import { V3 } from "src/math/v3"
 import { Camera } from "src/state/camera"
+import { CameraMatrices } from "src/types"
 
-interface CameraOutput {
-  projection:     Matrix4
-  view:           Matrix4
-  cameraPosition: Vec3
-}
-
-export function getLookAtMatrices(camera: Camera): CameraOutput {
+export function getLookAtMatrices(camera: Camera): CameraMatrices {
   const { fov, aspectRatio, zNear, zFar, track, dolly, rotation, target } = camera 
   
   // 1. Tumble - rotating around Theta and Phi

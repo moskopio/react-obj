@@ -1,6 +1,5 @@
 import { createContext, Dispatch, SetStateAction, useMemo, useState } from "react"
-import { Vec3 } from "src/math/v3"
-import { FlattenObj, ParsedObj, RawObj } from "src/utils/obj/types"
+import { Obj } from "src/utils/obj/types"
 
 export function createEmptyObj(): Obj {
   return {
@@ -13,17 +12,6 @@ export function createEmptyObj(): Obj {
     name:        ''
   }
 }
-
-export interface Obj {
-  raw:         RawObj
-  parsed:      ParsedObj
-  flat:        FlattenObj
-  wireframe:   FlattenObj
-  boundingBox: [Vec3, Vec3]
-  parsingTime: number
-  name:        string
-}
-
 
 interface ObjState {
   obj:    Obj

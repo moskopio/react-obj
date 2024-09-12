@@ -2,14 +2,18 @@ import { ReactElement, useLayoutEffect, useRef, useState } from "react"
 import { useWebGLContext } from "src/webgl/hooks/use-context"
 import './WebGLPreview.css'
 import { useCameraControls } from "./hooks/camera-controls"
-import { usePrograms } from "./hooks/programs"
+import { useAdjustResolution } from "src/preview/hooks/adjust-resolution"
+import { usePrograms } from "src/preview/hooks/programs"
 
 export function WebGLPreview(): ReactElement {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [resolution, setResolution] = useState({ width: window.innerWidth, height: window.innerHeight })
   
   const gl = useWebGLContext({ canvasRef })
-  usePrograms({ gl, resolution })
+  useAdjustResolution({gl, resolution })
+  
+  usePrograms({gl })
+  
   useCameraControls()
   
   useLayoutEffect(() => {  
