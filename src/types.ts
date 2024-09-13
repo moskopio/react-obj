@@ -23,17 +23,18 @@ export interface Object3D {
   updateSettings?: (settings: Settings) => void
 }
 
-export interface ViewMatrices {
-  position:   Vec3
-  projection: Matrix4
-  view:       Matrix4
-}
+export type ViewMatrices = Dict<Matrix4 | Vec3>
 
 export interface Program {
   cleanup:         () => void
   draw:            (time: number, object: Object3D) => void
-  updateCamera?:   (camera: ViewMatrices) => void
+  updateViews?:    (views: ViewMatrices) => void
   updateScene?:    (scene: Scene) => void
   updateSettings?: (settings: Settings) => void 
   updateTextures?: (textures: Dict<WebGLTexture>) => void
+}
+
+export interface Resolution {
+  width:  number
+  height: number
 }

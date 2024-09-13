@@ -20,7 +20,7 @@ export interface Program {
   cleanup:         () => void
   draw:            (time: number) => void
   updateObj?:      (obj: Obj) => void
-  updateCamera?:   (camera: ViewMatrices) => void
+  updateViews?:    (camera: ViewMatrices) => void
   updateScene?:    (scene: Scene) => void
   updateSettings?: (settings: Settings) => void
 }

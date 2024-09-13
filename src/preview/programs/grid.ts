@@ -21,7 +21,7 @@ export function createGridProgram(gl: WebGLRenderingContext): Program | undefine
   }  
   const uniforms = getUniforms(gl, program)
   
-  return { updateSettings, updateCamera, updateTextures, draw, cleanup }
+  return { updateSettings, updateViews, updateTextures, draw, cleanup }
   
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
@@ -32,9 +32,9 @@ export function createGridProgram(gl: WebGLRenderingContext): Program | undefine
     updateUniforms({ gl, uniforms, values })
   }
   
-  function updateCamera(camera: ViewMatrices): void {
+  function updateViews(values: ViewMatrices): void {
     gl.useProgram(program!)
-    updateUniforms({ gl, uniforms, values: { ...camera }})
+    updateUniforms({ gl, uniforms, values })
   }
   
   function updateTextures(values: Dict<WebGLTexture>): void {

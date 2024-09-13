@@ -21,7 +21,7 @@ export function createOutlineProgram(gl: WebGLRenderingContext): Program | undef
   }
   const uniforms = getUniforms(gl, program)
   
-  return { updateCamera, updateSettings, draw, cleanup }
+  return { updateViews, updateSettings, draw, cleanup }
   
   
   function updateSettings(newSettings: Settings): void {
@@ -34,9 +34,9 @@ export function createOutlineProgram(gl: WebGLRenderingContext): Program | undef
     updateUniforms({ gl, uniforms, values })
   }
   
-  function updateCamera(camera: ViewMatrices): void {
+  function updateViews(values: ViewMatrices): void {
     gl.useProgram(program!)
-    updateUniforms({ gl, uniforms, values: { ...camera }})
+    updateUniforms({ gl, uniforms, values})
   }
   
   function draw(time: number, object: Object3D): void {

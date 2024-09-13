@@ -1,10 +1,10 @@
+import fragmentShaderSource from 'src/preview/glsl/wireframe.frag'
+import vertexShaderSource from 'src/preview/glsl/wireframe.vert'
 import { createDefaultSettings, Settings } from 'src/state/settings'
-import { ViewMatrices, Program, Object3D } from 'src/types'
+import { Object3D, Program, ViewMatrices } from 'src/types'
 import { setupAttributes, updateAttributes } from 'src/webgl/attributes'
 import { createShaderProgram } from 'src/webgl/program'
 import { flattenAndPrepare, getUniforms, updateUniforms } from 'src/webgl/uniforms'
-import fragmentShaderSource from 'src/preview/glsl/wireframe.frag'
-import vertexShaderSource from 'src/preview/glsl/wireframe.vert'
 
 export function createWireframeProgram(gl: WebGLRenderingContext): Program | undefined {
   const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
@@ -22,7 +22,7 @@ export function createWireframeProgram(gl: WebGLRenderingContext): Program | und
   }
   const uniforms = getUniforms(gl, program)
   
-  return { updateCamera, updateSettings, draw, cleanup }
+  return { updateViews, updateSettings, draw, cleanup }
   
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
@@ -33,9 +33,9 @@ export function createWireframeProgram(gl: WebGLRenderingContext): Program | und
     updateUniforms({ gl, uniforms, values })
   }
   
-  function updateCamera(camera: ViewMatrices): void {
+  function updateViews(values: ViewMatrices): void {
     gl.useProgram(program!)
-    updateUniforms({ gl, uniforms, values: { ...camera }})
+    updateUniforms({ gl, uniforms, values })
   }
   
   function draw(time: number, object: Object3D): void {

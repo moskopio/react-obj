@@ -27,7 +27,7 @@ export function createMeshProgram(gl: WebGLRenderingContext): Program | undefine
   }
   const uniforms = getUniforms(gl, program)
   
-  return { updateCamera, updateSettings, updateScene, draw, cleanup }
+  return { updateViews, updateSettings, updateScene, draw, cleanup }
   
 
   function updateSettings(newSettings: Settings): void {
@@ -39,9 +39,9 @@ export function createMeshProgram(gl: WebGLRenderingContext): Program | undefine
     updateUniforms({ gl, uniforms, values })
   }
   
-  function updateCamera(camera: ViewMatrices): void {
+  function updateViews(values: ViewMatrices): void {
     gl.useProgram(program!)
-    updateUniforms({ gl, uniforms, values: { ...camera }})
+    updateUniforms({ gl, uniforms, values})
   }
   
   function updateScene(scene: Scene): void {
