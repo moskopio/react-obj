@@ -10,7 +10,7 @@ import { getLightMatrices } from "./light-matrices"
 import fragmentShaderSource from './light.frag'
 import vertexShaderSource from './light.vert'
 import { Obj } from "src/utils/obj/types"
-import { CameraMatrices } from "src/types"
+import { ViewMatrices } from "src/types"
 import { Settings } from "http2"
 
 const SPHERE_MODEL = M4.scaling([0.6, 0.6, 0.6])
@@ -20,7 +20,7 @@ export interface Program {
   cleanup:         () => void
   draw:            (time: number) => void
   updateObj?:      (obj: Obj) => void
-  updateCamera?:   (camera: CameraMatrices) => void
+  updateCamera?:   (camera: ViewMatrices) => void
   updateScene?:    (scene: Scene) => void
   updateSettings?: (settings: Settings) => void
 }

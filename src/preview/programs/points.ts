@@ -4,7 +4,7 @@ import fragmentShaderSource from 'src/preview/glsl/points.frag'
 import vertexShaderSource from 'src/preview/glsl/points.vert'
 import { Scene } from "src/state/scene"
 import { createDefaultSettings, Settings } from "src/state/settings"
-import { CameraMatrices, Program, Object3D } from "src/types"
+import { ViewMatrices, Program, Object3D } from "src/types"
 import { setupAttributes, updateAttributes } from "src/webgl/attributes"
 import { createShaderProgram } from "src/webgl/program"
 import { flattenAndPrepare, getUniforms, updateUniforms } from "src/webgl/uniforms"
@@ -52,14 +52,14 @@ export function createPointsProgram(gl: WebGLRenderingContext): Program | undefi
     updateUniforms({ gl, uniforms, values })
   }
   
-  function updateCamera(camera: CameraMatrices): void {
+  function updateCamera(camera: ViewMatrices): void {
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values: { ...camera }})
   }
   
   function updateScene(scene: Scene): void {
     const { light, ambient, fresnel } = scene
-    const position = getLightPosition(light)
+    const { position } = getLightPosition(light)
     const values = flattenAndPrepare({ light: {...light, position }, ambient, fresnel })
     
     gl.useProgram(program!)

@@ -1,8 +1,8 @@
 import { createDefaultSettings, Settings } from 'src/state/settings'
-import { CameraMatrices, Program, Object3D } from 'src/types'
+import { ViewMatrices, Program, Object3D, Dict } from 'src/types'
 import { setupAttributes, updateAttributes } from 'src/webgl/attributes'
 import { createShaderProgram } from 'src/webgl/program'
-import { getUniforms, prepareValues, updateUniforms } from 'src/webgl/uniforms'
+import { getUniforms, prepareValues, updateUniforms, updateUniformTextures } from 'src/webgl/uniforms'
 import fragmentShaderSource from 'src/preview/glsl/grid.frag'
 import vertexShaderSource from 'src/preview/glsl/grid.vert'
 
@@ -16,11 +16,12 @@ export function createGridProgram(gl: WebGLRenderingContext): Program | undefine
   
   const attributes = {
     position: { p: gl.getAttribLocation(program, 'aPosition'), s: 3, b: gl.createBuffer()! },
+    texture:  { p: gl.getAttribLocation(program, 'aTexture'),  s: 2, b: gl.createBuffer()! },
     normal:   { p: gl.getAttribLocation(program, 'aNormal'),   s: 3, b: gl.createBuffer()! },
   }  
   const uniforms = getUniforms(gl, program)
   
-  return { updateSettings, updateCamera, draw, cleanup }
+  return { updateSettings, updateCamera, updateTextures, draw, cleanup }
   
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
@@ -31,9 +32,14 @@ export function createGridProgram(gl: WebGLRenderingContext): Program | undefine
     updateUniforms({ gl, uniforms, values })
   }
   
-  function updateCamera(camera: CameraMatrices): void {
+  function updateCamera(camera: ViewMatrices): void {
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values: { ...camera }})
+  }
+  
+  function updateTextures(values: Dict<WebGLTexture>): void {
+    gl.useProgram(program!)
+    updateUniformTextures({ gl, uniforms, values })
   }
   
   function draw(time: number, object: Object3D): void {

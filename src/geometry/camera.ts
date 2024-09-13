@@ -4,9 +4,9 @@ import { perspective } from "src/math/projections"
 import { Q } from "src/math/quaternion"
 import { V3 } from "src/math/v3"
 import { Camera } from "src/state/camera"
-import { CameraMatrices } from "src/types"
+import { ViewMatrices } from "src/types"
 
-export function getLookAtMatrices(camera: Camera): CameraMatrices {
+export function getLookAtMatrices(camera: Camera): ViewMatrices {
   const { fov, aspectRatio, zNear, zFar, track, dolly, rotation, target } = camera 
   
   // 1. Tumble - rotating around Theta and Phi
@@ -31,5 +31,5 @@ export function getLookAtMatrices(camera: Camera): CameraMatrices {
   const projection = perspective(degToRad(fov), aspectRatio, zNear, zFar)
   const view = M4.inverse(cameraToWorld)
   
-  return { projection, view, cameraPosition }
+  return { projection, view, position: cameraPosition }
 }

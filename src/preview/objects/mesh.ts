@@ -1,35 +1,24 @@
 import { getModelMatrix } from 'src/geometry/model'
 import { Matrix4 } from 'src/math/m4'
-import { Vec3 } from 'src/math/v3'
 import { createDefaultSettings, Settings } from 'src/state/settings'
-import { Geometry, Program, Object3D } from 'src/types'
+import { Geometry, Object3D } from 'src/types'
 import { Obj } from 'src/utils/obj/types'
 
-export function createMeshObject(program: Program): Object3D {
+export function createMeshObject(obj: Obj): Object3D {
+  const { flat, boundingBox } = obj
+  const { vertices, flatNormals, smoothNormals, definedNormals } = flat
+  
   const geometry = {
-    vertices:       new Float32Array(),
-    flatNormals:    new Float32Array(),
-    definedNormals: new Float32Array(),
-    smoothNormals:  new Float32Array(),
-    count:          new Float32Array(),
-    boundingBox:    [[0, 0, 0], [0, 0, 0]] as [Vec3, Vec3]
+    vertices:       new Float32Array(vertices.flatMap(v => v)),
+    flatNormals:    new Float32Array(flatNormals.flatMap(n => n)),
+    definedNormals: new Float32Array(definedNormals.flatMap(n => n)),
+    smoothNormals:  new Float32Array(smoothNormals.flatMap(n => n)),
+    count:          new Float32Array(vertices.map((_, i) => i)),
   }
   let settings = createDefaultSettings()
   
-  return { updateObj, updateSettings, getGeometry, getModel, getProgram }
-  
-  function updateObj(obj: Obj): void {
-    const { flat, boundingBox } = obj
-    const { vertices, flatNormals, smoothNormals, definedNormals } = flat
+  return { updateSettings, getGeometry, getModel }
     
-    geometry.vertices = new Float32Array(vertices.flatMap(v => v))
-    geometry.flatNormals = new Float32Array(flatNormals.flatMap(n => n))
-    geometry.smoothNormals = new Float32Array(smoothNormals.flatMap(n => n))
-    geometry.definedNormals = new Float32Array(definedNormals.flatMap(n => n))
-    geometry.count = new Float32Array(vertices.map((_, i) => i))
-    geometry.boundingBox = boundingBox
-  }
-  
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
   }
@@ -54,10 +43,6 @@ export function createMeshObject(program: Program): Object3D {
   }
   
   function getModel(): Matrix4 {
-    return getModelMatrix(geometry.boundingBox, settings)
-  }
-  
-  function getProgram(): Program { 
-    return program
+    return getModelMatrix(boundingBox, settings)
   }
 }

@@ -60,9 +60,57 @@ export function updateUniforms(args: UpdateArgs): void {
         case gl.FLOAT: 
           gl.uniform1fv(uniform.loc, values[name])
           break
+          
       }
     }
   })
+}
+
+interface UpdateTextureArgs {
+  gl:       WebGLRenderingContext
+  uniforms: Uniforms
+  values:   Dict<WebGLTexture>
+}
+
+export function updateUniformTextures(args: UpdateTextureArgs): void {
+  const { gl, uniforms, values } = args
+  const samplerUniforms = Object.keys(uniforms).filter(n => uniforms[n]?.type === gl.SAMPLER_2D)
+
+  let textureIndex = 0
+  samplerUniforms.forEach(name => {
+    const uniform = uniforms[name]
+    const texture = values[name]
+    
+    
+    // var texture = gl.createTexture()
+    // gl.bindTexture(gl.TEXTURE_2D, texture)
+    // // Fill the texture with a 4x4 LUMINANCE pixel.
+    // const level = 0;
+    // const format = gl.LUMINANCE;
+    // const type = gl.UNSIGNED_BYTE;
+    // const border = 0;
+    // const width = 4;
+    // const height = 4;
+    // const pixels = new Uint8Array([
+    //   255, 128, 255, 128,
+    //   128, 255, 128, 255,
+    //   255, 128, 255, 128,
+    //   128, 255, 128, 255,
+    // ])
+    // gl.texImage2D(gl.TEXTURE_2D, level, format, width, height, border,
+    //               format, type, pixels)
+    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    // gl.generateMipmap(gl.TEXTURE_2D)
+    
+    
+    if (uniform && texture) {
+      gl.bindTexture(gl.TEXTURE_2D, texture)
+      gl.uniform1i(uniform.loc, 0)
+      gl.activeTexture(gl.TEXTURE0)
+      textureIndex++
+    }
+  })
+  // gl.bindTexture(gl.TEXTURE_2D, null)
 }
 
 function prepareName(name: string): string {

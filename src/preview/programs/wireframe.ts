@@ -1,5 +1,5 @@
 import { createDefaultSettings, Settings } from 'src/state/settings'
-import { CameraMatrices, Program, Object3D } from 'src/types'
+import { ViewMatrices, Program, Object3D } from 'src/types'
 import { setupAttributes, updateAttributes } from 'src/webgl/attributes'
 import { createShaderProgram } from 'src/webgl/program'
 import { flattenAndPrepare, getUniforms, updateUniforms } from 'src/webgl/uniforms'
@@ -33,7 +33,7 @@ export function createWireframeProgram(gl: WebGLRenderingContext): Program | und
     updateUniforms({ gl, uniforms, values })
   }
   
-  function updateCamera(camera: CameraMatrices): void {
+  function updateCamera(camera: ViewMatrices): void {
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values: { ...camera }})
   }

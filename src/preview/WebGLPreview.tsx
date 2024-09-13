@@ -12,7 +12,7 @@ export function WebGLPreview(): ReactElement {
   const gl = useWebGLContext({ canvasRef })
   useAdjustResolution({gl, resolution })
   
-  usePrograms({gl })
+  usePrograms({gl, resolution })
   
   useCameraControls()
   
