@@ -16,6 +16,7 @@ vec3 getCellShading(in ShadingCommon common, in Light light, in CellShading cell
   
   float adjustedSpecularIntensity = max(1.0, SPECULAR_MAX - light.specular.intensity);
   float diffuseShade = clamp(smoothCeil(toLightNormal * segments, aa) / segments, 0.0, 1.0);
+  diffuseShade = mix(diffuseShade, 0.0, common.inShadow);
   float specularShade = smoothstep(SPECULAR_STEP, SPECULAR_STEP + aa, pow(viewAngleNormal, adjustedSpecularIntensity));
   float fresnelShade = max(0.0, common.fresnel.intensity - smoothCeil(viewAngleNormal * segments, aa) / segments);
 

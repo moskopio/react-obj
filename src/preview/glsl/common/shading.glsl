@@ -28,5 +28,6 @@ struct ShadingCommon {
   vec3         cameraPosition;
   LightColor   ambient;
   LightIntense fresnel;
+  float        inShadow;
 };
 

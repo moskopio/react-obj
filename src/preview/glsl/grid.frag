@@ -16,7 +16,6 @@ varying vec3 vPosition;
 varying float vFogDepth;
 varying vec4 vPosFromLightView;
 
-
 float grid(in vec2 st, vec2 size) {
   vec2 newSize = vec2(0.5)- size * 0.5;
   vec2 uv = smoothstep(newSize, newSize + vec2(0.01), st);
@@ -48,8 +47,8 @@ void main() {
   float inShadow = isInShadow(uShadowMap, vPosFromLightView);
   
   vec4 color = vec4(gridColor * alpha, alpha);
-  color = mix(color, color - vec4(vec3(0.5), 0.0), inShadow);
-  color.a = max(alpha, inShadow);
+  color -= vec4(inShadow) * 0.5;
+  color.a += inShadow;
   color = mix(color, vec4(0), fogAmount);
 
   gl_FragColor = color;

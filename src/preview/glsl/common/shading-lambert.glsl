@@ -7,12 +7,12 @@ vec3 getLambertShading(in ShadingCommon common, in Light light) {
   
   float toLightNormal = clamp(dot(lightPosition, normal), 0.0, 1.0);
   float viewAngleNormal = clamp(dot(cameraPosition, normal), 0.0, 1.0);
-  
+
   float adjustedSpecularIntensity = max(1.0, SPECULAR_MAX - light.specular.intensity);
-  float diffuseShade = toLightNormal;
+  float diffuseShade = mix(toLightNormal, 0.0, common.inShadow);
   float specularShade = pow(viewAngleNormal, adjustedSpecularIntensity);
   float fresnelShade = max(0.0, common.fresnel.intensity - viewAngleNormal);
-
+  
   vec3 ambient = common.ambient.color * float(common.ambient.enabled);
   vec3 diffuse = light.diffuse.color * diffuseShade * float(light.diffuse.enabled);
   vec3 specular = light.specular.color * diffuseShade * specularShade * float(light.specular.enabled);

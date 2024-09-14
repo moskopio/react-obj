@@ -5,6 +5,8 @@
       "src/*": ["src/*"]
     },
     "allowImportingTsExtensions": true,
+    "allowSyntheticDefaultImports": true,
+    "composite": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
@@ -21,7 +23,6 @@
     "target": "es2022",
     "types": ["vite-plugin-glsl/ext"],
     "useDefineForClassFields": true,
-    "composite": true
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
 }

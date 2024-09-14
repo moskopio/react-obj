@@ -18,13 +18,13 @@ export function createDepthProgram(gl: WebGLRenderingContext): Program | undefin
   }
   const uniforms = getUniforms(gl, program)
   
-return { updateViews, draw, cleanup }
+  return { updateViews, draw, cleanup }
     
   function updateViews(values: ViewMatrices): void {
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values})
   }
-      
+  
   function draw(time: number, object: Object3D): void {
     const geometry = object.getGeometry()
     const model = object.getModel()
@@ -36,7 +36,7 @@ return { updateViews, draw, cleanup }
     updateUniforms({ gl, uniforms, values: { model, time: [time] } })
     gl.drawArrays(gl.TRIANGLES, 0, geometry.count.length)
   }
-    
+  
   function cleanup(): void {
     Object.values(attributes).forEach(a => a.b && gl.deleteBuffer(a.b))
     program && gl.deleteProgram(program)

@@ -10,12 +10,12 @@ export interface Scene {
 }
 
 export interface Light {
-  distance:      number
-  rotation:      { theta: number, phi: number }
-  diffuse:       LightColor,
-  specular:      LightColorAndIntense,
-  followsCamera: boolean
-  castShadow:    boolean
+  distance:         number
+  rotation:         { theta: number, phi: number }
+  diffuse:          LightColor,
+  specular:         LightColorAndIntense,
+  followsCamera:    boolean
+  castObjectShadow: boolean
 }
 
 interface LightColor {
@@ -38,12 +38,12 @@ export function createDefaultScene(): Scene {
 
 export function createDefaultLight(): Light {
   return {
-    distance:      2.5,
-    rotation:      { theta: 45, phi: 0 },
-    diffuse:       { enabled: true, color: [128, 128, 128] },
-    specular:      { enabled: true, color: [255, 255, 255], intensity: 1000 },
-    followsCamera: false,
-    castShadow:    true,
+    distance:         2.5,
+    rotation:         { theta: 45, phi: 0 },
+    diffuse:          { enabled: true, color: [128, 128, 128] },
+    specular:         { enabled: true, color: [255, 255, 255], intensity: 1000 },
+    followsCamera:    false,
+    castObjectShadow: true,
   }
 }
 

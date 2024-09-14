@@ -9,11 +9,12 @@ export function createPointsObject(obj: Obj): Object3D {
   
   const vertices = wireframe.vertices.filter((_, i) => i % 2)
   const normals = wireframe.smoothNormals.filter((_, i) => i % 2)
+  const length = vertices.length
   
   const geometry = {
     vertices: new Float32Array(vertices.flatMap(v => v)),
     normals:  new Float32Array(normals.flatMap(v => v)),
-    count:    new Float32Array(vertices.map((_, i) => i)),
+    count:    new Float32Array(vertices.map((_, i) => i / length)),
   }
   let settings = createDefaultSettings()
   

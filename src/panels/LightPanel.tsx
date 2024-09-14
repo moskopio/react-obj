@@ -25,9 +25,9 @@ export function LightPanel(): ReactElement {
         color={pallette.getNextColor()}
       />
       <Checkbox 
-        label="Cast Shadow"
-        value={scene.light.castShadow}
-        onChange={(castShadow: boolean) => sceneDispatch({ type: "set", light: { castShadow }} )}
+        label="Cast Self Shadow"
+        value={scene.light.castObjectShadow}
+        onChange={(castObjectShadow: boolean) => sceneDispatch({ type: "set", light: { castObjectShadow }} )}
         color={pallette.getNextColor()}
       />
       <Divider label="Colors" />

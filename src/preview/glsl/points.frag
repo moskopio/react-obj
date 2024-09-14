@@ -26,7 +26,10 @@ vec3 getLightColor() {
     ? normalize(uCameraPosition)
     : normalize(uLight.position);
   vec3 cameraPosition = normalize(uCameraPosition);
-  ShadingCommon common = ShadingCommon(normal, vPosition, cameraPosition, uAmbient, uFresnel);
+  float inShadow = isInShadow(uShadowMap, vPosFromLightView);
+  float useShadow = mix(0.0, inShadow, float(uLight.castObjectShadow));
+    
+  ShadingCommon common = ShadingCommon(normal, vPosition, cameraPosition, uAmbient, uFresnel, useShadow);
   
   return getLightShading(common, uShading, uLight);
 }
@@ -51,16 +54,10 @@ void main() {
     discard;
   }
   
-
-  
   vec3 color = getGradientColor();
   vec3 lightColor = getLightColor();
   color = mix(color, lightColor, float(uPoints.useLight));
   color = mix(color, uPoints.borderColor, float(dist > (0.5 - uPoints.borderWeight)));
-  
-  float inShadow = isInShadow(uShadowMap, vPosFromLightView);
-  vec3 shadowColor = mix(vec3(1,0,0), uAmbient.color, float(uAmbient.enabled));
-  color = mix(color, shadowColor, inShadow);
   
   gl_FragColor = vec4(color, 1);
 }
