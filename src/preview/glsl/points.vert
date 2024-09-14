@@ -19,9 +19,13 @@ uniform float uTime;
 
 uniform Points uPoints;
 
+uniform mat4 uLightProjection;
+uniform mat4 uLightView;
+
 varying vec3 vNormal; 
 varying float vCount;
 varying vec3 vPosition;
+varying vec4  vPosFromLightView;
 
 
 float random(in float seed) {
@@ -49,6 +53,8 @@ void main() {
   
   vec2 size = uPoints.size;
   gl_PointSize = size[0] + timeChange * size[1];
+  
+  vPosFromLightView = uLightProjection * uLightView * uModel * vec4(aPosition, 1);
   
   gl_Position = position;
   

@@ -72,6 +72,7 @@ interface UpdateTextureArgs {
   values:   Dict<WebGLTexture>
 }
 
+// textures counter is common across all of the programs!
 export function updateUniformTextures(args: UpdateTextureArgs): void {
   const { gl, uniforms, values } = args
   const samplerUniforms = Object.keys(uniforms).filter(n => uniforms[n]?.type === gl.SAMPLER_2D)
@@ -81,36 +82,14 @@ export function updateUniformTextures(args: UpdateTextureArgs): void {
     const uniform = uniforms[name]
     const texture = values[name]
     
-    
-    // var texture = gl.createTexture()
-    // gl.bindTexture(gl.TEXTURE_2D, texture)
-    // // Fill the texture with a 4x4 LUMINANCE pixel.
-    // const level = 0;
-    // const format = gl.LUMINANCE;
-    // const type = gl.UNSIGNED_BYTE;
-    // const border = 0;
-    // const width = 4;
-    // const height = 4;
-    // const pixels = new Uint8Array([
-    //   255, 128, 255, 128,
-    //   128, 255, 128, 255,
-    //   255, 128, 255, 128,
-    //   128, 255, 128, 255,
-    // ])
-    // gl.texImage2D(gl.TEXTURE_2D, level, format, width, height, border,
-    //               format, type, pixels)
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    // gl.generateMipmap(gl.TEXTURE_2D)
-    
-    
     if (uniform && texture) {
       gl.bindTexture(gl.TEXTURE_2D, texture)
-      gl.uniform1i(uniform.loc, 0)
-      gl.activeTexture(gl.TEXTURE0)
+      gl.uniform1i(uniform.loc, textureIndex)
+      gl.activeTexture(gl.TEXTURE0 + textureIndex)
       textureIndex++
     }
   })
-  // gl.bindTexture(gl.TEXTURE_2D, null)
+  gl.bindTexture(gl.TEXTURE_2D, null)
 }
 
 function prepareName(name: string): string {

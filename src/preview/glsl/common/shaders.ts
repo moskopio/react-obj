@@ -5,12 +5,14 @@ import goochShading from './shading-gooch.glsl'
 import lambertShading from './shading-lambert.glsl'
 import lightShading from './shading-light.glsl'
 import shading from './shading.glsl'
+import shadow from './shadow.glsl'
 
 export function createLightShader(fragmentSource: string): string {
   return [
     precision,
     light,
     shading,
+    shadow,
     cellShading,
     goochShading,
     lambertShading,
@@ -18,3 +20,12 @@ export function createLightShader(fragmentSource: string): string {
     fragmentSource
   ].join('\n')
 }
+
+export function createShadowOnlyShader(fragmentSource: string): string {
+  return [
+    precision,
+    shadow,
+    fragmentSource,
+  ].join('\n')
+}
+

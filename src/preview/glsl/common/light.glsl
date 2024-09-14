@@ -19,5 +19,6 @@ struct Light {
   LightColor   diffuse;
   LightIntense specular;
   bool         followsCamera;
+  bool         castShadow;
 };
 

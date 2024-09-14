@@ -1,27 +1,31 @@
-import { createDefaultSettings, Settings } from 'src/state/settings'
-import { ViewMatrices, Program, Object3D, Dict } from 'src/types'
-import { setupAttributes, updateAttributes } from 'src/webgl/attributes'
-import { createShaderProgram } from 'src/webgl/program'
-import { getUniforms, prepareValues, updateUniforms, updateUniformTextures } from 'src/webgl/uniforms'
+import { getLightPosition } from 'src/geometry/light'
+import { createShadowOnlyShader } from 'src/preview/glsl/common/shaders'
 import fragmentShaderSource from 'src/preview/glsl/grid.frag'
 import vertexShaderSource from 'src/preview/glsl/grid.vert'
+import { Scene } from 'src/state/scene'
+import { createDefaultSettings, Settings } from 'src/state/settings'
+import { Object3D, Program, ViewMatrices } from 'src/types'
+import { setupAttributes, updateAttributes } from 'src/webgl/attributes'
+import { createShaderProgram } from 'src/webgl/program'
+import { flattenAndPrepare, getUniforms, prepareValues, updateUniforms } from 'src/webgl/uniforms'
 
 export function createGridProgram(gl: WebGLRenderingContext): Program | undefined {
-  const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
+  
+  const fragment = createShadowOnlyShader(fragmentShaderSource)
+  const program = createShaderProgram(gl, vertexShaderSource, fragment)
   if (!program) {
-    console.error('Failed to create a WebGL Program')
+    console.error('Failed to create a Grid WebGL Program')
     return undefined
   }
   let settings = createDefaultSettings()
   
   const attributes = {
     position: { p: gl.getAttribLocation(program, 'aPosition'), s: 3, b: gl.createBuffer()! },
-    texture:  { p: gl.getAttribLocation(program, 'aTexture'),  s: 2, b: gl.createBuffer()! },
     normal:   { p: gl.getAttribLocation(program, 'aNormal'),   s: 3, b: gl.createBuffer()! },
   }  
   const uniforms = getUniforms(gl, program)
   
-  return { updateSettings, updateViews, updateTextures, draw, cleanup }
+  return { updateSettings, updateViews, updateScene, draw, cleanup }
   
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
@@ -37,9 +41,19 @@ export function createGridProgram(gl: WebGLRenderingContext): Program | undefine
     updateUniforms({ gl, uniforms, values })
   }
   
-  function updateTextures(values: Dict<WebGLTexture>): void {
+  function updateScene(scene: Scene): void {
+    const { ambient, fresnel, light } = scene
+    const { position, projection, view } = getLightPosition(light)
+    const values = flattenAndPrepare({ 
+      light: { ...light, position }, 
+      ambient, 
+      fresnel, 
+      lightView: view, 
+      lightProjection: projection 
+    })
+    
     gl.useProgram(program!)
-    updateUniformTextures({ gl, uniforms, values })
+    updateUniforms({ gl, uniforms, values })
   }
   
   function draw(time: number, object: Object3D): void {

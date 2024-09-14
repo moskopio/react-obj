@@ -1,10 +1,12 @@
 import { useCallback, useContext, useEffect, useRef } from "react"
 import { getLightPosition } from "src/geometry/light"
-import { Programs } from "src/preview/hooks/draw-programs"
 import { Objects } from "src/preview/hooks/objects"
+import { Programs } from "src/preview/hooks/programs"
+import { createDepthProgram } from "src/preview/programs/depth"
 import { AppContext } from "src/state/context"
-import { Dict } from "src/types"
-import { createDepthFrameBuffer, createDepthTexture } from "src/webgl/framebuffer"
+import { ObjContext } from "src/state/obj"
+import { Program } from "src/types"
+import { createDepthFrameBuffer } from "src/webgl/framebuffer"
 
 export const SHADOW_RESOLUTION = 2048
 
@@ -14,43 +16,37 @@ interface Args {
   programs: Programs
 }
 
-export function useDrawShadows(args: Args) {
+export function useDrawShadows(args: Args): (time: number) => void {
   const { gl, objects, programs } = args
   const { scene } = useContext(AppContext)
-  
-  const texturesRef = useRef<Dict<WebGLTexture | null>>({})
+  const { obj } = useContext(ObjContext)
   const framebufferRef = useRef<WebGLFramebuffer | null>(null)
+  const depthProgramRef = useRef<Program | undefined>(undefined)
   
   useEffect(() => {
     if (gl) {
-      const textures = texturesRef.current
-      textures.shadowMap = createDepthTexture(gl, SHADOW_RESOLUTION)
-      framebufferRef.current = createDepthFrameBuffer(gl, textures.shadowMap!)
+      framebufferRef.current = createDepthFrameBuffer(gl)
+      depthProgramRef.current = createDepthProgram(gl)
     }
   }, [gl])
+  
+  useEffect(() => {
+    const depthProgram = depthProgramRef.current
+    const values = getLightPosition(scene.light)
+    depthProgram?.updateViews?.(values)
+  }, [scene, obj])
   
   
   return useCallback((time: number) => {
     const framebuffer = framebufferRef.current
-    const textures = texturesRef.current
+    const depthProgram = depthProgramRef.current
     
-    if (!framebuffer) return
-    
+    if (!framebuffer || !depthProgram) return
+    gl?.disable(gl.CULL_FACE)
     gl?.bindFramebuffer(gl.FRAMEBUFFER, framebuffer)
     gl?.viewport(0, 0, SHADOW_RESOLUTION, SHADOW_RESOLUTION)
     gl?.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     
-    const { projection, view, position } = getLightPosition(scene.light)
-    const lightValues = {
-      projection, 
-      view,
-      cameraPosition:  position,
-      lightProjection: projection,
-      lightView:       view,
-    }
-    Object.values(programs).forEach(p => p?.updateViews?.(lightValues))
-    objects.mesh.forEach(mesh => programs.mesh?.draw(time, mesh))
-    Object.values(programs).forEach(p => p?.updateTextures?.(textures))
-    
-  }, [gl, objects, programs, scene])
+    objects.mesh.forEach(mesh => depthProgram.draw(time, mesh))
+  }, [gl, objects, programs])
 }

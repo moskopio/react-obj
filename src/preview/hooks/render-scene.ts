@@ -1,4 +1,6 @@
 import { useContext, useEffect, useRef } from "react"
+import { getLookAtMatrices } from "src/geometry/camera"
+import { getLightPosition } from "src/geometry/light"
 import { useDrawObjects } from "src/preview/hooks/draw-objects"
 import { useDrawShadows } from "src/preview/hooks/draw-shadows"
 import { useObjects } from "src/preview/hooks/objects"
@@ -16,9 +18,9 @@ export function useRenderScene(props: Props): void {
   const { gl, resolution } = props
   const updateShadowsRef = useRef<boolean>(true)
 
-  const requestId = useRef<number>(-1)
-  const { settings, scene } = useContext(AppContext)
+  const { settings, scene, camera } = useContext(AppContext)
   const { obj} = useContext(ObjContext)
+  const requestId = useRef<number>(-1)
   
   const programs = usePrograms(props)
   const objects = useObjects(props)
@@ -32,17 +34,27 @@ export function useRenderScene(props: Props): void {
   
   useEffect(() => {
     updateShadowsRef.current = true
+    const { projection, view } = getLightPosition(scene.light)
+    const lightValues = { lightProjection: projection, lightView: view }
+    Object.values(programs).forEach(p => p?.updateViews?.(lightValues))
     Object.values(programs).forEach(p => p?.updateScene?.(scene))
   },[gl, scene])
+  
+  useEffect(() => {
+  const { projection, view, position } = getLookAtMatrices(camera)
+  const cameraValues = { projection, view, cameraPosition: position }
+  Object.values(programs).forEach(p => p?.updateViews?.(cameraValues))
+  }, [camera])
   
   useEffect(() => { updateShadowsRef.current = true }, [obj])
   
   useEffect(() => {
-    return Object.values(programs).forEach(p => p?.cleanup())
+    return () => { Object.values(programs).forEach(p => p?.cleanup()) }
   }, [])
 
   useEffect(() => {
-    draw(Date.now())
+    const time = Date.now()
+    draw(time)
     return () => { requestId.current && cancelAnimationFrame(requestId.current) }
   }, [draw])
   

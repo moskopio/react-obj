@@ -1,5 +1,5 @@
 import { getLightPosition } from 'src/geometry/light'
-import { createLightShader } from 'src/preview/glsl/common/light-shader'
+import { createLightShader } from 'src/preview/glsl/common/shaders'
 import fragmentShaderSource from 'src/preview/glsl/mesh.frag'
 import vertexShaderSource from 'src/preview/glsl/mesh.vert'
 import { Scene } from 'src/state/scene'
@@ -43,11 +43,17 @@ export function createMeshProgram(gl: WebGLRenderingContext): Program | undefine
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values})
   }
-  
+    
   function updateScene(scene: Scene): void {
     const { ambient, fresnel, light } = scene
-    const { position } = getLightPosition(light)
-    const values = flattenAndPrepare({ light: { ...light, position }, ambient, fresnel })
+    const { position, projection, view } = getLightPosition(light)
+    const values = flattenAndPrepare({ 
+      light: { ...light, position }, 
+      ambient, 
+      fresnel, 
+      lightView: view, 
+      lightProjection: projection 
+    })
     
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values })

@@ -1,8 +1,5 @@
-precision mediump float;
-
 #define COLOR_UPDATE 750.0
 #define SIZE_UPDATE  1000.0
-#define SHADOW_BIAS  0.01
 
 uniform float uTime;
 uniform float uDivisions;
@@ -17,26 +14,14 @@ uniform sampler2D uShadowMap;
 varying vec3 vNormal;
 varying vec3 vPosition;
 varying float vFogDepth;
-varying vec2 vTexture;
 varying vec4 vPosFromLightView;
 
-
-float smoothCeil(in float x, in float aa) {
-  return ceil(x) - float(aa > fract(x)) * smoothstep(aa, 0.0, fract(x));
-}
 
 float grid(in vec2 st, vec2 size) {
   vec2 newSize = vec2(0.5)- size * 0.5;
   vec2 uv = smoothstep(newSize, newSize + vec2(0.01), st);
   uv *= smoothstep(newSize,newSize + vec2(0.01), vec2(1.0) - st);
   return 1.0 - uv.x * uv.y;
-}
-
-float isInShadow() {
-  vec3 toLight = vPosFromLightView.xyz / vPosFromLightView.w;
-  toLight = toLight * 0.5 + 0.5;
-  float distance = texture2D(uShadowMap, toLight.xy).r;
-  return smoothCeil(toLight.z - distance, SHADOW_BIAS);
 }
 
 void main() {
@@ -60,7 +45,7 @@ void main() {
   float toCameraNormal = abs(dot(cameraToVertex, normal));
   alpha = alpha * smoothstep(0.1, 0.3, toCameraNormal);
   
-  float inShadow = isInShadow();
+  float inShadow = isInShadow(uShadowMap, vPosFromLightView);
   
   vec4 color = vec4(gridColor * alpha, alpha);
   color = mix(color, color - vec4(vec3(0.5), 0.0), inShadow);

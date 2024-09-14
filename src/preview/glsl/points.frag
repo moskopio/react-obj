@@ -13,10 +13,12 @@ uniform LightIntense uFresnel;
 uniform Shading      uShading;
 uniform vec3         uCameraPosition;
 uniform float        uTime;
+uniform sampler2D    uShadowMap;
 
 varying vec3  vNormal;
 varying vec3  vPosition;
 varying float vCount;
+varying vec4  vPosFromLightView;
 
 vec3 getLightColor() {
   vec3 normal = normalize(vNormal);
@@ -49,10 +51,16 @@ void main() {
     discard;
   }
   
+
+  
   vec3 color = getGradientColor();
   vec3 lightColor = getLightColor();
   color = mix(color, lightColor, float(uPoints.useLight));
   color = mix(color, uPoints.borderColor, float(dist > (0.5 - uPoints.borderWeight)));
+  
+  float inShadow = isInShadow(uShadowMap, vPosFromLightView);
+  vec3 shadowColor = mix(vec3(1,0,0), uAmbient.color, float(uAmbient.enabled));
+  color = mix(color, shadowColor, inShadow);
   
   gl_FragColor = vec4(color, 1);
 }

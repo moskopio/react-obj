@@ -1,5 +1,5 @@
 import { getLightPosition } from "src/geometry/light"
-import { createLightShader } from "src/preview/glsl/common/light-shader"
+import { createLightShader } from "src/preview/glsl/common/shaders"
 import fragmentShaderSource from 'src/preview/glsl/points.frag'
 import vertexShaderSource from 'src/preview/glsl/points.vert'
 import { Scene } from "src/state/scene"
