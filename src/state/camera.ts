@@ -1,5 +1,5 @@
 import { flipConstrain } from "src/utils/util"
-import { DeepPartial } from "src/types"
+import { DeepPartial, Rotation, Track } from "src/types"
 import { Vec3 } from "src/math/v3"
 import { deepSet, deepUpdate } from "src/utils/merge"
 
@@ -9,9 +9,9 @@ export interface Camera {
   zNear:       number
   zFar:        number
   target:      Vec3
-  rotation:    { theta: number, phi: number }
+  rotation:    Rotation
   dolly:       number
-  track:       { x: number, y: number } 
+  track:       Track
 }
 
 export function createDefaultCamera(): Camera {

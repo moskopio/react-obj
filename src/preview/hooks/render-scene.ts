@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef } from "react"
 import { getLookAtMatrices } from "src/geometry/camera"
-import { getLightPosition } from "src/geometry/light"
 import { useDrawObjects } from "src/preview/hooks/draw-objects"
 import { useDrawShadows } from "src/preview/hooks/draw-shadows"
 import { useObjects } from "src/preview/hooks/objects"
@@ -34,16 +33,13 @@ export function useRenderScene(props: Props): void {
   
   useEffect(() => {
     updateShadowsRef.current = true
-    const { projection, view } = getLightPosition(scene.light)
-    const lightValues = { lightProjection: projection, lightView: view }
-    Object.values(programs).forEach(p => p?.updateViews?.(lightValues))
     Object.values(programs).forEach(p => p?.updateScene?.(scene))
   },[gl, scene])
   
   useEffect(() => {
-  const { projection, view, position } = getLookAtMatrices(camera)
-  const cameraValues = { projection, view, cameraPosition: position }
-  Object.values(programs).forEach(p => p?.updateViews?.(cameraValues))
+  const { projection, view, position: cameraPosition } = getLookAtMatrices(camera)
+  const cameraValues = { projection, view, cameraPosition }
+  Object.values(programs).forEach(p => p?.updateCamera?.(cameraValues))
   }, [camera])
   
   useEffect(() => { updateShadowsRef.current = true }, [obj])

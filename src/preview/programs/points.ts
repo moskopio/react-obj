@@ -26,7 +26,7 @@ export function createPointsProgram(gl: WebGLRenderingContext): Program | undefi
   }
   const uniforms = getUniforms(gl, program)
   
-  return { draw, updateSettings, updateViews, updateScene, cleanup } 
+  return { draw, updateSettings, updateCamera, updateScene, cleanup } 
   
   function draw(time: number, object: Object3D): void {
     const geometry = object.getGeometry()
@@ -52,15 +52,21 @@ export function createPointsProgram(gl: WebGLRenderingContext): Program | undefi
     updateUniforms({ gl, uniforms, values })
   }
   
-  function updateViews(values: ViewMatrices): void {
+  function updateCamera(values: ViewMatrices): void {
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values })
   }
   
   function updateScene(scene: Scene): void {
-    const { light, ambient, fresnel } = scene
-    const { position } = getLightPosition(light)
-    const values = flattenAndPrepare({ light: {...light, position }, ambient, fresnel })
+    const { ambient, fresnel, light } = scene
+    const { position, projection: lightProjection, view: lightView } = getLightPosition(light)
+    const values = flattenAndPrepare({ 
+      light: { ...light, position }, 
+      ambient, 
+      fresnel, 
+      lightView, 
+      lightProjection 
+    })
     
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values })

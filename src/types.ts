@@ -28,7 +28,7 @@ export type ViewMatrices = Dict<Matrix4 | Vec3>
 export interface Program {
   cleanup:         () => void
   draw:            (time: number, object: Object3D) => void
-  updateViews?:    (views: ViewMatrices) => void
+  updateCamera?:   (views: ViewMatrices) => void
   updateScene?:    (scene: Scene) => void
   updateSettings?: (settings: Settings) => void 
   updateTextures?: (textures: Dict<WebGLTexture>) => void
@@ -37,4 +37,14 @@ export interface Program {
 export interface Resolution {
   width:  number
   height: number
+}
+
+export interface Rotation {
+  theta: number
+  phi:   number 
+}
+
+export interface Track {
+  x: number
+  y: number
 }

@@ -18,9 +18,9 @@ export function createDepthProgram(gl: WebGLRenderingContext): Program | undefin
   }
   const uniforms = getUniforms(gl, program)
   
-  return { updateViews, draw, cleanup }
+  return { updateCamera, draw, cleanup }
     
-  function updateViews(values: ViewMatrices): void {
+  function updateCamera(values: ViewMatrices): void {
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values})
   }

@@ -33,7 +33,7 @@ export function useDrawShadows(args: Args): (time: number) => void {
   useEffect(() => {
     const depthProgram = depthProgramRef.current
     const values = getLightPosition(scene.light)
-    depthProgram?.updateViews?.(values)
+    depthProgram?.updateCamera?.(values)
   }, [scene, obj])
   
   

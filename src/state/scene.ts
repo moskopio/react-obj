@@ -1,4 +1,4 @@
-import { DeepPartial } from "src/types"
+import { DeepPartial, Rotation } from "src/types"
 import { Color } from "src/utils/color"
 import { deepSet, deepUpdate } from "src/utils/merge"
 import { flipConstrain } from "src/utils/util"
@@ -11,7 +11,7 @@ export interface Scene {
 
 export interface Light {
   distance:         number
-  rotation:         { theta: number, phi: number }
+  rotation:         Rotation,
   diffuse:          LightColor,
   specular:         LightColorAndIntense,
   followsCamera:    boolean

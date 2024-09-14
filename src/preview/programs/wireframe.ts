@@ -22,7 +22,7 @@ export function createWireframeProgram(gl: WebGLRenderingContext): Program | und
   }
   const uniforms = getUniforms(gl, program)
   
-  return { updateViews, updateSettings, draw, cleanup }
+  return { updateCamera, updateSettings, draw, cleanup }
   
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
@@ -33,7 +33,7 @@ export function createWireframeProgram(gl: WebGLRenderingContext): Program | und
     updateUniforms({ gl, uniforms, values })
   }
   
-  function updateViews(values: ViewMatrices): void {
+  function updateCamera(values: ViewMatrices): void {
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values })
   }

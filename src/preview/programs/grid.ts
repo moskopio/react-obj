@@ -25,7 +25,7 @@ export function createGridProgram(gl: WebGLRenderingContext): Program | undefine
   }  
   const uniforms = getUniforms(gl, program)
   
-  return { updateSettings, updateViews, updateScene, draw, cleanup }
+  return { updateSettings, updateCamera, updateScene, draw, cleanup }
   
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
@@ -36,21 +36,15 @@ export function createGridProgram(gl: WebGLRenderingContext): Program | undefine
     updateUniforms({ gl, uniforms, values })
   }
   
-  function updateViews(values: ViewMatrices): void {
+  function updateCamera(values: ViewMatrices): void {
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values })
   }
   
   function updateScene(scene: Scene): void {
-    const { ambient, fresnel, light } = scene
-    const { position, projection, view } = getLightPosition(light)
-    const values = flattenAndPrepare({ 
-      light: { ...light, position }, 
-      ambient, 
-      fresnel, 
-      lightView: view, 
-      lightProjection: projection 
-    })
+    const { light } = scene
+    const { projection: lightProjection, view: lightView } = getLightPosition(light)
+    const values = flattenAndPrepare({ lightView, lightProjection })
     
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values })
