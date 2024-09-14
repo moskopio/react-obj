@@ -6,11 +6,13 @@ import { Obj } from 'src/utils/obj/types'
 
 export function createOutlineObject(obj: Obj): Object3D {
   const { flat, boundingBox } = obj
-  const { vertices, smoothNormals } = flat
+  
+  const vertices = [...flat.vertices].reverse()
+  const normals = [...flat.smoothNormals].reverse()
   
   const geometry = {
     vertices: new Float32Array(vertices.flatMap(v => v)),
-    normals:  new Float32Array(smoothNormals.flatMap(n => n)),
+    normals:  new Float32Array(normals.flatMap(n => n)),
     count:    new Float32Array(vertices.map((_, i) => i)),
   }
   let settings = createDefaultSettings()

@@ -14,9 +14,10 @@ export function useDrawObjects(args: Args) {
   const { gl, objects, programs, resolution } = args
   
   return useCallback((time: number) => {
-    gl?.enable(gl.CULL_FACE)
-    gl?.bindFramebuffer(gl.FRAMEBUFFER, null)
     gl?.viewport(0, 0, resolution.width, resolution.height)
+    gl?.bindFramebuffer(gl.FRAMEBUFFER, null)
+    gl?.enable(gl.CULL_FACE)
+    gl?.enable(gl.DEPTH_TEST)
     gl?.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     
     objects.grid.forEach(grid => programs.grid?.draw(time, grid))
