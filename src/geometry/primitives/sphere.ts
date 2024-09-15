@@ -1,30 +1,123 @@
 import { Primitive } from "./types"
 import { V3, Vec2, Vec3 } from "src/math/v3"
 
-// One vertex at every latitude-longitude intersection,
-// plus one for the north pole and one for the south.
-// One meridian serves as a UV seam, so we double the vertices there.
-export function createSphere(numLatitudeLines: number, numLongitudeLines: number): Primitive {
-  const points:        Vec3[] = []
-  const pointsUVs:     Vec2[] = []
-  const pointsNormals: Vec3[] = []
+
+export function createSphere(latitudeLines: number, longitudeLines: number): Primitive {
+  const vertices: Vec3[] = []
+  const uvs:      Vec2[] = []
+  const normals:  Vec3[] = []
   
+  const points = createPointsSphere(latitudeLines, longitudeLines)
+  
+  createNorthPole()
+  createSphereMiddle()
+  createSouthPole()
+
+  
+  return { vertices, normals, uvs }
+  
+  function createNorthPole(): void {
+    for (let i = 0; i < longitudeLines; i++) {
+      vertices.push(points.vertices[0])
+      vertices.push(points.vertices[i + 2])
+      vertices.push(points.vertices[i + 1])
+      
+      uvs.push(points.uvs[0])
+      uvs.push(points.uvs[i + 2])
+      uvs.push(points.uvs[i + 1])
+      
+      normals.push(points.normals[0])
+      normals.push(points.normals[i + 2])
+      normals.push(points.normals[i + 1])
+    }
+  }
+  
+  function createSphereMiddle(): void {
+    // Each row has one more unique vertex than there are lines of longitude,
+    // since we double a vertex at the texture seam.
+    const rowLength = longitudeLines + 1
+    
+    for (let latitude = 0; latitude < latitudeLines - 1; latitude++) {
+      // Plus one for the pole.
+      const rowStart = latitude * rowLength + 1
+      for (let longitude = 0; longitude < longitudeLines; longitude++) {
+        const firstCorner = rowStart + longitude
+
+        // First triangle of quad: Top-Left, Bottom-Left, Bottom-Right
+        vertices.push(points.vertices[firstCorner])
+        vertices.push(points.vertices[firstCorner + rowLength + 1])
+        vertices.push(points.vertices[firstCorner + rowLength])
+        
+        uvs.push(points.uvs[firstCorner])
+        uvs.push(points.uvs[firstCorner + rowLength + 1])
+        uvs.push(points.uvs[firstCorner + rowLength])
+        
+        normals.push(points.normals[firstCorner])
+        normals.push(points.normals[firstCorner + rowLength + 1])
+        normals.push(points.normals[firstCorner + rowLength])
+
+        // Second triangle of quad: Top-Left, Bottom-Right, Top-Right
+        vertices.push(points.vertices[firstCorner])
+        vertices.push(points.vertices[firstCorner + 1])
+        vertices.push(points.vertices[firstCorner + rowLength + 1])
+        
+        uvs.push(points.uvs[firstCorner])
+        uvs.push(points.uvs[firstCorner + 1])
+        uvs.push(points.uvs[firstCorner + rowLength + 1])
+        
+        normals.push(points.normals[firstCorner])
+        normals.push(points.normals[firstCorner + 1])
+        normals.push(points.normals[firstCorner + rowLength + 1])
+      }
+    }
+  }
+  
+  function createSouthPole(): void {
+    const rowLength = longitudeLines + 1
+    const southPole = points.vertices.length - 1
+    const bottomRow = (latitudeLines - 1) * rowLength + 1
+
+    for (let i = 0; i < longitudeLines; i++) {
+      vertices.push(points.vertices[southPole])
+      vertices.push(points.vertices[bottomRow + i])
+      vertices.push(points.vertices[bottomRow + i + 1])
+      
+      uvs.push(points.uvs[southPole])
+      uvs.push(points.uvs[bottomRow + i])
+      uvs.push(points.uvs[bottomRow + i + 1])
+      
+      normals.push(points.normals[southPole])
+      normals.push(points.normals[bottomRow + i])
+      normals.push(points.normals[bottomRow + i + 1])
+    }
+  }
+}
+
+/**
+ * Create a primitive points sphere.
+ * One vertex at every latitude-longitude intersection plus one for the north pole and one for the south.
+ * One meridian serves as a UV seam, and creates double the vertices at that point.
+ **/
+function createPointsSphere(latitudeLines: number, longitudeLines: number): Primitive {
+  const vertices: Vec3[] = []
+  const uvs:      Vec2[] = []
+  const normals:  Vec3[] = []
+
   // North Pole
-  points.push([0, 1, 0])
-  pointsUVs.push([0, 1])
-  pointsNormals.push([0, 1, 0])
+  vertices.push([0, 1, 0])
+  uvs.push([0, 1])
+  normals.push([0, 1, 0])
   
   // +1.0f because there's a gap between the poles and the first parallel.
-  const latitudeSpacing = 1 / (numLatitudeLines + 1)
-  const longitudeSpacing = 1 / (numLongitudeLines)
+  const latitudeSpacing = 1 / (latitudeLines + 1)
+  const longitudeSpacing = 1 / (longitudeLines)
   
-  for(let latitude = 0; latitude < numLatitudeLines; latitude++) {
-    for(let longitude = 0; longitude <= numLongitudeLines; longitude++) {
-      
+  for(let latitude = 0; latitude < latitudeLines; latitude++) {
+    for(let longitude = 0; longitude <= longitudeLines; longitude++) {
       // Scale coordinates into the 0...1 texture coordinate range,
       // with north at the top (y = 1).
       const uv = [longitude * longitudeSpacing, 1 - (latitude + 1) * latitudeSpacing] as Vec2
-      pointsUVs.push(uv)
+      uvs.push(uv)
       
       // Convert to spherical coordinates:
       // theta is a longitude angle (around the equator) in radians.
@@ -37,89 +130,15 @@ export function createSphere(numLatitudeLines: number, numLongitudeLines: number
       const c = Math.cos(phi)
   
       const point = [c * Math.cos(theta), Math.sin(phi),  c * Math.sin(theta)] as Vec3
-      points.push(point)
-      pointsNormals.push(V3.normalize(point))
+      vertices.push(point)
+      normals.push(V3.normalize(point))
     }
   }
   
   // South Pole
-  points.push([0, -1, 0])
-  pointsUVs.push([0, 0])
-  pointsNormals.push([0, -1, 0])
+  vertices.push([0, -1, 0])
+  uvs.push([0, 0])
+  normals.push([0, -1, 0])
   
-  
-  const vertices:        Vec3[] = []
-  const uvs:     Vec2[] = []
-  const normals: Vec3[] = []
-  
-  // Triangle at North Pole
-  for (let i = 0; i < numLongitudeLines; i++) {
-    vertices.push(points[0])
-    vertices.push(points[i + 2])
-    vertices.push(points[i + 1])
-    
-    uvs.push(pointsUVs[0])
-    uvs.push(pointsUVs[i + 2])
-    uvs.push(pointsUVs[i + 1])
-    
-    normals.push(pointsNormals[0])
-    normals.push(pointsNormals[i + 2])
-    normals.push(pointsNormals[i + 1])
-  }
-  
-  // Each row has one more unique vertex than there are lines of longitude,
-  // since we double a vertex at the texture seam.
-  const rowLength = numLongitudeLines +1
-  for (let latitude = 0; latitude < numLatitudeLines - 1; latitude++) {
-    // Plus one for the pole.
-    const rowStart = latitude * rowLength + 1
-    for (let longitude = 0; longitude < numLongitudeLines; longitude++) {
-        const firstCorner = rowStart + longitude
-
-        // First triangle of quad: Top-Left, Bottom-Left, Bottom-Right
-        vertices.push(points[firstCorner])
-        vertices.push(points[firstCorner + rowLength + 1])
-        vertices.push(points[firstCorner + rowLength])
-        
-        uvs.push(pointsUVs[firstCorner])
-        uvs.push(pointsUVs[firstCorner + rowLength + 1])
-        uvs.push(pointsUVs[firstCorner + rowLength])
-        
-        normals.push(pointsNormals[firstCorner])
-        normals.push(pointsNormals[firstCorner + rowLength + 1])
-        normals.push(pointsNormals[firstCorner + rowLength])
-
-        // Second triangle of quad: Top-Left, Bottom-Right, Top-Right
-        vertices.push(points[firstCorner])
-        vertices.push(points[firstCorner + 1])
-        vertices.push(points[firstCorner + rowLength + 1])
-        
-        uvs.push(pointsUVs[firstCorner])
-        uvs.push(pointsUVs[firstCorner + 1])
-        uvs.push(pointsUVs[firstCorner + rowLength + 1])
-        
-        normals.push(pointsNormals[firstCorner])
-        normals.push(pointsNormals[firstCorner + 1])
-        normals.push(pointsNormals[firstCorner + rowLength + 1])
-    }
-  }
-  
-  const southPole = points.length - 1
-  const bottomRow = (numLatitudeLines - 1) * rowLength + 1
-
-  for (let i = 0; i < numLongitudeLines; i++) {
-      vertices.push(points[southPole])
-      vertices.push(points[bottomRow + i])
-      vertices.push(points[bottomRow + i + 1])
-      
-      uvs.push(pointsUVs[southPole])
-      uvs.push(pointsUVs[bottomRow + i])
-      uvs.push(pointsUVs[bottomRow + i + 1])
-      
-      normals.push(pointsNormals[southPole])
-      normals.push(pointsNormals[bottomRow + i])
-      normals.push(pointsNormals[bottomRow + i + 1])
-  }
-  
-  return { vertices, normals, uvs }
+  return { vertices, uvs, normals }
 }
