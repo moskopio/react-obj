@@ -18,7 +18,8 @@ export function useRenderScene(props: Props): void {
   const updateShadowsRef = useRef<boolean>(true)
 
   const { settings, scene, camera } = useContext(AppContext)
-  const { obj} = useContext(ObjContext)
+  const { obj } = useContext(ObjContext)
+  const { swapYZ } = settings
   const requestId = useRef<number>(-1)
   
   const programs = usePrograms(props)
@@ -42,7 +43,8 @@ export function useRenderScene(props: Props): void {
   Object.values(programs).forEach(p => p?.updateCamera?.(cameraValues))
   }, [camera])
   
-  useEffect(() => { updateShadowsRef.current = true }, [obj])
+  useEffect(() => { updateShadowsRef.current = true },
+  [obj, swapYZ])
   
   useEffect(() => {
     return () => { Object.values(programs).forEach(p => p?.cleanup()) }

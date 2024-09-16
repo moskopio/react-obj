@@ -4,6 +4,7 @@ import { createMeshObject } from "src/preview/objects/mesh"
 import { createOutlineObject } from "src/preview/objects/outline"
 import { createPointsObject } from "src/preview/objects/points"
 import { createWireframeObject } from "src/preview/objects/wireframe"
+import { AppContext } from "src/state/context"
 import { ObjContext } from "src/state/obj"
 import { Object3D } from "src/types"
 
@@ -23,6 +24,7 @@ export function useObjects(props: Props): Objects {
   const { gl } = props
   const objectsRef = useRef<Objects>(createEmptyObjects())
   const { obj } = useContext(ObjContext)
+  const { settings } = useContext(AppContext)
   
   useEffect(() => {
     if (gl) {
@@ -39,6 +41,15 @@ export function useObjects(props: Props): Objects {
     objects.outline = [createOutlineObject(obj)]
     objects.points = [createPointsObject(obj)]
   }, [gl, obj])
+  
+  useEffect(() => {
+    const objects = objectsRef.current
+    
+    objects.mesh.forEach(o => o.updateSettings?.(settings))
+    objects.wireframe.forEach(o => o.updateSettings?.(settings))
+    objects.outline.forEach(o => o.updateSettings?.(settings))
+    objects.points.forEach(o => o.updateSettings?.(settings))
+  }, [obj, settings])
   
   return objectsRef.current
 }

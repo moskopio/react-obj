@@ -19,12 +19,6 @@ export function LightPanel(): ReactElement {
       
       <LightControls />
       <Checkbox 
-        label="Follows Camera"
-        value={scene.light.followsCamera}
-        onChange={(followsCamera: boolean) => sceneDispatch({ type: "set", light: { followsCamera }} )}
-        color={pallette.getNextColor()}
-      />
-      <Checkbox 
         label="Cast Self Shadow"
         value={scene.light.castObjectShadow}
         onChange={(castObjectShadow: boolean) => sceneDispatch({ type: "set", light: { castObjectShadow }} )}
