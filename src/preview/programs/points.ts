@@ -18,6 +18,7 @@ export function createPointsProgram(gl: WebGLRenderingContext): Program | undefi
     return undefined
   }
   let settings = createDefaultSettings()
+  let lastObjectName = ''
   
   const attributes = {
     position: { p: gl.getAttribLocation(program, 'aPosition'), s: 3, b: gl.createBuffer()! },
@@ -26,30 +27,31 @@ export function createPointsProgram(gl: WebGLRenderingContext): Program | undefi
   }
   const uniforms = getUniforms(gl, program)
   
-  return { draw, updateSettings, updateCamera, updateScene, cleanup } 
+  return { cleanup, draw, updateCamera, updateScene, updateSettings }
+  
+  function cleanup(): void {
+    Object.values(attributes).forEach(a => gl.deleteBuffer(a.b))
+    gl.deleteProgram(program!)
+  }
   
   function draw(time: number, object: Object3D): void {
     const geometry = object.getGeometry()
     const model = object.getModel()
+    const objectName = object.getName()
     
     if (settings.points.enabled) {
       gl.useProgram(program!)
       setupAttributes({ gl, attributes })
-      updateAttributes({ gl, attributes, values: { ...geometry } })
+      if (lastObjectName !== objectName) {
+        updateAttributes({ gl, attributes, values: { ...geometry } })
+        updateUniforms({ gl, uniforms, values: { model } })
+        lastObjectName = objectName
+      }
       
-      updateUniforms({ gl, uniforms, values: { model, time: [time] } })
+      updateUniforms({ gl, uniforms, values: { time: [time] } })
       gl.drawArrays(gl.POINTS, 0, geometry.count.length)
       gl.clear(gl.DEPTH_BUFFER_BIT)
     }
-  }
-  
-  function updateSettings(newSettings: Settings): void {
-    settings = newSettings
-    const { points, shading } = settings
-    const values = flattenAndPrepare({ points, shading })
-    
-    gl.useProgram(program!)
-    updateUniforms({ gl, uniforms, values })
   }
   
   function updateCamera(values: ViewMatrices): void {
@@ -72,8 +74,12 @@ export function createPointsProgram(gl: WebGLRenderingContext): Program | undefi
     updateUniforms({ gl, uniforms, values })
   }
   
-  function cleanup(): void {
-    Object.values(attributes).forEach(a => gl.deleteBuffer(a.b))
-    gl.deleteProgram(program!)
+  function updateSettings(newSettings: Settings): void {
+    settings = newSettings
+    const { points, shading } = settings
+    const values = flattenAndPrepare({ points, shading })
+    
+    gl.useProgram(program!)
+    updateUniforms({ gl, uniforms, values })
   }
 }

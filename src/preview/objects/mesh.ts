@@ -17,22 +17,18 @@ export function createMeshObject(obj: Obj): Object3D {
   }
   let settings = createDefaultSettings()
   
-  return { updateSettings, getGeometry, getModel }
+  return { getGeometry, getModel, getName, updateSettings }
     
-  function updateSettings(newSettings: Settings): void {
-    settings = newSettings
-  }
-  
   function getGeometry(): Geometry {
     const { useFlat, useDefined } = settings.normals
     const { vertices, smoothNormals, definedNormals, flatNormals, count } = geometry
     
     const hasDefinedNormals = geometry.definedNormals.length === vertices.length
     
-    const normals = useFlat 
-      ? flatNormals 
-      : useDefined && hasDefinedNormals 
-        ? definedNormals 
+    const normals = useFlat
+      ? flatNormals
+      : useDefined && hasDefinedNormals
+        ? definedNormals
         : smoothNormals
     
     return {
@@ -44,5 +40,14 @@ export function createMeshObject(obj: Obj): Object3D {
   
   function getModel(): Matrix4 {
     return getModelMatrix(boundingBox, settings)
+  }
+  
+  function getName(): string {
+    const { useFlat, useDefined } = settings.normals
+    return obj.name + `${useFlat ? '-flat': '-smooth'}-${useDefined ? '-defined': ''}` 
+  }
+  
+  function updateSettings(newSettings: Settings): void {
+    settings = newSettings
   }
 }

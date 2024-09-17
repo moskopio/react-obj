@@ -17,13 +17,9 @@ export function createOutlineObject(obj: Obj): Object3D {
   }
   let settings = createDefaultSettings()
   
-  return { updateSettings, getGeometry, getModel }
+  return { getGeometry, getModel, getName, updateSettings }
   
-  
-  function updateSettings(newSettings: Settings): void {
-    settings = newSettings
-  }
-  
+    
   function getGeometry(): Geometry {
     const { vertices, normals, count } = geometry
     return {
@@ -35,5 +31,13 @@ export function createOutlineObject(obj: Obj): Object3D {
   
   function getModel(): Matrix4 {
     return getModelMatrix(boundingBox, settings)
+  }
+  
+  function getName(): string {
+    return obj.name
+  }
+  
+  function updateSettings(newSettings: Settings): void {
+    settings = newSettings
   }
 }

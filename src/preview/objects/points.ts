@@ -18,12 +18,7 @@ export function createPointsObject(obj: Obj): Object3D {
   }
   let settings = createDefaultSettings()
   
-  return { updateSettings, getGeometry, getModel }
-  
-  
-  function updateSettings(newSettings: Settings): void {
-    settings = newSettings
-  }
+  return {getGeometry, getModel, getName, updateSettings }
   
   function getGeometry(): Geometry {
     const { vertices, normals, count } = geometry
@@ -37,5 +32,14 @@ export function createPointsObject(obj: Obj): Object3D {
   
   function getModel(): Matrix4 {
     return getModelMatrix(boundingBox, settings)
+  }
+  
+  function getName(): string {
+    const { useFlat, useDefined } = settings.normals
+    return obj.name + `${useFlat ? 'flat': 'smooth'}-${useDefined ? 'defined': ''}` 
+  }
+  
+  function updateSettings(newSettings: Settings): void {
+    settings = newSettings
   }
 }

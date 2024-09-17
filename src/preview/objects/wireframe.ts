@@ -15,7 +15,7 @@ export function createWireframeObject(obj: Obj): Object3D {
   }
   let settings = createDefaultSettings()
   
-  return { updateSettings, getGeometry, getModel }
+  return { updateSettings, getGeometry, getModel, getName }
   
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
@@ -33,5 +33,9 @@ export function createWireframeObject(obj: Obj): Object3D {
   
   function getModel(): Matrix4 {
     return getModelMatrix(boundingBox, settings)
+  }
+  
+  function getName(): string {
+    return obj.name
   }
 }

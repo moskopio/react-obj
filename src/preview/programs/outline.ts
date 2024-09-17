@@ -14,6 +14,7 @@ export function createOutlineProgram(gl: WebGLRenderingContext): Program | undef
     return undefined
   }
   let settings = createDefaultSettings()
+  let lastObjectName = ''
   
   const attributes = {
     position: { p: gl.getAttribLocation(program, 'aPosition'), s: 3, b: gl.createBuffer()! },
@@ -21,8 +22,39 @@ export function createOutlineProgram(gl: WebGLRenderingContext): Program | undef
   }
   const uniforms = getUniforms(gl, program)
   
-  return { updateCamera, updateSettings, draw, cleanup }
+  return { cleanup, draw, updateCamera, updateSettings }
   
+  function cleanup(): void {
+    Object.values(attributes).forEach(a => gl.deleteBuffer(a.b))
+    gl.deleteProgram(program!)
+  }
+  
+  function draw(time: number, object: Object3D): void {
+    const geometry = object.getGeometry()
+    const model = object.getModel()
+    const objectName = object.getName()
+    
+    const { outline } = settings
+    if (outline.enabled) {
+      gl.useProgram(program!)
+      setupAttributes({ gl, attributes })
+      
+      if (lastObjectName !== objectName) {
+        updateAttributes({ gl, attributes, values: { ...geometry } })
+        updateUniforms({ gl, uniforms, values: { model } })
+        lastObjectName = objectName
+      }
+      
+      updateUniforms({ gl, uniforms, values: { time: [time] } })
+      gl.drawArrays(gl.TRIANGLES, 0, geometry.count.length)
+      !outline.useReverse && gl.clear(gl.DEPTH_BUFFER_BIT)
+    }
+  }
+  
+  function updateCamera(values: ViewMatrices): void {
+    gl.useProgram(program!)
+    updateUniforms({ gl, uniforms, values})
+  }
   
   function updateSettings(newSettings: Settings): void {
     settings = newSettings
@@ -32,30 +64,5 @@ export function createOutlineProgram(gl: WebGLRenderingContext): Program | undef
     
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values })
-  }
-  
-  function updateCamera(values: ViewMatrices): void {
-    gl.useProgram(program!)
-    updateUniforms({ gl, uniforms, values})
-  }
-  
-  function draw(time: number, object: Object3D): void {
-    const geometry = object.getGeometry()
-    const model = object.getModel()
-    
-    const { outline } = settings
-    if (outline.enabled) {
-      gl.useProgram(program!)
-      setupAttributes({ gl, attributes })
-      updateAttributes({ gl, attributes, values: { ...geometry } })
-      updateUniforms({ gl, uniforms, values: { model, time: [time] } })
-      gl.drawArrays(gl.TRIANGLES, 0, geometry.count.length)
-      !outline.useReverse && gl.clear(gl.DEPTH_BUFFER_BIT)
-    }
-  }
-  
-  function cleanup(): void {
-    Object.values(attributes).forEach(a => gl.deleteBuffer(a.b))
-    gl.deleteProgram(program!)
   }
 }

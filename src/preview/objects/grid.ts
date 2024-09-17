@@ -19,13 +19,17 @@ export function createGridObject(): Object3D {
   
   const count = new Float32Array(vertices.map((_, i) => i / length))
  
-  return { getGeometry, getModel: getModelMatrix }
+  return { getGeometry, getModel, getName }
   
   function getGeometry(): Geometry {
     return { position, normal, count, texture }
   }
   
-  function getModelMatrix(): Matrix4 {
+  function getModel(): Matrix4 {
     return M4.identity()
+  }
+  
+  function getName(): string {
+    return 'grid'
   }
 }

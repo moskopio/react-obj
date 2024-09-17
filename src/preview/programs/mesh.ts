@@ -12,6 +12,7 @@ import { flattenAndPrepare, getUniforms, updateUniforms } from 'src/webgl/unifor
 export function createMeshProgram(gl: WebGLRenderingContext): Program | undefined {
   const fragmentShader = createLightShader(fragmentShaderSource)
   const program = createShaderProgram(gl, vertexShaderSource, fragmentShader)
+  let lastObjectName = ''
   
   if (!program) {
     console.error('Failed to create a WebGL Mesh Program')
@@ -27,23 +28,34 @@ export function createMeshProgram(gl: WebGLRenderingContext): Program | undefine
   }
   const uniforms = getUniforms(gl, program)
   
-  return { updateCamera, updateSettings, updateScene, draw, cleanup }
+  return { cleanup, draw, updateCamera, updateScene, updateSettings }
   
-
-  function updateSettings(newSettings: Settings): void {
-    settings = newSettings
-    const { shading } = settings
-    const values = flattenAndPrepare({ shading })
-    
-    gl.useProgram(program!)
-    updateUniforms({ gl, uniforms, values })
+  function cleanup(): void {
+    Object.values(attributes).forEach(a => a.b && gl.deleteBuffer(a.b))
+    program && gl.deleteProgram(program)
   }
   
-  function updateCamera(values: ViewMatrices): void {
-    gl.useProgram(program!)
-    updateUniforms({ gl, uniforms, values})
-  }
+  function draw(time: number, object: Object3D): void {
+    const geometry = object.getGeometry()
+    const model = object.getModel()
+    const objectName = object.getName()
     
+    if (settings.showMesh) {
+      gl.useProgram(program!)
+      
+      setupAttributes({ gl, attributes })
+      
+      if (lastObjectName !== objectName) {
+        updateAttributes({ gl, attributes, values: { ...geometry } })
+        updateUniforms({ gl, uniforms, values: { model } })
+        lastObjectName = objectName
+      }
+      
+      updateUniforms({ gl, uniforms, values: { time: [time] } })
+      gl.drawArrays(gl.TRIANGLES, 0, geometry.count.length)
+    }
+  }
+  
   function updateScene(scene: Scene): void {
     const { ambient, fresnel, light } = scene
     const { position, projection: lightProjection, view: lightView } = getLightPosition(light)
@@ -59,22 +71,17 @@ export function createMeshProgram(gl: WebGLRenderingContext): Program | undefine
     updateUniforms({ gl, uniforms, values })
   }
   
-  function draw(time: number, object: Object3D): void {
-    const geometry = object.getGeometry()
-    const model = object.getModel()
-    
-    if (settings.showMesh) {
-      gl.useProgram(program!)
-      setupAttributes({ gl, attributes })
-      updateAttributes({ gl, attributes, values: { ...geometry } })
-      
-      updateUniforms({ gl, uniforms, values: { model, time: [time] } })
-      gl.drawArrays(gl.TRIANGLES, 0, geometry.count.length)
-    }
+  function updateCamera(values: ViewMatrices): void {
+    gl.useProgram(program!)
+    updateUniforms({ gl, uniforms, values})
   }
+  
+  function updateSettings(newSettings: Settings): void {
+    settings = newSettings
+    const { shading } = settings
+    const values = flattenAndPrepare({ shading })
     
-  function cleanup(): void {
-    Object.values(attributes).forEach(a => a.b && gl.deleteBuffer(a.b))
-    program && gl.deleteProgram(program)
+    gl.useProgram(program!)
+    updateUniforms({ gl, uniforms, values })
   }
 }

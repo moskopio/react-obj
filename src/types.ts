@@ -20,6 +20,7 @@ export interface Geometry extends Dict<Float32Array> {
 export interface Object3D {
   getGeometry:     () => Geometry
   getModel:        () => number[]
+  getName:         () => string
   updateSettings?: (settings: Settings) => void
 }
 

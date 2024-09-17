@@ -10,7 +10,6 @@ import { createShaderProgram } from 'src/webgl/program'
 import { flattenAndPrepare, getUniforms, prepareValues, updateUniforms } from 'src/webgl/uniforms'
 
 export function createGridProgram(gl: WebGLRenderingContext): Program | undefined {
-  
   const fragment = createShadowOnlyShader(fragmentShaderSource)
   const program = createShaderProgram(gl, vertexShaderSource, fragment)
   if (!program) {
@@ -18,6 +17,7 @@ export function createGridProgram(gl: WebGLRenderingContext): Program | undefine
     return undefined
   }
   let settings = createDefaultSettings()
+  let lastObjectName = ''
   
   const attributes = {
     position: { p: gl.getAttribLocation(program, 'aPosition'), s: 3, b: gl.createBuffer()! },
@@ -25,15 +25,31 @@ export function createGridProgram(gl: WebGLRenderingContext): Program | undefine
   }  
   const uniforms = getUniforms(gl, program)
   
-  return { updateSettings, updateCamera, updateScene, draw, cleanup }
+  return { cleanup, draw, updateCamera, updateScene, updateSettings }
   
-  function updateSettings(newSettings: Settings): void {
-    settings = newSettings
-    const { grid } = settings
-    const values = prepareValues({ ...grid })
+  function cleanup(): void {
+    Object.values(attributes).forEach(a => gl.deleteBuffer(a.b))
+    gl.deleteProgram(program!)
+  }
+  
+  function draw(time: number, object: Object3D): void {
+    const geometry = object.getGeometry()
+    const model = object.getModel()
+    const objectName = object.getName()
     
-    gl.useProgram(program!)
-    updateUniforms({ gl, uniforms, values })
+    if (settings.grid.enabled) {
+      gl.useProgram(program!)
+      setupAttributes({ gl, attributes })
+      
+      if (lastObjectName !== objectName) {
+        updateAttributes({ gl, attributes, values: { ...geometry } })
+        updateUniforms({ gl, uniforms, values: { model } })
+        lastObjectName = objectName
+      }
+      
+      updateUniforms({ gl, uniforms, values: { time: [time] } })
+      gl.drawArrays(gl.TRIANGLES, 0, geometry.count.length)
+    }
   }
   
   function updateCamera(values: ViewMatrices): void {
@@ -50,22 +66,12 @@ export function createGridProgram(gl: WebGLRenderingContext): Program | undefine
     updateUniforms({ gl, uniforms, values })
   }
   
-  function draw(time: number, object: Object3D): void {
-    const geometry = object.getGeometry()
-    const model = object.getModel()
+  function updateSettings(newSettings: Settings): void {
+    settings = newSettings
+    const { grid } = settings
+    const values = prepareValues({ ...grid })
     
-    if (settings.grid.enabled) {
-      gl.useProgram(program!)
-      setupAttributes({ gl, attributes })
-      updateAttributes({ gl, attributes, values: { ...geometry } })
-      
-      updateUniforms({ gl, uniforms, values: { model, time: [time] } })
-      gl.drawArrays(gl.TRIANGLES, 0, geometry.count.length)
-    }
-  }
-  
-  function cleanup(): void {
-    Object.values(attributes).forEach(a => gl.deleteBuffer(a.b))
-    gl.deleteProgram(program!)
-  }
+    gl.useProgram(program!)
+    updateUniforms({ gl, uniforms, values })
+  }  
 }
