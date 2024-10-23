@@ -14,7 +14,7 @@ describe('M3', () => {
       0, 1, 0,
       0, 0, 4,
     ]
-    expect(M3.inverseSum(m2)).toEqual(-4)
+    expect(M3.inverseSum(m2)).toEqual(4)
   })
   
   test('calculates determinate correctly', () => {

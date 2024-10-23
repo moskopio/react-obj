@@ -13,7 +13,7 @@ interface Props {
   defaultValue?: number
 }
 
-
+// TODO: QUITE UGLY! NEEDS TO LOOK BETTER!
 export function HorizontalPreciseSlider(props: Props): ReactElement { 
   const { min, max, onChange, value } = props
   const { defaultValue = 0 } = props

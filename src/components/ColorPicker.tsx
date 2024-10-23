@@ -1,12 +1,11 @@
 import { ReactElement, useCallback, useRef } from "react"
-import { Vec3 } from "src/math/v3"
-import { vec3ToCSSColor } from "src/utils/color"
+import { Color, vec3ToCSSColor } from "src/utils/color"
 import "./ColorPicker.css"
 import { Slider } from "./Slider"
 
 interface Props {
-  onChange: (color: Vec3) => void
-  value:    Vec3
+  onChange: (color: Color) => void
+  value:    Color
 }
 
 export function ColorPicker(props: Props): ReactElement {

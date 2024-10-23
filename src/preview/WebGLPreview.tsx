@@ -1,7 +1,7 @@
 import { ReactElement, useLayoutEffect, useRef, useState } from "react"
 import { useAdjustResolution } from "src/preview/hooks/adjust-resolution"
 import { useRenderScene } from "src/preview/hooks/render-scene"
-import { useWebGLContext } from "src/webgl/hooks/use-context"
+import { useWebGLContext } from "src/preview/hooks/webgl-context"
 import './WebGLPreview.css'
 import { useCameraControls } from "./hooks/camera-controls"
 
@@ -11,12 +11,10 @@ export function WebGLPreview(): ReactElement {
   
   const gl = useWebGLContext({ canvasRef })
   useAdjustResolution({gl, resolution })
-  
   useRenderScene({gl, resolution })
-  
   useCameraControls()
   
-  useLayoutEffect(() => {  
+  useLayoutEffect(() => {
     window.addEventListener('resize', updateResolution)
     return () => window.removeEventListener('resize', updateResolution)
     
@@ -30,7 +28,7 @@ export function WebGLPreview(): ReactElement {
   }, [gl, setResolution])
   
   return (
-    <canvas 
+    <canvas
       ref={canvasRef}
       className="webgl-canvas"
       width={resolution.width}

@@ -13,7 +13,6 @@ export function createSphere(latitudeLines: number, longitudeLines: number): Pri
   createSphereMiddle()
   createSouthPole()
 
-  
   return { vertices, normals, uvs }
   
   function createNorthPole(): void {

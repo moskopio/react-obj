@@ -44,7 +44,7 @@ export function createMeshObject(obj: Obj): Object3D {
   
   function getName(): string {
     const { useFlat, useDefined } = settings.normals
-    return obj.name + `${useFlat ? '-flat': '-smooth'}-${useDefined ? '-defined': ''}` 
+    return obj.name + `${useFlat ? '-flat': '-smooth'}-${useDefined ? '-defined': ''}`
   }
   
   function updateSettings(newSettings: Settings): void {

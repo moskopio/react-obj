@@ -1,9 +1,10 @@
 import { useContext, useEffect } from "react"
 import { AppContext } from "src/state/context"
+import { Resolution } from "src/types"
 
 interface Props {
   gl:         WebGLRenderingContext | null
-  resolution: { width: number, height: number }
+  resolution: Resolution
 }
 
 export function useAdjustResolution(props: Props): void {

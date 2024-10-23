@@ -73,5 +73,5 @@ export function createGridProgram(gl: WebGLRenderingContext): Program | undefine
     
     gl.useProgram(program!)
     updateUniforms({ gl, uniforms, values })
-  }  
+  }
 }

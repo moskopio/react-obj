@@ -16,7 +16,7 @@ export interface Objects {
   points:    Object3D[]
 }
 
-interface Props { 
+interface Props {
   gl: WebGLRenderingContext | null
 }
 
@@ -42,8 +42,10 @@ export function useObjects(props: Props): Objects {
     objects.points = [createPointsObject(obj)]
   }, [gl, obj])
   
+  
   useEffect(() => {
     const objects = objectsRef.current
+    console.log(objects)
     
     objects.mesh.forEach(o => o.updateSettings?.(settings))
     objects.wireframe.forEach(o => o.updateSettings?.(settings))
@@ -54,6 +56,6 @@ export function useObjects(props: Props): Objects {
   return objectsRef.current
 }
 
-function createEmptyObjects() {
+function createEmptyObjects(): Objects {
   return { mesh: [], outline: [], grid: [], wireframe: [], points: [] }
 }

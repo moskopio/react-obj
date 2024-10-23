@@ -42,7 +42,7 @@ export function updateUniforms(args: UpdateArgs): void {
     
     if (uniform && uniform.loc && values[name]) {
       switch (uniform.type) {
-        case gl.FLOAT_MAT4: 
+        case gl.FLOAT_MAT4:
           gl.uniformMatrix4fv(uniform.loc, false, values[name])
           break
         case gl.FLOAT_VEC2:

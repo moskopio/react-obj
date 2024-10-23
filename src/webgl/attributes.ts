@@ -1,9 +1,9 @@
 import { Dict } from "src/types"
 
 interface Attribute {
-  p: GLint,
-  s: number,
-  b: WebGLBuffer
+  p: GLint,       // pointer
+  s: number,      // size
+  b: WebGLBuffer  // buffer
 }
 type Attributes = Dict<Attribute>
 type AttributeValue = Dict<Float32Array>

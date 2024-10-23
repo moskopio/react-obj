@@ -25,7 +25,7 @@ export function SettingsPortal(props: Props): ReactElement {
     <div ref={containerRef}>
       <IconSettings onClick={showPortal} />
       {portalVisible ?
-        <Portal 
+        <Portal
           label={label}
           onClose={hidePortal}
           position={position}>

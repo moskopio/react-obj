@@ -1,5 +1,4 @@
 export function createDepthFrameBuffer(gl: WebGLRenderingContext): WebGLFramebuffer | null {
-  
   const depthTexture = createDepthTexture(gl, 2048)
   const colorTexture = createColorTexture(gl, 2048)
 
