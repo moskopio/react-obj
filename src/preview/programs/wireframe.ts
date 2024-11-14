@@ -40,11 +40,10 @@ export function createWireframeProgram(gl: WebGLRenderingContext): Program | und
       setupAttributes({ gl, attributes })
       if (lastObjectName !== objectName) {
         updateAttributes({ gl, attributes, values: { ...geometry } })
-        updateUniforms({ gl, uniforms, values: { model } })
         lastObjectName = objectName
       }
-      updateUniforms({ gl, uniforms, values: { time: [time] } })
       
+      updateUniforms({ gl, uniforms, values: { model, time: [time] } })
       gl.drawArrays(gl.LINES, 0, geometry.count.length)
     }
   }

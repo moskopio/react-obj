@@ -42,16 +42,14 @@ export function createMeshProgram(gl: WebGLRenderingContext): Program | undefine
     
     if (settings.showMesh) {
       gl.useProgram(program!)
-      
       setupAttributes({ gl, attributes })
       
       if (lastObjectName !== objectName) {
         updateAttributes({ gl, attributes, values: { ...geometry } })
-        updateUniforms({ gl, uniforms, values: { model } })
         lastObjectName = objectName
       }
       
-      updateUniforms({ gl, uniforms, values: { time: [time] } })
+      updateUniforms({ gl, uniforms, values: { model, time: [time] } })
       gl.drawArrays(gl.TRIANGLES, 0, geometry.count.length)
     }
   }
@@ -59,12 +57,12 @@ export function createMeshProgram(gl: WebGLRenderingContext): Program | undefine
   function updateScene(scene: Scene): void {
     const { ambient, fresnel, light } = scene
     const { position, projection: lightProjection, view: lightView } = getLightPosition(light)
-    const values = flattenAndPrepare({ 
-      light: { ...light, position }, 
-      ambient, 
-      fresnel, 
-      lightView, 
-      lightProjection 
+    const values = flattenAndPrepare({
+      light: { ...light, position },
+      ambient,
+      fresnel,
+      lightView,
+      lightProjection
     })
     
     gl.useProgram(program!)

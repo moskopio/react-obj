@@ -21,7 +21,7 @@ export function createDepthFrameBuffer(gl: WebGLRenderingContext): WebGLFramebuf
     0)                     // mip level
   const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER)
   if (status !== gl.FRAMEBUFFER_COMPLETE) {
-    console.log("The created frame buffer is invalid: " + status.toString())
+    console.error("Created frame buffer is invalid: " + status.toString())
   }
   
   gl.bindTexture(gl.TEXTURE_2D, depthTexture)

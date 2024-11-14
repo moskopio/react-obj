@@ -44,11 +44,10 @@ export function createPointsProgram(gl: WebGLRenderingContext): Program | undefi
       setupAttributes({ gl, attributes })
       if (lastObjectName !== objectName) {
         updateAttributes({ gl, attributes, values: { ...geometry } })
-        updateUniforms({ gl, uniforms, values: { model } })
         lastObjectName = objectName
       }
       
-      updateUniforms({ gl, uniforms, values: { time: [time] } })
+      updateUniforms({ gl, uniforms, values: { model, time: [time] } })
       gl.drawArrays(gl.POINTS, 0, geometry.count.length)
       gl.clear(gl.DEPTH_BUFFER_BIT)
     }
@@ -62,11 +61,11 @@ export function createPointsProgram(gl: WebGLRenderingContext): Program | undefi
   function updateScene(scene: Scene): void {
     const { ambient, fresnel, light } = scene
     const { position, projection: lightProjection, view: lightView } = getLightPosition(light)
-    const values = flattenAndPrepare({ 
-      light: { ...light, position }, 
-      ambient, 
-      fresnel, 
-      lightView, 
+    const values = flattenAndPrepare({
+      light: { ...light, position },
+      ambient,
+      fresnel,
+      lightView,
       lightProjection 
     })
     

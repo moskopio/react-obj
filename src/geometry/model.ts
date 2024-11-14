@@ -8,7 +8,7 @@ export function getModelMatrix(boundingBox: BoundingBox, settings: Settings): Ma
   const [min, max] = boundingBox
   
   // Swapping YZ
-  const swap = settings.swapYZ 
+  const swap = settings.swapYZ
     ? M4.xRotation(-Math.PI / 2)
     : M4.identity()
     

@@ -45,7 +45,6 @@ export function useObjects(props: Props): Objects {
   
   useEffect(() => {
     const objects = objectsRef.current
-    console.log(objects)
     
     objects.mesh.forEach(o => o.updateSettings?.(settings))
     objects.wireframe.forEach(o => o.updateSettings?.(settings))
