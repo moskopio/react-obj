@@ -1,16 +1,16 @@
 import { useContext, useEffect, useRef, useState } from "react"
 import { AppContext } from "src/state/context"
-import { createLightDrawer } from "../preview/light-drawer"
-import { Program } from "src/types"
+import { Resolution } from "src/types"
+import { createLightDrawer, LightProgram } from "../preview/light-drawer"
 
 interface Props {
   gl:         WebGLRenderingContext | null
-  resolution: { width: number, height: number }
+  resolution: Resolution
 }
 
 export function useLightPreviewProgram(props: Props): void {
   const { gl, resolution } = props
-  const [programs, setPrograms] = useState<Program[]>([])
+  const [programs, setPrograms] = useState<LightProgram[]>([])
   const requestId = useRef<number>()
   const { scene } = useContext(AppContext)
   
@@ -39,16 +39,16 @@ export function useLightPreviewProgram(props: Props): void {
   }, [])
   
   useEffect(() => {
-    draw(Date.now())
+    draw()
     
     return () => {
       requestId.current && cancelAnimationFrame(requestId.current)
     }
   }, [programs, draw])
   
-  function draw(time: number): void {
+  function draw(): void {
     gl?.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-    programs.forEach(p => p.draw(time))
+    programs.forEach(p => p.draw())
     requestId.current = requestAnimationFrame(draw)
   }
 }

@@ -1,6 +1,6 @@
-import pluginJs from "@eslint/js";
-import tseslint from "typescript-eslint";
-import pluginReactConfig from "eslint-plugin-react/configs/recommended.js";
+import pluginJs from "@eslint/js"
+import tseslint from "typescript-eslint"
+import pluginReactConfig from "eslint-plugin-react/configs/recommended.js"
 
 
 export default [
@@ -9,5 +9,9 @@ export default [
   pluginReactConfig,
   { settings: { react: { version: "detect" } } },
   { ignores: ["dist/*"] },
-  { rules: { 'react/react-in-jsx-scope': 'off' } },
+  { rules: { 
+    'react/react-in-jsx-scope': 'off',
+    'no-unused-expressions': 'off',
+    "@typescript-eslint/no-unused-expressions": "off"
+  } },
 ];

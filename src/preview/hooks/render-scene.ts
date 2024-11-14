@@ -6,11 +6,11 @@ import { useObjects } from "src/preview/hooks/objects"
 import { usePrograms } from "src/preview/hooks/programs"
 import { AppContext } from "src/state/context"
 import { ObjContext } from "src/state/obj"
-import { Object3D } from "src/types"
+import { Object3D, Resolution } from "src/types"
 
 interface Props {
   gl:         WebGLRenderingContext | null
-  resolution: { width: number, height: number }
+  resolution: Resolution
 }
 
 export function useRenderScene(props: Props): void {

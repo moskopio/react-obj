@@ -9,13 +9,17 @@ import { getUniforms, prepareValues, updateUniforms } from "src/webgl/uniforms"
 import { getLightMatrices } from "./light-matrices"
 import fragmentShaderSource from './light.frag'
 import vertexShaderSource from './light.vert'
-import { Program } from "src/types"
 
 const SPHERE_MODEL = M4.scaling([0.6, 0.6, 0.6])
 const CONE_MODEL   = M4.combine(M4.translation([0,0,1.1]),M4.scaling([0.2, 0.2, 0.1]))
 
+export interface LightProgram {
+  cleanup:      () => void
+  draw:         () => void
+  updateScene?: (scene: Scene) => void
+}
 
-export function createLightDrawer(gl: WebGLRenderingContext): Program | undefined {
+export function createLightDrawer(gl: WebGLRenderingContext): LightProgram | undefined {
   const program = createShaderProgram(gl, vertexShaderSource, fragmentShaderSource)
   
   if (!program) {
