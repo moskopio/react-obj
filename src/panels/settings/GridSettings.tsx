@@ -21,7 +21,7 @@ export function GridSettings(): ReactElement {
   return (
     <Fragment>
       <div className="horizontal-setting">
-        <Checkbox 
+        <Checkbox
             label="Show Grid"
             value={enabled}
             onChange={toggleEnabled}

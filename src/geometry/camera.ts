@@ -7,7 +7,7 @@ import { Camera } from "src/state/camera"
 import { ViewMatrices } from "src/types"
 
 export function getLookAtMatrices(camera: Camera): ViewMatrices {
-  const { fov, aspectRatio, zNear, zFar, track, dolly, rotation, target } = camera 
+  const { fov, aspectRatio, zNear, zFar, track, dolly, rotation, target } = camera
   
   // 1. Tumble - rotating around Theta and Phi
   const qTheta = Q.fromAxisAngle([1, 0, 0], degToRad(rotation.theta))

@@ -1,6 +1,8 @@
 import { Fragment, ReactElement, useCallback, useContext } from "react"
 import { Divider } from "src/components/Divider"
+import { Label } from "src/components/Label"
 import { Panel } from "src/components/Panel"
+import { SettingsPortal } from "src/components/SettingsPortal"
 import { Slider } from "src/components/Slider"
 import { AppContext } from "src/state/context"
 import { createPallette, PASTEL_COLORS } from "src/utils/color"
@@ -120,7 +122,9 @@ function Camera(): ReactElement {
   
   return (
     <Fragment>
-      <Divider label="Camera" />
+      <div className="horizontal-setting">
+      <Label label='Advanced...' />
+      <SettingsPortal label='Camera'>
       <Slider
         label={`FOV ${Math.floor(camera.fov)}`} 
         min={1}
@@ -148,6 +152,8 @@ function Camera(): ReactElement {
         value={camera.zFar}
         color={pallette.getNextColor()}
       />
+      </SettingsPortal>
+      </div>
     </Fragment>
   )
 }

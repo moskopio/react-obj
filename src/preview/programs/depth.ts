@@ -31,10 +31,10 @@ export function createDepthProgram(gl: WebGLRenderingContext): Program | undefin
     const geometry = object.getGeometry()
     const model = object.getModel()
     const objectName = object.getName()
-    
+
     gl.useProgram(program!)
-    
     setupAttributes({ gl, attributes })
+    
     if (lastObjectName !== objectName) {
       updateAttributes({ gl, attributes, values: { ...geometry } })
       lastObjectName = objectName

@@ -1,24 +1,15 @@
 import { ChangeEvent, useCallback, useContext } from "react"
 import { ObjContext } from "src/state/obj"
-import { getBoundingBox } from "./obj/bounding-box"
-import { flattenParsedObj } from "./obj/flatten"
-import { parseObj } from "./obj/parse"
-import { readObj } from "./obj/read"
-import { wireframeFlattenObj } from "./obj/wireframe"
+import { processObjData } from "src/utils/obj/process"
 
-export function useObjLoad(): (event: ChangeEvent<HTMLInputElement>) => void {
+type ObjLoad = (event: ChangeEvent<HTMLInputElement>) => void
+
+export function useObjLoad(): ObjLoad {
   const { setObj } = useContext(ObjContext)
   
   const onObjLoad = useCallback((data: string, name: string) => {
-    const tick = Date.now()
-    const raw = readObj(data)
-    const parsed = parseObj(raw)
-    const flat = flattenParsedObj(parsed)
-    const wireframe = wireframeFlattenObj(flat)
-    const parsingTime = Date.now() - tick
-    const boundingBox = getBoundingBox(flat.vertices)
-    
-    setObj({ name, raw, parsed, flat, wireframe, parsingTime, boundingBox })
+    const obj = processObjData(data, name)
+    setObj(obj)
   }, [setObj])
   
   return useCallback((event: ChangeEvent<HTMLInputElement>) => {

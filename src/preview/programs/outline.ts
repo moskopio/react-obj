@@ -33,8 +33,8 @@ export function createOutlineProgram(gl: WebGLRenderingContext): Program | undef
     const geometry = object.getGeometry()
     const model = object.getModel()
     const objectName = object.getName()
-    
     const { outline } = settings
+    
     if (outline.enabled) {
       gl.useProgram(program!)
       setupAttributes({ gl, attributes })

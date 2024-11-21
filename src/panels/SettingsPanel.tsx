@@ -21,14 +21,14 @@ export function SettingsPanel(): ReactElement {
     <Panel icon="settings" color={PASTEL_COLORS.hai}>
       <Divider label="Mesh" />
       
-      <Checkbox 
+      <Checkbox
         label="Show Mesh"
         value={settings.showMesh}
         onChange={(showMesh: boolean) => settingsDispatch({ showMesh })}
         color={pallette.getNextColor()}
       />
       
-      <Checkbox 
+      <Checkbox
         label="Swap Y/Z"
         value={settings.swapYZ}
         onChange={(swapYZ: boolean) => settingsDispatch({ swapYZ })}
@@ -46,14 +46,14 @@ export function SettingsPanel(): ReactElement {
       
       <Divider label="Normals" />
       
-      <Checkbox 
+      <Checkbox
         label="Use flat"
         value={settings.normals.useFlat}
         onChange={(useFlat: boolean) => settingsDispatch({ normals: { useFlat } })}
         color={pallette.getNextColor()}
       />
       
-      <Checkbox 
+      <Checkbox
         label="Use defined"
         value={settings.normals.useDefined}
         onChange={(useDefined: boolean) => settingsDispatch({ normals: { useDefined } })}
@@ -61,11 +61,11 @@ export function SettingsPanel(): ReactElement {
       />
       
       <Divider label="Outline" />
-      < OutlineSettings />
+      <OutlineSettings />
+      
       
       <Divider label="Stage" />
       <GridSettings />
-      
     </Panel>
   )
 }

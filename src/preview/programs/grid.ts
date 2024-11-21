@@ -22,7 +22,7 @@ export function createGridProgram(gl: WebGLRenderingContext): Program | undefine
   const attributes = {
     position: { p: gl.getAttribLocation(program, 'aPosition'), s: 3, b: gl.createBuffer()! },
     normal:   { p: gl.getAttribLocation(program, 'aNormal'),   s: 3, b: gl.createBuffer()! },
-  }  
+  }
   const uniforms = getUniforms(gl, program)
   
   return { cleanup, draw, updateCamera, updateScene, updateSettings }
@@ -38,6 +38,7 @@ export function createGridProgram(gl: WebGLRenderingContext): Program | undefine
     const objectName = object.getName()
     
     if (settings.grid.enabled) {
+      // technically grid could be used to display something else too, hence the check
       gl.useProgram(program!)
       setupAttributes({ gl, attributes })
       

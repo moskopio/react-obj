@@ -38,6 +38,7 @@ export function createWireframeProgram(gl: WebGLRenderingContext): Program | und
     if (settings.wireframe.enabled) {
       gl.useProgram(program!)
       setupAttributes({ gl, attributes })
+      
       if (lastObjectName !== objectName) {
         updateAttributes({ gl, attributes, values: { ...geometry } })
         lastObjectName = objectName

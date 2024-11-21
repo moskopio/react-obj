@@ -14,7 +14,7 @@ export interface Programs {
   points?:    Program
 }
 
-interface Props { 
+interface Props {
   gl: WebGLRenderingContext | null
 }
 

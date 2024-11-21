@@ -14,9 +14,9 @@
 }
 
 .divider::before, .divider::after {
-    flex-grow: 1;
-    box-sizing: border-box;
-    border: 1px var(--highlight-color) solid;
-    box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
-    content: "";
+  flex-grow: 1;
+  box-sizing: border-box;
+  border: 1px var(--highlight-color) solid;
+  box-shadow: inset 0px 0px 0px 1px var(--shadow-color);
+  content: "";
 }

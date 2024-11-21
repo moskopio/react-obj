@@ -29,7 +29,7 @@ export function ColorPortal(props: Props): ReactElement {
       <div className="color-portal-preview" onClick={showPortal} style={style} >
       </div>
       {portalVisible ?
-        <Portal 
+        <Portal
           label={label}
           onClose={hidePortal}
           position={position}>

@@ -4,7 +4,7 @@ import { M4, Matrix4 } from 'src/math/m4'
 import { Geometry, Object3D } from 'src/types'
 
 export function createGridObject(): Object3D {
-  const plane = createPlane(8, 8)
+  const plane = createPlane(1, 1)
   
   const translate = M4.translation([0, -1, 0])
   const scale = M4.scaling([4, 4, 4])

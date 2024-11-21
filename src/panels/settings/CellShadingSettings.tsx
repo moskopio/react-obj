@@ -27,14 +27,14 @@ export function CellShadingSettings(): ReactElement {
   return (
     <Fragment>
       <div className="horizontal-setting">
-        <Checkbox 
+        <Checkbox
             label="Cell Shading"
             value={cell.enabled}
             onChange={toggleEnabled}
             color={pallette.getNextColor()}
           />
         <SettingsPortal label="Cell Shading">
-          <Slider 
+          <Slider
             label={`Segments ${cell.segments}`}
             value={cell.segments}
             min={1}
@@ -43,7 +43,7 @@ export function CellShadingSettings(): ReactElement {
             onChange={setSegments}
             color={pallette.getNextColor()}
           />
-          <Slider 
+          <Slider
             label={`AA ${cell.aa.toFixed(2)}`}
             value={cell.aa}
             min={0}

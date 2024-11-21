@@ -51,7 +51,7 @@ function AmbientLight(props: Props): ReactElement {
   
   return (
     <div className="horizontal-color-setting">
-      <Checkbox 
+      <Checkbox
         label="Ambient Light"
         value={light.ambient.enabled}
         onChange={toggleAmbient}
