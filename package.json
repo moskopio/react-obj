@@ -4,11 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev":   "vite",
     "build": "tsc && vite build",
-    "lint": "eslint --config eslint.config.js src",
-    "preview": "vite preview",
-    "test": "vitest run",
+    "lint":  "eslint --config eslint.config.js src",
+    "test":  "vitest run",
     "watch": "vitest"
   },
   "dependencies": {
