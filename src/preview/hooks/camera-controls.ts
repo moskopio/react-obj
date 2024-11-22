@@ -10,6 +10,7 @@ export function useCameraControls(): void {
   const position = useRef([0, 0])
   
   useEffect(() => {
+    // TODO: touch gestures! It doesn't work well on mobile/tablet
     window.addEventListener('pointerdown', onPointerDown)
     window.addEventListener('contextmenu', onContextMenu)
     window.addEventListener('wheel', onWheel, { passive: false })
@@ -33,8 +34,6 @@ export function useCameraControls(): void {
     }
     
     function onPointerDown(event: MouseEvent): void {
-      event.preventDefault()
-      event.stopImmediatePropagation()
       if (event.type === 'contextmenu' || event.button === 2) {
         shift.current = true
       }

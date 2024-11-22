@@ -3,6 +3,7 @@
   align-items: center;
   height: 16px;
   color: var(--highlight-color);
+  user-select: none;
 }
 
 .divider::before {
