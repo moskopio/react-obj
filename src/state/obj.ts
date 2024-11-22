@@ -2,7 +2,7 @@ import { createContext, Dispatch, SetStateAction, useEffect, useMemo, useState }
 import { processObjData } from "src/utils/obj/process"
 import { Obj } from "src/utils/obj/types"
 
-const DEFAULT_OBJECT = "stanford-bunny.obj"
+const DEFAULT_OBJECT = "/react-obj/stanford-bunny.obj"
 
 export function createEmptyObj(): Obj {
   return {

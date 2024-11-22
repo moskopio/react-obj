@@ -4,6 +4,7 @@ import glsl from 'vite-plugin-glsl'
 import * as path from 'path'
 
 export default defineConfig({
+  base:    "/react-obj",
   plugins: [react(), glsl()],
   resolve: {
     alias: {
