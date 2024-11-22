@@ -4,25 +4,24 @@ import { AppContext } from "src/state/context"
 const SENSITIVITY = 0.3
 const WHEEL_STEP = 0.05
 
-export function useCameraControls(): void {
+export function useMouseCameraControls(): void {
   const {cameraDispatch } = useContext(AppContext)
   const shift = useRef(false)
   const position = useRef([0, 0])
   
   useEffect(() => {
-    // TODO: touch gestures! It doesn't work well on mobile/tablet
-    window.addEventListener('pointerdown', onPointerDown)
+    window.addEventListener('mousedown', onMouseDown)
     window.addEventListener('contextmenu', onContextMenu)
     window.addEventListener('wheel', onWheel, { passive: false })
     window.addEventListener('keydown', onKeyDown)
     window.addEventListener('keyup', onKeyUp)
     
     return () => {
-      window.removeEventListener('pointerdown', onPointerDown)
+      window.removeEventListener('mousedown', onMouseDown)
       window.removeEventListener('wheel', onWheel)
-      window.removeEventListener('pointerup', onPointerUp)
-      window.removeEventListener('pointermove', onPointerMove)
-      window.removeEventListener('mouseleave', onPointerUp)
+      window.removeEventListener('mouseup', onMouseUp)
+      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('mouseleave', onMouseUp)
       window.removeEventListener('keydown', onKeyDown)
       window.removeEventListener('keyup', onKeyUp)
       window.removeEventListener('contextmenu', onContextMenu)
@@ -33,30 +32,32 @@ export function useCameraControls(): void {
       event.stopImmediatePropagation()
     }
     
-    function onPointerDown(event: MouseEvent): void {
+    function onMouseDown(event: MouseEvent): void {
+      event.preventDefault()
+      event.stopImmediatePropagation()
       if (event.type === 'contextmenu' || event.button === 2) {
         shift.current = true
       }
       
-      window.addEventListener('pointerup', onPointerUp)
-      window.addEventListener('mouseleave', onPointerUp)
-      window.addEventListener('pointermove', onPointerMove)
+      window.addEventListener('mouseup', onMouseUp)
+      window.addEventListener('mouseleave', onMouseUp)
+      window.addEventListener('mousemove', onMouseMove)
       position.current = [event.clientX, event.clientY]
     }
     
-    function onPointerUp(event: MouseEvent): void {
+    function onMouseUp(event: MouseEvent): void {
       event.preventDefault()
       event.stopImmediatePropagation()
       if (event.type === 'contextmenu' || event.button === 2) {
         shift.current = false
       }
       
-      window.removeEventListener('pointerup', onPointerUp)
-      window.removeEventListener('mouseleave', onPointerUp)
-      window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('mouseup', onMouseUp)
+      window.removeEventListener('mouseleave', onMouseUp)
+      window.removeEventListener('mousemove', onMouseMove)
     }
     
-    function onPointerMove(event: MouseEvent): void {
+    function onMouseMove(event: MouseEvent): void {
       event.preventDefault()
       event.stopImmediatePropagation()
       updateRotation(event)
@@ -69,7 +70,7 @@ export function useCameraControls(): void {
     }
     
     function onKeyUp(event: KeyboardEvent): void {
-      if (event.key === 'Shift') {
+      if (event.key === 'Shift') { 
         shift.current = false
       }
     }
