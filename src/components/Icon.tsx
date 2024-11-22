@@ -24,7 +24,3 @@ export function IconFile(props: Props): ReactElement {
 export function IconLight(props: Props): ReactElement {
   return <div className="icon icon-light" onClick={props?.onClick} />
 }
-
-export function IconCross(props: Props): ReactElement {
-  return <div className="icon icon-cross" onClick={props?.onClick} />
-}

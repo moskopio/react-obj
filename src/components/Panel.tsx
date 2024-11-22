@@ -1,6 +1,6 @@
 import { ReactElement, useCallback, useState } from "react"
 import { PASTEL_COLORS } from "src/utils/color"
-import { IconCamera, IconCross, IconFile, IconInfo, IconLight, IconSettings } from "./Icon"
+import { IconCamera, IconFile, IconInfo, IconLight, IconSettings } from "./Icon"
 import "./Panel.css"
 
 interface Props {
