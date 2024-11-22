@@ -4,7 +4,7 @@ import { useRenderScene } from "src/preview/hooks/render-scene"
 import { useWebGLContext } from "src/preview/hooks/webgl-context"
 import './WebGLPreview.css'
 import { useMouseCameraControls } from "./hooks/mouse-camera-controls"
-import { useTouchCameraControls } from "src/preview/hooks/touch-camera-controls"
+import { useTouchCameraControls } from "./hooks/touch-camera-controls"
 
 export function WebGLPreview(): ReactElement {
   const canvasRef = useRef<HTMLCanvasElement>(null)
