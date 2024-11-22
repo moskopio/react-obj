@@ -22,7 +22,7 @@ export function createDefaultCamera(): Camera {
     zFar:        50,
     target:      [0, 0, 0] as Vec3,
     rotation:    { theta: -20, phi: 0 },
-    dolly:       2.5,
+    dolly:       4,
     track:       { x: 0, y : 0 }
   }
 }
