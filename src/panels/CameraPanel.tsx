@@ -9,7 +9,7 @@ import { createPallette, PASTEL_COLORS } from "src/utils/color"
 
 export function CameraPanel(): ReactElement {
   return (
-    <Panel icon="camera" color={PASTEL_COLORS.pancho}>
+    <Panel label="Camera" icon="camera" color={PASTEL_COLORS.pancho}>
       <Rotation />
       <Position />
       <Camera />

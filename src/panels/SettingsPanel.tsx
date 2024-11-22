@@ -1,4 +1,4 @@
-import { ReactElement, useContext } from "react"
+import { Fragment, ReactElement, useContext } from "react"
 import { Checkbox } from "src/components/Checkbox"
 import { Divider } from "src/components/Divider"
 import { Panel } from "src/components/Panel"
@@ -12,13 +12,17 @@ import { NormalShadingSettings } from "./settings/NormalShadingSettings"
 import { OutlineSettings } from "./settings/OutlineSettings"
 import { PointsSettings } from "./settings/PointsSettings"
 import { WireframeSettings } from "./settings/WireframeSettings"
+import { ObjContext } from "src/state/obj"
 
 export function SettingsPanel(): ReactElement {
   const { settings, settingsDispatch } = useContext(AppContext)
+  const { obj } = useContext(ObjContext)
+  
+  const hasDefinedNormals = obj.flat.definedNormals.length > 0
   const pallette = createPallette()
 
   return (
-    <Panel icon="settings" color={PASTEL_COLORS.hai}>
+    <Panel label="Settings" icon="settings" color={PASTEL_COLORS.hai}>
       <Divider label="Mesh" />
       
       <Checkbox
@@ -53,12 +57,12 @@ export function SettingsPanel(): ReactElement {
         color={pallette.getNextColor()}
       />
       
-      <Checkbox
+      {hasDefinedNormals ? <Checkbox
         label="Use defined"
         value={settings.normals.useDefined}
         onChange={(useDefined: boolean) => settingsDispatch({ normals: { useDefined } })}
         color={pallette.getNextColor()}
-      />
+      /> : <Fragment />}
       
       <Divider label="Outline" />
       <OutlineSettings />

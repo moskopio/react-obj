@@ -41,9 +41,9 @@ export function createPointsProgram(gl: WebGLRenderingContext): Program | undefi
     
     if (settings.points.enabled) {
       gl.useProgram(program!)
+      setupAttributes({ gl, attributes })
       
       if (lastObjectName !== objectName) {
-        setupAttributes({ gl, attributes })
         updateAttributes({ gl, attributes, values: { ...geometry } })
         lastObjectName = objectName
       }

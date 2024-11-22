@@ -15,7 +15,7 @@ export function LightPanel(): ReactElement {
   const { scene, sceneDispatch } = useContext(AppContext)
   
   return (
-    <Panel icon="light" color={PASTEL_COLORS.mojo}>
+    <Panel label="Light" icon="light" color={PASTEL_COLORS.mojo}>
       
       <LightControls />
       <Checkbox 

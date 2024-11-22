@@ -34,7 +34,7 @@ export function useObjState(): ObjState {
       const file = await fetch(DEFAULT_OBJECT)
       const objData = await file.text()
       
-      const obj = processObjData(objData, 'default')
+      const obj = processObjData(objData, 'StandfordBunny.obj')
       setObj(obj)
     }
     loadDefaultObject()

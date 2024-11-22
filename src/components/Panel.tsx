@@ -1,12 +1,13 @@
 import { ReactElement, useCallback, useState } from "react"
 import { PASTEL_COLORS } from "src/utils/color"
-import { IconCamera, IconFile, IconInfo, IconLight, IconSettings } from "./Icon"
+import { IconCamera, IconCross, IconFile, IconInfo, IconLight, IconSettings } from "./Icon"
 import "./Panel.css"
 
 interface Props {
   children: ReactElement | ReactElement[] | string
-  icon:     string
   color?:   string
+  icon:     string
+  label:    string
 }
 
 export function Panel(props: Props): ReactElement {
@@ -23,12 +24,15 @@ interface ClickableProps extends Props {
 }
 
 function ExtendedPanel(props: ClickableProps): ReactElement {
-  const { onClick, children, color = PASTEL_COLORS.mojo } = props
+  const { onClick, children, color = PASTEL_COLORS.mojo, label } = props
   
   return (
     <div className="panel">
-      <div className="panel-bar" style={{background: `${color}`}} onClick={onClick} />
-      <div className="panel-content">{children}</div>
+      <div className="panel-side-bar" style={{background: `${color}`}} onClick={onClick} />
+      <div className="panel-content">
+        <div className="panel-top-bar" onClick={onClick}>{label}</div>
+        {children}
+      </div>
     </div>
   )
 }
