@@ -14,3 +14,6 @@ yarn
 ```
 yarn dev
 ```
+
+### Acknowledgements
+The Stanford Bunny model is courtesy of the Stanford University Computer Graphics Laboratory. The original file can be found at http://graphics.stanford.edu/data/3Dscanrep/ with additional information on the model's venerable history at http://www.cc.gatech.edu/~turk/bunny/bunny.html.
