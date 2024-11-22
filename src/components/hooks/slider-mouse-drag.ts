@@ -32,13 +32,13 @@ export function useSliderMouseDrag(props: Props): void {
   useEffect(() => {
     const slider = sliderRef?.current
     slider?.addEventListener('contextmenu', onContextMenu)
-    slider?.addEventListener('mousedown', onMouseDown)
+    slider?.addEventListener('pointerdown', onPointerDown)
     
     return () => {
       slider?.removeEventListener('contextmenu', onContextMenu)
-      slider?.removeEventListener('mousedown', onMouseDown)
-      window.removeEventListener('mouseup', onMouseUp)
-      window.removeEventListener('mousemove', onMouseMove)
+      slider?.removeEventListener('pointerdown', onPointerDown)
+      window.removeEventListener('pointerup', onPointerUp)
+      window.removeEventListener('pointermove', onPointerMove)
     }
     
     function onContextMenu(event: MouseEvent): void {
@@ -47,24 +47,24 @@ export function useSliderMouseDrag(props: Props): void {
       onChange(defaultValue)
     }
     
-    function onMouseDown(event: MouseEvent): void {
+    function onPointerDown(event: MouseEvent): void {
       event.preventDefault()
       event.stopImmediatePropagation()
       if (event.type !== 'contextmenu' && event.button !== 2) {
         updateOnMouseMove(event)
-        window.addEventListener('mouseup', onMouseUp)
-        window.addEventListener('mousemove', onMouseMove)
+        window.addEventListener('pointerup', onPointerUp)
+        window.addEventListener('pointermove', onPointerMove)
       }
     }
     
-    function onMouseUp(event: MouseEvent): void {
+    function onPointerUp(event: MouseEvent): void {
       event.preventDefault()
       event.stopImmediatePropagation()
-      window.removeEventListener('mouseup', onMouseUp)
-      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('pointerup', onPointerUp)
+      window.removeEventListener('pointermove', onPointerMove)
     }
     
-    function onMouseMove(event: MouseEvent): void {
+    function onPointerMove(event: MouseEvent): void {
       event.preventDefault()
       event.stopImmediatePropagation()
       updateOnMouseMove(event)

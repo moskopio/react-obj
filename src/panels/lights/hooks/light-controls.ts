@@ -1,5 +1,5 @@
 import { RefObject, useContext, useEffect, useRef } from "react"
-import { AppContext } from "../../../state/context"
+import { AppContext } from "src/state/context"
 
 const SENSITIVITY = 0.75
 
@@ -15,16 +15,16 @@ export function useLightControls(props: Props): void {
   useEffect(() => {
     const canvas = canvasRef.current
   
-    canvas?.addEventListener('mousedown', onMouseDown)
+    canvas?.addEventListener('pointerdown', onPointerDown)
     canvas?.addEventListener('contextmenu', onContextMenu)
     
     return () => {
-      canvas?.removeEventListener('mousedown', onMouseDown)
+      canvas?.removeEventListener('pointerdown', onPointerDown)
       canvas?.removeEventListener('contextmenu', onContextMenu)
       
-      window.removeEventListener('mouseup', onMouseUp)
-      window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('mouseleave', onMouseUp)
+      window.removeEventListener('pointerup', onPointerUp)
+      window.removeEventListener('pointermove', onPointerMove)
+      window.removeEventListener('mouseleave', onPointerUp)
     }
     
     function onContextMenu(event: MouseEvent): void {
@@ -32,25 +32,25 @@ export function useLightControls(props: Props): void {
       event.stopImmediatePropagation()
     }
     
-    function onMouseDown(event: MouseEvent): void {
+    function onPointerDown(event: MouseEvent): void {
       event.preventDefault()
       event.stopImmediatePropagation()
 
-      window.addEventListener('mouseup', onMouseUp)
-      window.addEventListener('mouseleave', onMouseUp)
-      window.addEventListener('mousemove', onMouseMove)
+      window.addEventListener('pointerup', onPointerUp)
+      window.addEventListener('mouseleave', onPointerUp)
+      window.addEventListener('pointermove', onPointerMove)
       position.current = [event.clientX, event.clientY]
     }
     
-    function onMouseUp(event: MouseEvent): void {
+    function onPointerUp(event: MouseEvent): void {
       event.preventDefault()
       event.stopImmediatePropagation()
-      window.removeEventListener('mouseup', onMouseUp)
-      window.removeEventListener('mouseleave', onMouseUp)
-      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('pointerup', onPointerUp)
+      window.removeEventListener('mouseleave', onPointerUp)
+      window.removeEventListener('pointermove', onPointerMove)
     }
     
-    function onMouseMove(event: MouseEvent): void {
+    function onPointerMove(event: MouseEvent): void {
       event.preventDefault()
       event.stopImmediatePropagation()
       updateRotation(event)
