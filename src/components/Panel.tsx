@@ -30,7 +30,10 @@ function ExtendedPanel(props: ClickableProps): ReactElement {
     <div className="panel">
       <div className="panel-side-bar" style={{background: `${color}`}} onClick={onClick} />
       <div className="panel-content">
-        <div className="panel-top-bar" onClick={onClick}>{label}</div>
+        <div className="panel-top-bar" onClick={onClick}>
+          <div className="panel-top-label">{label}</div>
+          <div className="panel-top-cross" />
+        </div>
         {children}
       </div>
     </div>

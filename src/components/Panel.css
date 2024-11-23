@@ -31,29 +31,36 @@
 }
 
 .panel-top-bar {
-  align-items: center;
-  color: var(--highlight-color);
   cursor: pointer;
   display: flex;
   flex-direction: row;
+}
+
+.panel-top-label {
+  display: flex;
   font-family: monospace;
   font-size: 14px;
-  gap: 5px;
-  justify-content: space-between;
   text-align: left;
   text-shadow: var(--text-shadow);
   user-select: none;
+  align-items: center;
+  color: var(--highlight-color);
+  gap: 5px;
+  width: 100%;
 }
 
-.panel-top-bar::before {
-  margin-left: 10px;
+.panel-top-cross {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><path d="M6 6L18 18M18 6L6 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
 }
 
-.panel-top-bar::after {
-  margin-right: 10px;
+.panel-top-label::before {
+  margin-left: 5px;
 }
 
-.panel-top-bar::before, .panel-top-bar::after {
+.panel-top-label::before, .panel-top-label::after {
   flex-grow: 1;
   box-sizing: border-box;
   border: 1px var(--highlight-color) solid;
