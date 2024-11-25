@@ -44,4 +44,8 @@
   font-family: monospace;
   user-select: none;
   text-shadow: var(--text-shadow);
+  max-width: 200px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden; 
 }

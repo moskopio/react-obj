@@ -3,6 +3,7 @@ import { useAdjustResolution } from "src/preview/hooks/adjust-resolution"
 import { useRenderScene } from "src/preview/hooks/render-scene"
 import { useWebGLContext } from "src/preview/hooks/webgl-context"
 import './WebGLPreview.css'
+import { useFileDrop } from "./hooks/file-drop"
 import { useMouseCameraControls } from "./hooks/mouse-camera-controls"
 import { useTouchCameraControls } from "./hooks/touch-camera-controls"
 
@@ -15,6 +16,7 @@ export function WebGLPreview(): ReactElement {
   useRenderScene({gl, resolution })
   useMouseCameraControls()
   useTouchCameraControls({ canvasRef })
+  useFileDrop()
   
   useLayoutEffect(() => {
     window.addEventListener('resize', updateResolution)
