@@ -22,5 +22,9 @@
  
 body {
   background: var(--bg-color);
+  color: var(--highlight-color);
+  font-family: monospace;
+  font-size: 12px;
   overflow: hidden;
+  user-select: none;
 }

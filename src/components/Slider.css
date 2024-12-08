@@ -20,12 +20,9 @@
 }
 
 .slider-label {
-  margin-top: -14px;
   font-size: 10px;
-  text-align: center;
+  margin-top: -14px;
   pointer-events: none;
-  user-select: none;
-  color: var(--highlight-color);
-  font-family: monospace;
+  text-align: center;
   text-shadow: var(--text-shadow);
 }

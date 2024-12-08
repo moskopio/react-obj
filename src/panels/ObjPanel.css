@@ -7,11 +7,8 @@
 
 .stat-label {
   flex: 2;
-  font-weight: bold;
   font-size: 11px;
-  color: var(--highlight-color);
-  font-family: monospace;
-  user-select: none;
+  font-weight: bold;
   text-shadow: var(--text-shadow);
 }
 
@@ -19,9 +16,6 @@
   flex: 1;
   font-size: 11px;
   text-align: right;
-  color: var(--highlight-color);
-  font-family: monospace;
-  user-select: none;
   text-shadow: var(--text-shadow);
 }
 
@@ -36,16 +30,13 @@
 }
 
 .file-input-label {
-  font-size: 15px;
-  display: flex;
   align-items: center;
-  text-align: left;
-  color: var(--highlight-color);
-  font-family: monospace;
-  user-select: none;
-  text-shadow: var(--text-shadow);
+  display: flex;
+  font-size: 15px;
   max-width: 200px;
+  overflow: hidden;
+  text-align: left;
   text-overflow: ellipsis;
+  text-shadow: var(--text-shadow);
   white-space: nowrap;
-  overflow: hidden; 
 }

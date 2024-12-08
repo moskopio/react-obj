@@ -53,16 +53,17 @@ export function useRenderScene(props: Props): void {
   useEffect(() => {
     const time = Date.now()
     draw(time)
-    return () => { requestId.current && cancelAnimationFrame(requestId.current) }
-  }, [draw])
-  
-  function draw(time: number): void {
-    if (updateShadowsRef.current) {
-      drawShadows(time)
-      updateShadowsRef.current = false
+    
+    function draw(time: number): void {
+      if (updateShadowsRef.current) {
+        drawShadows(time)
+        updateShadowsRef.current = false
+      }
+      
+      drawObjects(time)
+      requestId.current = requestAnimationFrame(draw)
     }
     
-    drawObjects(time)
-    requestId.current = requestAnimationFrame(draw)
-  }
+    return () => { requestId.current && cancelAnimationFrame(requestId.current) }
+  }, [drawObjects])
 }

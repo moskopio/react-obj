@@ -14,12 +14,8 @@
 }
 
 .checkbox-label {
-  font-size: 12px;
-  display: flex;
   align-items: center;
+  display: flex;
   text-align: left;
-  color: var(--highlight-color);
-  font-family: monospace;
-  user-select: none;
   text-shadow: var(--text-shadow);
 }

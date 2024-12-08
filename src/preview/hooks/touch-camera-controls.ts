@@ -14,7 +14,6 @@ export function useTouchCameraControls(args: Args): void {
   const {cameraDispatch } = useContext(AppContext)
   const shift = useRef(false)
   const touches = useRef<TouchList | null>(null)
-  const pinch = useRef<TouchList | null>(null)
   const canvas = canvasRef.current
   
   useEffect(() => {
@@ -37,7 +36,6 @@ export function useTouchCameraControls(args: Args): void {
       touches.current = event.touches
       
       if (event.touches.length > 1) {
-        pinch.current = event.touches
         shift.current = true
       }
     }

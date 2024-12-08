@@ -37,15 +37,12 @@
 }
 
 .panel-top-label {
+  align-items: center;
   display: flex;
-  font-family: monospace;
   font-size: 14px;
+  gap: 5px;
   text-align: left;
   text-shadow: var(--text-shadow);
-  user-select: none;
-  align-items: center;
-  color: var(--highlight-color);
-  gap: 5px;
   width: 100%;
 }
 
