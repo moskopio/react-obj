@@ -119,7 +119,7 @@ function createDefaultWireframe(): WireframeSettings {
 
 function createDefaultPoints(): PointsSettings {
   return {
-    enabled:      true,
+    enabled:      false,
     movement:     [0.05, 0.05, 0.0],
     size:         [5.0, 5.0],
     useLight:     true,
