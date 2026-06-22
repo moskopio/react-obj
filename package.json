@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev":  "vite --host",
-    "lint": "eslint --config eslint.config.js src",
-    "test": "vitest run"
+    "dev":   "vite --host",
+    "build": "tsc && vite build",
+    "lint":  "eslint --config eslint.config.js src",
+    "test":  "vitest run"
   },
   "dependencies": {
     "react": "^18.3.1",
