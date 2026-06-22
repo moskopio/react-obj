@@ -22,7 +22,6 @@ export const AppContext = createContext<AppState>({
 })
 
 export function useAppState(): AppState {
-
   const [camera, cameraDispatch] = useReducer<Reducer<Camera, CameraAction>>(cameraReducer, createDefaultCamera())
   const [settings, settingsDispatch] = useReducer<Reducer<Settings, SettingsAction>>(settingsReducer, createDefaultSettings())
   const [scene, sceneDispatch] = useReducer<Reducer<Scene, SceneAction>>(sceneReducer, createDefaultScene())

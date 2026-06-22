@@ -16,11 +16,11 @@ export function PointsSettings(): ReactElement {
   const pallette = createPallette(3)
   
   const toggleEnabled = useCallback(
-    (enabled: boolean) => settingsDispatch({ points: { enabled } }), 
+    (enabled: boolean) => settingsDispatch({ points: { enabled } }),
     [settingsDispatch])
     
   const toggleUseLight = useCallback(
-    (useLight: boolean) => settingsDispatch({ points: { useLight } }), 
+    (useLight: boolean) => settingsDispatch({ points: { useLight } }),
     [settingsDispatch])
     
   return (

@@ -6,7 +6,6 @@ import { SettingsPortal } from "src/components/SettingsPortal"
 import { AppContext } from "src/state/context"
 import { Color, createPallette } from "src/utils/color"
 
-
 export function GoochShadingSettings(): ReactElement {
   const { settings, settingsDispatch } = useContext(AppContext)
   const { shading } = settings
@@ -39,15 +38,15 @@ function ColorControls(): ReactElement {
   const pallette = createPallette(6)
   
   const setUseLight = useCallback(
-    (useLight: boolean) => settingsDispatch({ shading: { gooch: { useLight } }}), 
+    (useLight: boolean) => settingsDispatch({ shading: { gooch: { useLight } }}),
     [settingsDispatch])
     
   const setWarm = useCallback(
-    (warmColor: Color) => settingsDispatch({ shading: { gooch: { warmColor } } }), 
+    (warmColor: Color) => settingsDispatch({ shading: { gooch: { warmColor } } }),
     [settingsDispatch])
     
   const setCool = useCallback(
-      (coolColor: Color) => settingsDispatch({ shading: { gooch: { coolColor } } }), 
+      (coolColor: Color) => settingsDispatch({ shading: { gooch: { coolColor } } }),
       [settingsDispatch])
     
   return (

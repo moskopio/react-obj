@@ -1,7 +1,8 @@
 import { M2 } from "./m2"
 
 export type Matrix3 = number[]
-export const M3 = { determinate, inverseSum } 
+
+export const M3 = { determinate, inverseSum }
 
 function determinate(m: Matrix3): number {
   const part0 = m[0] * M2.determinate([m[4], m[5], m[7], m[8]])

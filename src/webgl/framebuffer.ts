@@ -29,7 +29,7 @@ export function createDepthFrameBuffer(gl: WebGLRenderingContext): WebGLFramebuf
   return depthFramebuffer
 }
 
-export function createDepthTexture(gl: WebGLRenderingContext, size: number): WebGLTexture | null {
+function createDepthTexture(gl: WebGLRenderingContext, size: number): WebGLTexture | null {
   const depthTexture = gl.createTexture()
   gl.bindTexture(gl.TEXTURE_2D, depthTexture)
   gl.texImage2D(

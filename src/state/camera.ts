@@ -3,7 +3,7 @@ import { DeepPartial, Rotation, Track } from "src/types"
 import { Vec3 } from "src/math/v3"
 import { deepSet, deepUpdate } from "src/utils/merge"
 
-export interface Camera { 
+export interface Camera {
   aspectRatio: number
   fov:         number
   zNear:       number

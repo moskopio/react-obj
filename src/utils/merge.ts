@@ -10,19 +10,22 @@ export function deepUpdate<T>(target: T, source: T | DeepPartial<T>): T {
 }
 
 function deepMerge<T>(target: T, source: T | DeepPartial<T>, isAdditive = false): T {
-  //eslint-disable-next-line
-  const result: any = {} // can it be typed here? 
+  const result = {} as Record<keyof T, T[keyof T]>
   
   if (isObject(target) && isObject(source)) {
     for (const key in target) {
       if (isObject(source[key]) && isObject(target[key])) {
-        result[key] = deepMerge(target[key], source[key], isAdditive)
+        result[key] = deepMerge(target[key], source[key], isAdditive) as T[keyof T]
       } else {
-        result[key] = source[key] ?? target[key]
-        isDefined(source[key]) && isAdditive && (result[key] += target[key])
+        result[key] = (source[key] ?? target[key]) as T[keyof T]
+        if (isDefined(source[key]) && isAdditive) {
+          const updatedValue = (result[key] as number) + (target[key] as number)
+          result[key] = updatedValue as T[keyof T]
+        }
       }
     }
   }
   
-  return result
+  return result as T
 }
+

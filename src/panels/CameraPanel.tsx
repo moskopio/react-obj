@@ -21,11 +21,11 @@ function Rotation(): ReactElement {
   const { camera, cameraDispatch } = useContext(AppContext)
   const pallette = createPallette(0)
   
-  const setThetaRotation = useCallback((a: number) => { 
+  const setThetaRotation = useCallback((a: number) => {
     cameraDispatch({ type: "set", rotation: { theta: a }})
   }, [cameraDispatch])
   
-  const setPhiRotation = useCallback((a: number) => { 
+  const setPhiRotation = useCallback((a: number) => {
     cameraDispatch({ type: "set", rotation: { phi: a }})
   }, [cameraDispatch])
   
@@ -126,7 +126,7 @@ function Camera(): ReactElement {
       <Label label='Advanced...' />
       <SettingsPortal label='Camera'>
       <Slider
-        label={`FOV ${Math.floor(camera.fov)}`} 
+        label={`FOV ${Math.floor(camera.fov)}`}
         min={1}
         max={180}
         onChange={setFOV}
@@ -135,7 +135,7 @@ function Camera(): ReactElement {
         color={pallette.getNextColor()}
       />
       <Slider
-        label={`ZNear ${camera.zNear.toFixed(2)}`} 
+        label={`ZNear ${camera.zNear.toFixed(2)}`}
         min={-100}
         max={100}
         onChange={setZNear}
@@ -144,7 +144,7 @@ function Camera(): ReactElement {
         color={pallette.getNextColor()}
       />
       <Slider
-        label={`ZFar ${camera.zFar.toFixed(2)}`} 
+        label={`ZFar ${camera.zFar.toFixed(2)}`}
         min={1}
         max={100}
         onChange={setZFar}

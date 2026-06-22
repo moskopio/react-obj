@@ -12,13 +12,13 @@ export function WireframeSettings(): ReactElement {
   const pallette = createPallette(2)
   
   const toggleEnabled = useCallback(
-    (enabled: boolean) => settingsDispatch({ wireframe: { enabled } }), 
+    (enabled: boolean) => settingsDispatch({ wireframe: { enabled } }),
     [settingsDispatch])
   const toggleUseShading = useCallback(
-    (useShading: boolean) => settingsDispatch({ wireframe: { useShading } }), 
+    (useShading: boolean) => settingsDispatch({ wireframe: { useShading } }),
     [settingsDispatch])
   const setColor = useCallback(
-    (color: Color) => settingsDispatch({ wireframe: { color } }), 
+    (color: Color) => settingsDispatch({ wireframe: { color } }),
     [settingsDispatch])
     
     

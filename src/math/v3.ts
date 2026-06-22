@@ -3,7 +3,7 @@ import { Matrix4 } from "./m4"
 export type Vec2 = [number, number]
 export type Vec3 = [number, number, number]
 
-export const V3 = { 
+export const V3 = {
   add,
   cross,
   distance,
@@ -86,4 +86,3 @@ function multiply(v: Vec3, m: Matrix4): Vec3 {
 function areEqual(a: Vec3, b: Vec3): boolean {
   return a[0] === b[0] && a[1] === b[1] && a[2] === b[2]
 }
-

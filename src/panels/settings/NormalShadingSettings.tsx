@@ -12,11 +12,11 @@ export function NormalShadingSettings(): ReactElement {
   const pallette = createPallette(6)
   
   const toggleEnabled = useCallback(
-    (enabled: boolean) => settingsDispatch({ shading: { normal: { enabled } } }), 
+    (enabled: boolean) => settingsDispatch({ shading: { normal: { enabled } } }),
     [settingsDispatch])
     
   const toggleAbs = useCallback(
-    (useAbs: boolean) => settingsDispatch({ shading: { normal: { useAbs } } }), 
+    (useAbs: boolean) => settingsDispatch({ shading: { normal: { useAbs } } }),
     [settingsDispatch])
     
   return (

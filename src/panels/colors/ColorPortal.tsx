@@ -19,7 +19,7 @@ export function ColorPortal(props: Props): ReactElement {
   const hidePortal = useCallback(() => setPortalVisible(false), [setPortalVisible])
   
   const boundingRect = containerRef.current?.getBoundingClientRect()
-  const position: [number, number] = boundingRect 
+  const position: [number, number] = boundingRect
     ? [boundingRect.x, boundingRect.y] 
     : [0, 0]
   

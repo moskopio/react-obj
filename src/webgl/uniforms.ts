@@ -66,32 +66,6 @@ export function updateUniforms(args: UpdateArgs): void {
   })
 }
 
-interface UpdateTextureArgs {
-  gl:       WebGLRenderingContext
-  uniforms: Uniforms
-  values:   Dict<WebGLTexture>
-}
-
-// textures counter is common across all of the programs!
-export function updateUniformTextures(args: UpdateTextureArgs): void {
-  const { gl, uniforms, values } = args
-  const samplerUniforms = Object.keys(uniforms).filter(n => uniforms[n]?.type === gl.SAMPLER_2D)
-
-  let textureIndex = 0
-  samplerUniforms.forEach(name => {
-    const uniform = uniforms[name]
-    const texture = values[name]
-    
-    if (uniform && texture) {
-      gl.bindTexture(gl.TEXTURE_2D, texture)
-      gl.uniform1i(uniform.loc, textureIndex)
-      gl.activeTexture(gl.TEXTURE0 + textureIndex)
-      textureIndex++
-    }
-  })
-  gl.bindTexture(gl.TEXTURE_2D, null)
-}
-
 function prepareName(name: string): string {
   const noPrefix = name[0] === 'u' || name[0] === 'a' ? name.slice(1) : name
   const noUppercase = noPrefix[0].toLowerCase() + noPrefix.slice(1)
@@ -118,8 +92,11 @@ export function prepareValues(values: Dict<number | number[] | boolean>): Values
   return prepared
 } 
 
-//eslint-disable-next-line
-export function flattenValues(values: Dict<any>): Dict<number | number[] | boolean> {
+export function flattenAndPrepare<T>(values: T): Values {
+  return prepareValues(flattenValues(values))
+}
+
+function flattenValues<T>(values: T): Dict<number | number[] | boolean> {
   const flatValues: Dict<number | number[] | boolean> = {}
 
   for (const key in values) {
@@ -133,9 +110,4 @@ export function flattenValues(values: Dict<any>): Dict<number | number[] | boole
     }
   }
   return flatValues
-}
-
-//eslint-disable-next-line
-export function flattenAndPrepare(values: Dict<any>): Values {
-  return prepareValues(flattenValues(values))
 }

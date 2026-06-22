@@ -1,13 +1,11 @@
 {
-  "name": "react-obj",
-  "version": "0.0.0",
+  "name": "React-Obj",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev":   "vite --host",
-    "build": "tsc && vite build",
-    "lint":  "eslint --config eslint.config.js src",
-    "test":  "vitest run",
-    "watch": "vitest"
+    "dev":  "vite --host",
+    "lint": "eslint --config eslint.config.js src",
+    "test": "vitest run"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -21,7 +19,6 @@
     "@vitejs/plugin-react": "^4.3.1",
     "eslint-plugin-react": "^7.34.2",
     "eslint": "9.10.0",
-    "tsconfig-paths": "^4.2.0",
     "typescript-eslint": "^8.6.0",
     "typescript": "^5.6.2",
     "vite-plugin-glsl": "^1.3.0",

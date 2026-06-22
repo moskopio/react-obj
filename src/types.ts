@@ -3,8 +3,6 @@ import { Vec3 } from "src/math/v3"
 import { Scene } from "src/state/scene"
 import { Settings } from "src/state/settings"
 
-export type FileContent = string | ArrayBuffer | null | undefined
-
 export interface Dict<T> {
   [key: string]: T | undefined
 }
@@ -42,7 +40,7 @@ export interface Resolution {
 
 export interface Rotation {
   theta: number
-  phi:   number 
+  phi:   number
 }
 
 export interface Track {
